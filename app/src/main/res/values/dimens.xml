@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="txtProfileName">22dp</dimen>
+    <dimen name="txtProfileName_small">16dp</dimen>
     <dimen name="marginSmallView">10dp</dimen>
     <dimen name="homeBtnSell">200dp</dimen>
     <dimen name="homeTextTitle">30dp</dimen>
