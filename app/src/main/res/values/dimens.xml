@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="txtProfileName">22dp</dimen>
+    <dimen name="marginSmallView">10dp</dimen>
+    <dimen name="homeBtnSell">200dp</dimen>
+    <dimen name="homeTextTitle">30dp</dimen>
+    <dimen name="marginBigView">15dp</dimen>
+    <dimen name="homeBtnWatch">230dp</dimen>
+</resources>
