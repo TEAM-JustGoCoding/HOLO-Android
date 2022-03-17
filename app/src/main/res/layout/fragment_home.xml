@@ -129,7 +129,6 @@
                         android:padding="@dimen/marginBigView"
                         android:background="@drawable/round_btn_home"
                         android:backgroundTint="@color/home_sell"
-                        android:drawableEnd="@drawable/icon_rider"
                         app:layout_constraintTop_toBottomOf="@+id/editText"
                         app:layout_constraintRight_toRightOf="@+id/contraintParent"
                         app:layout_constraintLeft_toLeftOf="@+id/contraintParent">
@@ -200,8 +199,7 @@
                                 android:layout_marginBottom="@dimen/marginSmallView"
                                 android:padding="@dimen/marginBigView"
                                 android:background="@drawable/round_btn_home"
-                                android:backgroundTint="@color/home_watch"
-                                android:drawableEnd="@drawable/icon_ott">
+                                android:backgroundTint="@color/home_watch">
                                 <TextView
                                     android:id="@+id/textWatchTitle"
                                     android:layout_width="wrap_content"
@@ -223,10 +221,9 @@
                                     app:layout_constraintTop_toBottomOf="@id/textWatchTitle"
                                     app:layout_constraintLeft_toLeftOf="@+id/btnWatch"/>
                                 <ImageView
-                                    android:layout_width="100dp"
-                                    android:layout_height="100dp"
+                                    android:layout_width="80dp"
+                                    android:layout_height="80dp"
                                     android:src="@drawable/icon_ott"
-                                    app:layout_constraintLeft_toLeftOf="@+id/btnWatch"
                                     app:layout_constraintRight_toRightOf="@+id/btnWatch"
                                     app:layout_constraintBottom_toBottomOf="@+id/btnWatch"/>
                                 <Button
@@ -250,8 +247,7 @@
                                 android:layout_marginBottom="@dimen/marginSmallView"
                                 android:padding="@dimen/marginBigView"
                                 android:background="@drawable/round_btn_home"
-                                android:backgroundTint="@color/home_curiosity"
-                                android:drawableEnd="@drawable/icon_ott">
+                                android:backgroundTint="@color/home_curiosity">
                                 <TextView
                                     android:id="@+id/textCuriosityTitle"
                                     android:layout_width="wrap_content"
@@ -306,8 +302,7 @@
                                 android:layout_marginBottom="@dimen/marginSmallView"
                                 android:padding="@dimen/marginBigView"
                                 android:background="@drawable/round_btn_home"
-                                android:backgroundTint="@color/home_sight"
-                                android:drawableEnd="@drawable/icon_sight">
+                                android:backgroundTint="@color/home_sight">
                                 <TextView
                                     android:id="@+id/textSightTitle"
                                     android:layout_width="wrap_content"
@@ -355,8 +350,7 @@
                                 android:layout_marginBottom="@dimen/marginSmallView"
                                 android:padding="@dimen/marginBigView"
                                 android:background="@drawable/round_btn_home"
-                                android:backgroundTint="@color/home_policy"
-                                android:drawableEnd="@drawable/icon_sight">
+                                android:backgroundTint="@color/home_policy">
                                 <TextView
                                     android:id="@+id/textPolicyTitle"
                                     android:layout_width="wrap_content"
