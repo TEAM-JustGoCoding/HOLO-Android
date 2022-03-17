@@ -6,12 +6,12 @@
         <type value="RUNNING_DEVICE_TARGET" />
         <deviceKey>
           <Key>
-            <type value="SERIAL_NUMBER" />
-            <value value="2a54e38718027ece" />
+            <type value="VIRTUAL_DEVICE_PATH" />
+            <value value="$USER_HOME$/.android/avd/GalaxyS21_API_32.avd" />
           </Key>
         </deviceKey>
       </Target>
     </runningDeviceTargetSelectedWithDropDown>
-    <timeTargetWasSelectedWithDropDown value="2022-03-17T05:28:32.736758Z" />
+    <timeTargetWasSelectedWithDropDown value="2022-03-17T08:42:33.481014Z" />
   </component>
 </project>
