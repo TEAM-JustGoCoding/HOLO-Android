@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".HomeFragment">
     <ScrollView
+        android:fillViewport="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
     <!--    프로필-->
@@ -265,7 +266,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/btnCuriosity"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/homeBtnSell"
+                android:layout_height="0dp"
                 android:layout_marginTop="@dimen/marginMediumView"
                 android:layout_marginLeft="@dimen/marginSmallView"
                 android:layout_marginRight="@dimen/marginSmallView"
@@ -276,7 +277,8 @@
                 android:drawableEnd="@drawable/icon_ott"
                 app:layout_constraintTop_toBottomOf="@+id/btnWatch"
                 app:layout_constraintLeft_toLeftOf="@+id/contraintParent"
-                app:layout_constraintRight_toRightOf="@+id/guideVHalf">
+                app:layout_constraintRight_toRightOf="@+id/guideVHalf"
+                app:layout_constraintBottom_toBottomOf="parent">
                 <TextView
                     android:id="@+id/textCuriosityTitle"
                     android:layout_width="wrap_content"
@@ -306,16 +308,17 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
             <Button
                 android:layout_width="0dp"
-                android:layout_height="@dimen/homeBtnSell"
+                android:layout_height="0dp"
                 android:background="@null"
                 app:layout_constraintTop_toTopOf="@+id/btnCuriosity"
                 app:layout_constraintRight_toRightOf="@+id/btnCuriosity"
-                app:layout_constraintLeft_toLeftOf="@+id/btnCuriosity"/>
+                app:layout_constraintLeft_toLeftOf="@+id/btnCuriosity"
+                app:layout_constraintBottom_toBottomOf="@+id/btnCuriosity"/>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/btnPolicy"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/homeBtnWatch"
+                android:layout_height="0dp"
                 android:layout_marginTop="@dimen/marginMediumView"
                 android:layout_marginLeft="@dimen/marginSmallView"
                 android:layout_marginRight="@dimen/marginSmallView"
