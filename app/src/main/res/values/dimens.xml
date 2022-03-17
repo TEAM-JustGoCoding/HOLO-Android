@@ -3,6 +3,7 @@
     <dimen name="txtProfileName">22dp</dimen>
     <dimen name="txtProfileName_small">16dp</dimen>
     <dimen name="marginSmallView">10dp</dimen>
+    <dimen name="marginMediumView">20dp</dimen>
     <dimen name="homeBtnSell">200dp</dimen>
     <dimen name="homeTextTitle">30dp</dimen>
     <dimen name="marginBigView">15dp</dimen>
