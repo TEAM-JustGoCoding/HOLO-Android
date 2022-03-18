@@ -1,4 +1,14 @@
+buildscript {
+    repositories {
+        google()
+    }
+    dependencies {
+        classpath 'com.google.gms:google-services:4.3.10'
+    }
+}
+
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
+// 플러그인이 반드시 빌드스크립트 아래에 있어야함
 plugins {
     id 'com.android.application' version '7.1.2' apply false
     id 'com.android.library' version '7.1.2' apply false
@@ -7,4 +17,11 @@ plugins {
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+allprojects {
+    repositories {
+        // Check that you have the following line (if not, add it):
+        google()
+    }
 }

@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "258764685383",
+    "project_id": "holo-androidapp",
+    "storage_bucket": "holo-androidapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:258764685383:android:e7d2b9ca5ef491e3aaf162",
+        "android_client_info": {
+          "package_name": "kr.co.ajjulcoding.team.project.holo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "258764685383-f3uq01dtl0vbqj10vsh3u17fhq3rhiht.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "kr.co.ajjulcoding.team.project.holo",
+            "certificate_hash": "1c3826da472dd207c0b08f29dbf3359fe64ce513"
+          }
+        },
+        {
+          "client_id": "258764685383-6orlgkj6b96tfraeimq14uk11ahhfgt8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3qGlUeuJVjoXhYz29OGC2SVFmCCoiMw4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "258764685383-6orlgkj6b96tfraeimq14uk11ahhfgt8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
