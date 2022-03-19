@@ -16,7 +16,7 @@
         <activity
             android:name=".InformAgreeActivity" />
         <activity
-            android:name=".SigninActivity" />
+            android:name=".RegisterActivity" />
         <activity
             android:name=".LoginActivity" />
         <activity

@@ -26,7 +26,7 @@ class InformAgreeActivity : AppCompatActivity() {
             }
             else if (i == arrCbox.size-1){
                 val intentCertifi = Intent(this, CertificationActivity::class.java)
-                SettingInActivity.uniqueActivity(intentCertifi)
+                SettingInApp.uniqueActivity(intentCertifi)
                 startActivity(intentCertifi)
             }
         }
