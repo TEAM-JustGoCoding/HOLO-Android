@@ -17,7 +17,7 @@
         android:textSize="30dp" />
 
     <EditText
-        android:id="@+id/cboxAgree1"
+        android:id="@+id/editPhoneNum"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="전화번호"/>
@@ -25,12 +25,27 @@
         android:id="@+id/btnSendSMS"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="20dp"
         android:text="인증번호 전송"/>
+
+    <EditText
+        android:id="@+id/editCertiNum"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:hint="인증번호"/>
+    <TextView
+        android:id="@+id/textTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textSize="15dp"
+        android:text=""/>
     <Button
         android:id="@+id/btnConfirm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="20dp"
         android:text="인증번호 확인"/>
+
 </LinearLayout>
