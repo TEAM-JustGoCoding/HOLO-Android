@@ -11,8 +11,8 @@
         android:id="@+id/menu_timeline"
         app:showAsAction="always"
         android:enabled="true"
-        android:icon="@drawable/icon_timeline"
-        android:title="타임라인" />
+        android:icon="@drawable/icon_chat"
+        android:title="채팅" />
     <item
         android:id="@+id/menu_like"
         app:showAsAction="always"
