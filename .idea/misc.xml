@@ -5,13 +5,18 @@
       <map>
         <entry key="..\:/Users/svh/AndroidStudioProjects/Holo-AndroidApp/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1735" />
         <entry key="..\:/Users/svh/AndroidStudioProjects/Holo-AndroidApp/app/src/main/res/drawable/edittext_rounded_corner_rectangle.xml" value="0.1235" />
+        <entry key="..\:/Users/svh/AndroidStudioProjects/Holo-AndroidApp/app/src/main/res/drawable/ic_baseline_notification.xml" value="0.176" />
+        <entry key="..\:/Users/svh/AndroidStudioProjects/Holo-AndroidApp/app/src/main/res/drawable/ic_baseline_search_30.xml" value="0.176" />
+        <entry key="..\:/Users/svh/AndroidStudioProjects/Holo-AndroidApp/app/src/main/res/drawable/ic_launcher_background.xml" value="0.176" />
         <entry key="..\:/Users/svh/AndroidStudioProjects/Holo-AndroidApp/app/src/main/res/drawable/round_btn_home.xml" value="0.187" />
         <entry key="..\:/Users/svh/AndroidStudioProjects/Holo-AndroidApp/app/src/main/res/drawable/round_btn_start.xml" value="0.1735" />
+        <entry key="..\:/Users/svh/AndroidStudioProjects/Holo-AndroidApp/app/src/main/res/drawable/round_certification_checkbox.xml" value="0.176" />
         <entry key="..\:/Users/svh/AndroidStudioProjects/Holo-AndroidApp/app/src/main/res/drawable/round_edit_search.xml" value="0.172" />
         <entry key="..\:/Users/svh/AndroidStudioProjects/Holo-AndroidApp/app/src/main/res/drawable/round_small_textview.xml" value="0.172" />
-        <entry key="..\:/Users/svh/AndroidStudioProjects/Holo-AndroidApp/app/src/main/res/layout/activity_certification.xml" value="0.14322916666666666" />
+        <entry key="..\:/Users/svh/AndroidStudioProjects/Holo-AndroidApp/app/src/main/res/layout/activity_certification.xml" value="0.2" />
         <entry key="..\:/Users/svh/AndroidStudioProjects/Holo-AndroidApp/app/src/main/res/layout/activity_finishsplash.xml" value="0.14322916666666666" />
         <entry key="..\:/Users/svh/AndroidStudioProjects/Holo-AndroidApp/app/src/main/res/layout/activity_holosplash.xml" value="0.14322916666666666" />
+        <entry key="..\:/Users/svh/AndroidStudioProjects/Holo-AndroidApp/app/src/main/res/layout/activity_informagree.xml" value="0.17864583333333334" />
         <entry key="..\:/Users/svh/AndroidStudioProjects/Holo-AndroidApp/app/src/main/res/layout/activity_login.xml" value="0.14322916666666666" />
         <entry key="..\:/Users/svh/AndroidStudioProjects/Holo-AndroidApp/app/src/main/res/layout/activity_main.xml" value="0.264" />
         <entry key="..\:/Users/svh/AndroidStudioProjects/Holo-AndroidApp/app/src/main/res/layout/activity_register.xml" value="0.14322916666666666" />
