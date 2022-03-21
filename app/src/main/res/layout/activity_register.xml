@@ -18,45 +18,125 @@
         app:srcCompat="@drawable/logo_holo_white"
         android:layout_marginBottom="80dp"/>
 
-    <EditText
-        android:id="@+id/editName"
-        android:background="@drawable/edittext_rounded_corner_rectangle"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:layout_marginBottom="20dp"
-        android:hint="이름"
+        android:layout_height="wrap_content"
         android:layout_marginStart="40dp"
-        android:layout_marginEnd="40dp"/>
+        android:layout_marginEnd="40dp"
+        android:background="@drawable/round_btn_start"
+        android:backgroundTint="@color/white"
+        android:layout_marginBottom="20dp">
 
-    <EditText
-        android:id="@+id/editEmail"
-        android:background="@drawable/edittext_rounded_corner_rectangle"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:layout_marginBottom="20dp"
-        android:hint="이메일"
-        android:layout_marginStart="40dp"
-        android:layout_marginEnd="40dp"/>
+        <TextView
+            android:id="@+id/textName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="이름"
+            android:textSize="15dp"
+            android:textColor="@color/sky_dark"
+            android:fontFamily="@font/light"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
 
-    <EditText
-        android:id="@+id/editPassword"
-        android:background="@drawable/edittext_rounded_corner_rectangle"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:layout_marginBottom="20dp"
-        android:hint="비밀번호"
-        android:layout_marginStart="40dp"
-        android:layout_marginEnd="40dp"/>
+        <EditText
+            android:id="@+id/editName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/textName"/>
 
-    <EditText
-        android:id="@+id/editPasswordCheck"
-        android:background="@drawable/edittext_rounded_corner_rectangle"
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:layout_marginBottom="20dp"
-        android:hint="비밀번호 확인"
+        android:layout_height="wrap_content"
         android:layout_marginStart="40dp"
-        android:layout_marginEnd="40dp"/>
+        android:layout_marginEnd="40dp"
+        android:background="@drawable/round_btn_start"
+        android:backgroundTint="@color/white"
+        android:layout_marginBottom="20dp">
+
+        <TextView
+            android:id="@+id/textEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="이메일"
+            android:textSize="15dp"
+            android:textColor="@color/sky_dark"
+            android:fontFamily="@font/light"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
+
+        <EditText
+            android:id="@+id/editEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/textEmail"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="40dp"
+        android:background="@drawable/round_btn_start"
+        android:backgroundTint="@color/white"
+        android:layout_marginBottom="20dp">
+
+        <TextView
+            android:id="@+id/textPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="비밀번호"
+            android:textSize="15dp"
+            android:textColor="@color/sky_dark"
+            android:fontFamily="@font/light"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
+
+        <EditText
+            android:id="@+id/editPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/textPassword"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="40dp"
+        android:background="@drawable/round_btn_start"
+        android:backgroundTint="@color/white"
+        android:layout_marginBottom="20dp">
+
+        <TextView
+            android:id="@+id/textPasswordCheck"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="비밀번호 확인"
+            android:textSize="15dp"
+            android:textColor="@color/sky_dark"
+            android:fontFamily="@font/light"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
+
+        <EditText
+            android:id="@+id/editPasswordCheck"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/textPasswordCheck"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -66,22 +146,42 @@
         android:layout_marginEnd="40dp"
         android:layout_marginBottom="60dp">
 
-        <EditText
-            android:id="@+id/editNickname"
-            android:background="@drawable/edittext_rounded_corner_rectangle"
-            android:layout_width="200dp"
-            android:layout_height="45dp"
-            android:hint="닉네임" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/round_btn_start"
+            android:backgroundTint="@color/white">
+
+            <TextView
+                android:id="@+id/textNickname"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="이메일"
+                android:textSize="15dp"
+                android:textColor="@color/sky_dark"
+                android:fontFamily="@font/light"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"/>
+
+            <EditText
+                android:id="@+id/editNickname"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/textNickname"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_width="40dp"
+            android:layout_height="match_parent"/>
 
         <Button
             android:id="@+id/btnOverlapCheck"
             android:layout_width="80dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="right"
             android:backgroundTint="@color/sky_dark"
             android:background="@drawable/round_btn_start"
