@@ -48,6 +48,8 @@ class LoginActivity : AppCompatActivity() {
                     val intentMain = Intent(this, MainActivity::class.java)
                     intentMain.putExtra(User.USER_EMAIL, User.currentUser())    // 사용자 인식 정보: email
                     SettingInApp.uniqueActivity(intentMain)
+                    intent.action = Intent.ACTION_MAIN
+                    intent.addCategory(Intent.CATEGORY_LAUNCHER)
                     intentMain.flags =  // 로그인 성공시 기존 스택 모두 비우고 메인화면 생성"
                         Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or
                                 Intent.FLAG_ACTIVITY_CLEAR_TOP //액티비티 스택제거
