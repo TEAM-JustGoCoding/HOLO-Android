@@ -6,46 +6,113 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center"
+    android:background="@color/sky_dirty"
     tools:context=".InformAgreeActivity">
+
+    <ImageView
+        android:id="@+id/logo_holo"
+        android:layout_width="120dp"
+        android:layout_height="70dp"
+        android:layout_gravity="center"
+        app:srcCompat="@drawable/logo_holo_white"
+        android:layout_marginBottom="80dp"/>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="본인인증화면"
-        android:textSize="30dp" />
+        android:layout_marginLeft="40dp"
+        android:text="본인인증"
+        android:textSize="@dimen/homeTextTitle"
+        android:textColor="@color/sky_dark"
+        android:fontFamily="@font/bold"/>
 
-    <EditText
-        android:id="@+id/editPhoneNum"
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="전화번호"/>
-    <Button
-        android:id="@+id/btnSendSMS"
-        android:layout_width="wrap_content"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="10dp"
+        android:text="안전한 사용을 위해 본인확인을 \n해주세요"
+        android:textSize="16dp"
+        android:textColor="@color/white"
+        android:fontFamily="@font/light"/>
+
+    <TextView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="인증번호 전송"/>
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="60dp"
+        android:text="휴대전화 인증"
+        android:textSize="15dp"
+        android:textColor="@color/sky_dark"
+        android:fontFamily="@font/light"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="40dp">
+
+        <EditText
+            android:id="@+id/editPhoneNum"
+            android:layout_width="230dp"
+            android:layout_height="wrap_content"
+            android:hint="휴대전화 번호 입력" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/btnSendSMS"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:backgroundTint="@color/sky_dark"
+            android:background="@drawable/round_btn_start"
+            android:fontFamily="@font/light"
+            android:text="인증 요청"
+            android:textColor="@color/white"
+            android:textSize="14dp" />
+
+    </LinearLayout>
 
     <EditText
         android:id="@+id/editCertiNum"
-        android:layout_width="match_parent"
+        android:layout_width="230dp"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="40dp"
         android:layout_marginTop="15dp"
-        android:hint="인증번호"/>
+        android:hint="인증 번호 입력"/>
+
     <TextView
         android:id="@+id/textTime"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"
+        android:layout_marginLeft="40dp"
         android:textColor="@color/black"
+        android:fontFamily="@font/light"
         android:textSize="15dp"
         android:text=""/>
-    <Button
-        android:id="@+id/btnConfirm"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="인증번호 확인"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="bottom">
+
+        <Button
+            android:id="@+id/btnConfirm"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="@color/sky_dark"
+            android:fontFamily="@font/light"
+            android:text="인증 완료"
+            android:textColor="@color/white"
+            android:textSize="20dp" />
+
+    </LinearLayout>
 
 </LinearLayout>
