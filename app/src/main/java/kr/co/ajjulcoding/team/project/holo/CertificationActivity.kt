@@ -20,8 +20,7 @@ import kotlin.concurrent.timer
 import kotlin.concurrent.timerTask
 
 class CertificationActivity : AppCompatActivity() {
-    private var validRequestSMS = MutableLiveData<Boolean>()    // 연속으로 인증번호 전송 X
-    private var validTimeOut = MutableLiveData<Boolean>()
+    private var validTimeOut = MutableLiveData<Boolean>()   // 연속으로 인증번호 전송 X
     private var timeTask:Timer? = null
     private var storedVerificationId = ""
     private var resendToken: PhoneAuthProvider.ForceResendingToken? = null
@@ -33,8 +32,7 @@ class CertificationActivity : AppCompatActivity() {
             // 번호인증 혹은 기타 다른 인증(구글로그인, 이메일로그인 등) 끝난 상태
             override fun onVerificationCompleted(credential: PhoneAuthCredential) {
                 Log.d("이미 다른/과거에 인증 완료", "onVerificationCompleted:$credential")
-                Toast.makeText(this@CertificationActivity,
-                    "이미 인증한 번호입니다.", Toast.LENGTH_SHORT).show()
+                makeToast("이미 인증한 번호입니다.")
             }
 
             // 번호인증 실패 상태
@@ -43,11 +41,10 @@ class CertificationActivity : AppCompatActivity() {
                 // for instance if the the phone number format is not valid.
                 Log.w("인증 실패", "onVerificationFailed", e)
                 if (e is FirebaseAuthInvalidCredentialsException) {
-                    // Invalid request
+                    makeToast("인증에 실패했습니다.\n다시 요청해주세요.")// Invalid request
                 } else if (e is FirebaseTooManyRequestsException) {
                     // The SMS quota for the project has been exceeded
                 }
-                Toast.makeText(this@CertificationActivity, "인증에 실패했습니다.", Toast.LENGTH_SHORT).show()
             }
 
             // 전화번호는 확인 되었으나 인증코드를 입력해야 하는 상태
@@ -59,6 +56,8 @@ class CertificationActivity : AppCompatActivity() {
                 // now need to ask the user to enter the code and then construct a credential
                 // by combining the code with a verification ID.
                 Log.d("인증 번호 입력 필요", "onCodeSent:$verificationId")
+                makeToast("인증 메시지 전송 완료!\n")
+                countTime()
                 // Save verification ID and resending token so we can use them later
                 storedVerificationId = verificationId // verificationId 와 전화번호인증코드 매칭해서 인증하는데 사용예정
                 resendToken = token
@@ -70,13 +69,10 @@ class CertificationActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         _binding = ActivityCertificationBinding.inflate(layoutInflater)
         setContentView(_binding.root)
-//        validRequestSMS.value = false
-//        validTimeOut.value = false
 
-        iniitOvserver()
         binding.btnSendSMS.setOnClickListener {
             if (binding.editPhoneNum.text.toString() == "")
-                Toast.makeText(this, "핸드폰 번호를 입력해주세요.", Toast.LENGTH_SHORT).show()
+                makeToast("핸드폰 번호를 입력해주세요.")
             else {
                 val editPhoneNum = binding.editPhoneNum
                 val inputPhoneNum:String = "+82"+editPhoneNum.text.toString().substring(1)
@@ -92,13 +88,8 @@ class CertificationActivity : AppCompatActivity() {
                 signInWithPhoneAuthCredential(phoneCredential)
             } catch (e: Exception) {
                 Log.d("인증 코드 불일치", e.toString())
+                makeToast("인증 코드 불일치")
             }
-        }
-    }
-
-    private fun iniitOvserver(){
-        validRequestSMS.observe(this) {
-
         }
     }
 
@@ -125,7 +116,6 @@ class CertificationActivity : AppCompatActivity() {
     }
 
     private fun sendSMS(phoneNum:String){
-        //validRequestSMS.value = true
         val options = PhoneAuthOptions.newBuilder(SettingInApp.mAuth)
             .setPhoneNumber(phoneNum)       // Phone number to verify
             .setTimeout(60L, TimeUnit.SECONDS) // 1분 시간 제한
@@ -133,7 +123,6 @@ class CertificationActivity : AppCompatActivity() {
             .setCallbacks(callbacks)          // OnVerificationStateChangedCallbacks
             .build()
         PhoneAuthProvider.verifyPhoneNumber(options)   // SMS 전송
-        countTime()
         binding.btnSendSMS.isEnabled = false
     }
 
@@ -148,7 +137,12 @@ class CertificationActivity : AppCompatActivity() {
                     startActivity(intentRegist) // TODO("RegisterActivity내부에서 뒤로가기시 전번 정보 삭제 구현")
                 } else {
                     Log.d("인증 실패", "${task.exception}")
+                    makeToast("인증 번호 불일치")
                 }
             }
+    }
+
+    private fun makeToast(msg: String){
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
     }
 }
