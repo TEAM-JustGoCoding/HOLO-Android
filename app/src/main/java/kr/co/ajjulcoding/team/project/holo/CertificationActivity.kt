@@ -12,12 +12,9 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
-import com.google.firebase.ktx.Firebase
 import kr.co.ajjulcoding.team.project.holo.databinding.ActivityCertificationBinding
 import java.util.*
 import java.util.concurrent.TimeUnit
-import kotlin.concurrent.timer
-import kotlin.concurrent.timerTask
 
 class CertificationActivity : AppCompatActivity() {
     private var validTimeOut = MutableLiveData<Boolean>()   // 연속으로 인증번호 전송 X
