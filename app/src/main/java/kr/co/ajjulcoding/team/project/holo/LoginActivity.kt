@@ -1,8 +1,10 @@
 package kr.co.ajjulcoding.team.project.holo
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseUser
@@ -21,7 +23,12 @@ class LoginActivity : AppCompatActivity() {
         _binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.btnLogin.setOnClickListener { checkLogin() }
+        binding.btnLogin.setOnClickListener {
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager // 키보드 내리기
+            imm.hideSoftInputFromWindow(binding.editEmail.windowToken,0)
+            imm.hideSoftInputFromWindow(binding.editPassword.windowToken,0) // imm 중복 사용 가능
+            checkLogin()
+        }
         binding.btnSignin.setOnClickListener {
             val intentInfAg = Intent(this, InformAgreeActivity::class.java)
             SettingInApp.uniqueActivity(intentInfAg)
@@ -63,6 +70,7 @@ class LoginActivity : AppCompatActivity() {
                         intentMain.putExtra(User.USER_NICK_NAME, result?.getNickName())
                         intentMain.putExtra(User.USER_REAL_NAME, result?.getRealName())
                         if (null != result) {
+                            intentMain.putExtra(User.LOGIN_TAG, true) // 캐시 저장 지시
                             startActivity(intentMain)
                         }else Toast.makeText(this@LoginActivity,"서버 통신 오류",Toast.LENGTH_SHORT).show()
                     }
