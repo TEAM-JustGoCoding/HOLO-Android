@@ -28,6 +28,8 @@ class User {
         const val USER_EMAIL = "userEmail"
         const val USER_REAL_NAME = "userRealName"
         const val USER_NICK_NAME = "userNickName"
+
+        const val LOGIN_TAG = "loginTAG"
         fun currentUserEmail() = SettingInApp.mAuth.currentUser?.email
     }
 }
