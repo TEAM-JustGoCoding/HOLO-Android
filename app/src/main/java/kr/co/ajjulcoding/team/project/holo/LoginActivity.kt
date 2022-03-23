@@ -6,6 +6,9 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseUser
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kr.co.ajjulcoding.team.project.holo.databinding.ActivityLoginBinding
 
 
@@ -26,7 +29,7 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun checkLogin() { // TODO("로그인 유효성 확인")
+    private fun checkLogin() { // TODO("로그인 유효성 확인 & 알림 editText error로 바꾸기")
         val editEmail = binding.editEmail
         val editPassword = binding.editPassword
         val inputId:String = editEmail.text.toString() ?: ""
@@ -45,16 +48,24 @@ class LoginActivity : AppCompatActivity() {
                 if (task.isSuccessful()) {
                     Log.d("로그인", "createUserWithEmail:success")
                     val user: FirebaseUser = SettingInApp.mAuth.getCurrentUser()!!
+                    val repository = Repository()
                     val intentMain = Intent(this, MainActivity::class.java)
-                    intentMain.putExtra(User.USER_EMAIL, User.currentUser())    // 사용자 인식 정보: email
+                    intentMain.putExtra(User.USER_EMAIL, User.currentUserEmail())    // 사용자 인식 정보: email
                     SettingInApp.uniqueActivity(intentMain)
                     intent.action = Intent.ACTION_MAIN
                     intent.addCategory(Intent.CATEGORY_LAUNCHER)
                     intentMain.flags =  // 로그인 성공시 기존 스택 모두 비우고 메인화면 생성"
                         Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or
                                 Intent.FLAG_ACTIVITY_CLEAR_TOP //액티비티 스택제거
-                    //TODO("MySQL에서 캐시에 넣을 정보 불러와서 캐시에 삽입, 비동기라서 뺑뺑이 UI 넣기 고려")
-                    startActivity(intentMain)
+                    //TODO("DB에서 캐시에 넣을 정보 불러오기, 메인에서 캐시 삽입, 비동기라서 뺑뺑이 UI 넣기 고려")
+                    CoroutineScope(Dispatchers.Main).launch {
+                        val result = repository.getUserInfo(User.currentUserEmail()!!)
+                        intentMain.putExtra(User.USER_NICK_NAME, result?.getNickName())
+                        intentMain.putExtra(User.USER_REAL_NAME, result?.getRealName())
+                        if (null != result) {
+                            startActivity(intentMain)
+                        }else Toast.makeText(this@LoginActivity,"서버 통신 오류",Toast.LENGTH_SHORT).show()
+                    }
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w("로그인", "createUserWithEmail:failure", task.getException())
@@ -66,4 +77,6 @@ class LoginActivity : AppCompatActivity() {
                 Log.d("로그인","실패:$it")
             }
     }
+
+
 }
