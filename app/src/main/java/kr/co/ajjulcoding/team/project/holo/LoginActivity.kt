@@ -10,17 +10,22 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kr.co.ajjulcoding.team.project.holo.databinding.ActivityLoginBinding
 
 
 class LoginActivity : AppCompatActivity() {
+    private lateinit var job:Job
     private lateinit var _binding: ActivityLoginBinding
     private val binding get() = _binding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityLoginBinding.inflate(layoutInflater)
+        //TODO("나중에 삭제")
+        binding.editEmail.setText("leeyeah8245@gmail.com")
+        binding.editPassword.setText("lyy8282")
         setContentView(binding.root)
 
         binding.btnLogin.setOnClickListener {
@@ -57,7 +62,6 @@ class LoginActivity : AppCompatActivity() {
                     val user: FirebaseUser = SettingInApp.mAuth.getCurrentUser()!!
                     val repository = Repository()
                     val intentMain = Intent(this, MainActivity::class.java)
-                    intentMain.putExtra(User.USER_EMAIL, User.currentUserEmail())    // 사용자 인식 정보: email
                     SettingInApp.uniqueActivity(intentMain)
                     intent.action = Intent.ACTION_MAIN
                     intent.addCategory(Intent.CATEGORY_LAUNCHER)
@@ -66,11 +70,12 @@ class LoginActivity : AppCompatActivity() {
                                 Intent.FLAG_ACTIVITY_CLEAR_TOP //액티비티 스택제거
                     //TODO("DB에서 캐시에 넣을 정보 불러오기, 메인에서 캐시 삽입, 비동기라서 뺑뺑이 UI 넣기 고려")
                     CoroutineScope(Dispatchers.Main).launch {
-                        val result = repository.getUserInfo(User.currentUserEmail()!!)
-                        intentMain.putExtra(User.USER_NICK_NAME, result?.getNickName())
-                        intentMain.putExtra(User.USER_REAL_NAME, result?.getRealName())
+                        val result = repository.getUserInfo(AppTag.currentUserEmail()!!)
+
+                        Log.d("로그인 데이터 확인", result.toString())
                         if (null != result) {
-                            intentMain.putExtra(User.LOGIN_TAG, true) // 캐시 저장 지시
+                            intentMain.putExtra(AppTag.USER_INFO, result)
+                            intentMain.putExtra(AppTag.LOGIN_TAG, true) // 캐시 저장 지시
                             startActivity(intentMain)
                         }else Toast.makeText(this@LoginActivity,"서버 통신 오류",Toast.LENGTH_SHORT).show()
                     }

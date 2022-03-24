@@ -11,6 +11,13 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         _binding = ActivityMainBinding.inflate(layoutInflater)
-        bindnig.contraintMain.setOnClickListener {  }
+        bindnig.contraintMain.setOnClickListener { }
+        if (intent.getBooleanExtra(AppTag.LOGIN_TAG, false)) {
+            saveCache()
+        }
+    }
+
+    private fun saveCache(){
+
     }
 }
