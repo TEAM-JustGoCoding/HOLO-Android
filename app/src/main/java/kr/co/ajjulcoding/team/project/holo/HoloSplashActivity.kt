@@ -19,9 +19,15 @@ class HoloSplashActivity : AppCompatActivity() {
 
     private fun delaySec(sec: Double){
         Handler(Looper.myLooper()!!).postDelayed({
-            val intentLogin = Intent(this, LoginActivity::class.java)
-            SettingInApp.uniqueActivity(intentLogin)
-            startActivity(intentLogin)
+            if (SettingInApp.mAuth.currentUser != null){
+                val intentMain = Intent(this, MainActivity::class.java)
+                SettingInApp.uniqueActivity(intentMain)
+                startActivity(intentMain)
+            }else{
+                val intentLogin = Intent(this, LoginActivity::class.java)
+                SettingInApp.uniqueActivity(intentLogin)
+                startActivity(intentLogin)
+            }
             finish()
         }, (sec*1000).toLong())
     }
