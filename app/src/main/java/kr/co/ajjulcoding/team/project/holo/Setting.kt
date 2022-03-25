@@ -1,6 +1,7 @@
 package kr.co.ajjulcoding.team.project.holo
 
 import android.content.Intent
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.google.firebase.auth.FirebaseAuth
 
@@ -35,11 +36,11 @@ class PhpUrl {
 // 캐시 관련
 @Entity
 data class UserCache(
-    @PrimaryKey(autoGenerate = true) val id:Long,
+    @PrimaryKey(autoGenerate = true) val id:Int,
     var uid: String,
     var nick_name:String,
     var real_name:String,
-    var location:String
+    var location:String?
 )
 
 @Dao
@@ -47,9 +48,17 @@ interface UserCacheDao{
     @Insert
     fun insertUser(userCaches: UserCache)
 
-    @androidx.room.Query("UPDATE UserCache SET location =:location WHERE uid =:uid")
+    @Query("UPDATE UserCache SET location =:location WHERE uid =:uid")
     fun updateLocation(uid:String,location:String)
+
+    @Query("SELECT * FROM UserCache ORDER BY id DESC LIMIT 1")  // 최근 1건 저장된 유저 정보
+    fun selectUser():LiveData<UserCache>
 
     @Delete
     fun deleteUser(userCaches: UserCache)
+}
+
+@Database(entities = [UserCache::class], version = 1)
+abstract class UserCacheDatabase: RoomDatabase() {
+    abstract val usercacheDao: UserCacheDao
 }

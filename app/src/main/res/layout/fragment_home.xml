@@ -98,6 +98,7 @@
                             app:layout_constraintGuide_percent="0.8"/>
 
                         <Button
+                            android:id="@+id/btnNotifi"
                             android:layout_width="50dp"
                             android:layout_height="50dp"
                             android:background="@drawable/ic_baseline_notification"

@@ -23,7 +23,7 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityLoginBinding.inflate(layoutInflater)
-        //TODO("나중에 삭제")
+        //TODO("아이디/비번 일일이 치기 싫어서 설정함, 나중에 삭제")
         binding.editEmail.setText("leeyeah8245@gmail.com")
         binding.editPassword.setText("lyy8282")
         setContentView(binding.root)
