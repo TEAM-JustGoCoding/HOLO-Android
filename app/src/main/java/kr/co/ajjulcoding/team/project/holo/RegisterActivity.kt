@@ -1,9 +1,14 @@
 package kr.co.ajjulcoding.team.project.holo
 
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
+import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
@@ -21,15 +26,19 @@ class RegisterActivity : AppCompatActivity() {
         _binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.editNickname.addTextChangedListener(nickNameListener)
         binding.btnOverlapCheck.setOnClickListener {
             // TODO("닉네임 중복 확인")
+            checkNickName(false)
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager // 키보드 내리기
+            imm.hideSoftInputFromWindow(binding.editNickname.windowToken,0)
         }
 
         binding.btnSignin.setOnClickListener {
             CoroutineScope(Dispatchers.Main).launch {
                 checkName()
                 checkPassword()
-                checkNickName()
+                checkNickName(true)
                 preCheckEmail()
                 if (checkMap["password"] == true) {
                     jobEmail = CoroutineScope(Dispatchers.Main).launch {
@@ -133,17 +142,41 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
-    private fun checkNickName(){
+    private fun checkNickName(complete:Boolean){
         val editNickname = binding.editNickname
         val textNickname = editNickname.text.toString()
+
+        if ((complete == true) and (checkMap["nickName"] == false)){
+            editNickname.error = "중복 확인을 해주세요."
+            return
+        }
 
     // TODO("데베 연동 후 중복 체크")
         if (textNickname == ""){
             editNickname.error = "닉네임을 입력해주세요."
             checkMap["nickName"] = false
         }else{
-            editNickname.error = null
-            checkMap["nickName"] = true
+            CoroutineScope(Dispatchers.Main).launch {
+                val repository = Repository()
+                val result = repository.checkNameDupli(textNickname)
+
+                if (result != false) {   // 사용 가능
+                    editNickname.error = null
+                    Toast.makeText(this@RegisterActivity,"사용 가능한 닉네임입니다!", Toast.LENGTH_SHORT).show()
+                    checkMap["nickName"] = true
+                } else {
+                    editNickname.error = "중복된 이메일입니다."
+                    checkMap["nickName"] = false
+                }
+            }
         }
+    }
+
+    private val nickNameListener = object : TextWatcher {
+        override fun beforeTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            checkMap["nickName"] = false
+        }
+        override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+        override fun afterTextChanged(p0: Editable?) {}
     }
 }

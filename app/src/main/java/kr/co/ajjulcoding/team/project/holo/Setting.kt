@@ -30,6 +30,7 @@ class PhpUrl {
         const val DOTHOME:String = "http://holo.dothome.co.kr/"
         const val URL_CREATE_REGISTER:String = "create_register.php"   // TODO("php 파일 연동")
         const val ULR_SELECT_USER:String = "login.php"
+        const val URL_NICKNAME_DUPI:String = "nickNameDupli.php"
     }
 }
 

@@ -53,4 +53,26 @@ class Repository {
 
         return result
     }
+
+    suspend fun checkNameDupli(nickName:String): Boolean{
+        var result:Boolean = false
+
+        val client = OkHttpClient()
+        val url = PhpUrl.DOTHOME+PhpUrl.URL_NICKNAME_DUPI
+        val body: RequestBody = FormBody.Builder().add("nick_name", nickName).build() as RequestBody
+        val request = Request.Builder().url(url).post(body).build()
+
+        CoroutineScope(Dispatchers.IO).async {
+            try {
+                val response = client.newCall(request).execute()   // 동기로 실행
+                val str_response = response.body()!!.string()   // string()은 딱 한 번만 호출 가능
+                Log.d("닉네임 데이터 정보", "성공: ${str_response}")
+                result = str_response.toBoolean()
+            }catch (e:IOException){
+                Log.d("닉네임 중복 통신 정보", "통신 실패(인터넷 끊김 등): ${e}")
+            }
+        }.await()
+
+        return result
+    }
 }
