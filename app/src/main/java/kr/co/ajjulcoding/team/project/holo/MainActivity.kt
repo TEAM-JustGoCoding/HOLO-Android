@@ -23,6 +23,8 @@ class MainActivity : AppCompatActivity() {
         showHomeFragment(intent.getSerializableExtra(AppTag.USER_INFO) as HoloUser)
         if (intent.getBooleanExtra(AppTag.LOGIN_TAG, false)) {
             saveCache()
+        }else if (intent.getBooleanExtra(AppTag.REGISTER_TAG, false)){
+            saveCache()
         }
     }
 

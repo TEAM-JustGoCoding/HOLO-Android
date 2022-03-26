@@ -19,11 +19,11 @@
         <activity
             android:name=".InformAgreeActivity" />
         <activity
-            android:name=".HoloSplashActivity" />
+            android:name=".RegisterActivity" />
         <activity
             android:name=".LoginActivity" />
         <activity
-            android:name=".RegisterActivity"
+            android:name=".HoloSplashActivity"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

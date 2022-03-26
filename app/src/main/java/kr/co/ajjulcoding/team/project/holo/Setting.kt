@@ -21,6 +21,7 @@ class AppTag {
         const val USER_INFO = "user_info"
 
         const val LOGIN_TAG = "loginTAG"
+        const val REGISTER_TAG = "registerTAG"
         fun currentUserEmail() = SettingInApp.mAuth.currentUser?.email
     }
 }
@@ -28,7 +29,7 @@ class AppTag {
 class PhpUrl {
     companion object{
         const val DOTHOME:String = "http://holo.dothome.co.kr/"
-        const val URL_CREATE_REGISTER:String = "create_register.php"   // TODO("php 파일 연동")
+        const val URL_REGISTER:String = "register.php"   // TODO("php 파일 연동")
         const val ULR_SELECT_USER:String = "login.php"
         const val URL_NICKNAME_DUPI:String = "nickNameDupli.php"
     }

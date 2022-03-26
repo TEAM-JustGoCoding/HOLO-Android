@@ -62,11 +62,35 @@ class Repository {
         val body: RequestBody = FormBody.Builder().add("nick_name", nickName).build() as RequestBody
         val request = Request.Builder().url(url).post(body).build()
 
-        CoroutineScope(Dispatchers.IO).async {
+        CoroutineScope(Dispatchers.IO).async {  // 메인스레드에서 네트워크 접근 금지 되어있어서 코루틴 사용
             try {
                 val response = client.newCall(request).execute()   // 동기로 실행
                 val str_response = response.body()!!.string()   // string()은 딱 한 번만 호출 가능
                 Log.d("닉네임 데이터 정보", "성공: ${str_response}")
+                result = str_response.toBoolean()
+            }catch (e:IOException){
+                Log.d("닉네임 중복 통신 정보", "통신 실패(인터넷 끊김 등): ${e}")
+            }
+        }.await()
+
+        return result
+    }
+
+    suspend fun insertRegister(userInfo: HoloUser): Boolean{
+        var result: Boolean = false
+
+        val client = OkHttpClient()
+        val url = PhpUrl.DOTHOME+PhpUrl.URL_REGISTER
+        val body: RequestBody = FormBody.Builder().add("uid", userInfo.uid)
+            .add("nick_name", userInfo.nickName)
+            .add("real_name", userInfo.realName).build() as RequestBody
+        val request = Request.Builder().url(url).post(body).build()
+
+        CoroutineScope(Dispatchers.IO).async {
+            try {
+                val response = client.newCall(request).execute()   // 동기로 실행
+                val str_response = response.body()!!.string()   // string()은 딱 한 번만 호출 가능
+                Log.d("회원가입 데이터 정보!!", str_response)
                 result = str_response.toBoolean()
             }catch (e:IOException){
                 Log.d("닉네임 중복 통신 정보", "통신 실패(인터넷 끊김 등): ${e}")
