@@ -1,9 +1,14 @@
 package kr.co.ajjulcoding.team.project.holo
 
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
+import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
@@ -21,33 +26,49 @@ class RegisterActivity : AppCompatActivity() {
         _binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // TODO("나중에 삭제")
+        binding.editName.setText("이예은3")
+        binding.editEmail.setText("lyy1234@gmail.com")
+        binding.editNickname.setText("옌3")
+        binding.editPassword.setText("lyy828282")
+        binding.editPasswordCheck.setText("lyy828282")
+
+        binding.editNickname.addTextChangedListener(nickNameListener)
         binding.btnOverlapCheck.setOnClickListener {
             // TODO("닉네임 중복 확인")
+            checkNickName(false)
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager // 키보드 내리기
+            imm.hideSoftInputFromWindow(binding.editNickname.windowToken,0)
         }
 
         binding.btnSignin.setOnClickListener {
             CoroutineScope(Dispatchers.Main).launch {
                 checkName()
                 checkPassword()
-                checkNickName()
+                checkNickName(true)
                 preCheckEmail()
-                if (checkMap["password"] == true) {
-                    jobEmail = CoroutineScope(Dispatchers.Main).launch {
-                        checkEmail()
-                    }
-                    jobEmail.join() // 기다림
-                }
                 val checkNum = checkMap.filterValues { it == false }
                 Log.d("값 개수", checkNum.size.toString())
                 if (checkNum.size == 0) {
-                    val intentMain = Intent(this@RegisterActivity, FinishSplashActivity::class.java)
-                    intent.action = Intent.ACTION_MAIN
-                    intent.addCategory(Intent.CATEGORY_LAUNCHER)
-                    intentMain.flags =  // 로그인 성공시 기존 스택 모두 비우고 메인화면 생성"
-                        Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or
-                                Intent.FLAG_ACTIVITY_CLEAR_TOP //액티비티 스택제거
-                    //TODO("MySQL에서 캐시에 넣을 정보 불러와서 캐시에 삽입, 비동기라서 뺑뺑이 UI 넣기 고려")
-                    startActivity(intentMain)
+                    if ((checkMap["password"] == true) and (checkMap["email"] == true) ) {
+                        CoroutineScope(Dispatchers.Main).async {
+                            checkEmail()
+                            if (checkMap["email"] == false)
+                                return@async
+                            val intentFiSplash = Intent(this@RegisterActivity, FinishSplashActivity::class.java)
+                            intent.action = Intent.ACTION_MAIN
+                            intent.addCategory(Intent.CATEGORY_LAUNCHER)
+                            intentFiSplash.flags =  // 로그인 성공시 기존 스택 모두 비우고 메인화면 생성"
+                                Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or
+                                        Intent.FLAG_ACTIVITY_CLEAR_TOP //액티비티 스택제거
+                            intentFiSplash.putExtra("userInfo", HoloUser(
+                                binding.editEmail.text.toString(),
+                                binding.editName.text.toString(),
+                                binding.editNickname.text.toString()
+                            ))
+                            startActivity(intentFiSplash)
+                        }
+                    }else return@launch
                 }
             }
         }
@@ -102,6 +123,7 @@ class RegisterActivity : AppCompatActivity() {
                     }
                 }.await()
             }catch(e: FirebaseAuthUserCollisionException){
+                Log.d("이메일", "이미 존재")
                 editEmail.error = "이미 존재하는 이메일입니다."
                 checkMap["email"] = false
             }
@@ -133,17 +155,43 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
-    private fun checkNickName(){
+    private fun checkNickName(complete:Boolean){
         val editNickname = binding.editNickname
         val textNickname = editNickname.text.toString()
+
+        if ((complete == true) and (checkMap["nickName"] == false)){
+            editNickname.error = "중복 확인을 해주세요."
+            return
+        }
+        if(complete == true)
+            return
 
     // TODO("데베 연동 후 중복 체크")
         if (textNickname == ""){
             editNickname.error = "닉네임을 입력해주세요."
             checkMap["nickName"] = false
         }else{
-            editNickname.error = null
-            checkMap["nickName"] = true
+            CoroutineScope(Dispatchers.Main).launch {
+                val repository = Repository()
+                val result = repository.checkNameDupli(textNickname)
+
+                if (result != false) {   // 사용 가능
+                    editNickname.error = null
+                    Toast.makeText(this@RegisterActivity,"사용 가능한 닉네임입니다!", Toast.LENGTH_SHORT).show()
+                    checkMap["nickName"] = true
+                } else {
+                    editNickname.error = "중복된 이메일입니다."
+                    checkMap["nickName"] = false
+                }
+            }
         }
+    }
+
+    private val nickNameListener = object : TextWatcher {
+        override fun beforeTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            checkMap["nickName"] = false
+        }
+        override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+        override fun afterTextChanged(p0: Editable?) {}
     }
 }

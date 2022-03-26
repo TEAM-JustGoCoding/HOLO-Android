@@ -1,16 +1,9 @@
 package kr.co.ajjulcoding.team.project.holo
 
 import android.content.Intent
-import android.os.Handler
-import android.os.Looper
-import android.os.Message
+import androidx.lifecycle.LiveData
+import androidx.room.*
 import com.google.firebase.auth.FirebaseAuth
-import com.google.gson.GsonBuilder
-import retrofit2.Call
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.*
-
 
 class SettingInApp {
     companion object{
@@ -23,13 +16,12 @@ class SettingInApp {
     }
 }
 
-class User {
+class AppTag {
     companion object {
-        const val USER_EMAIL = "userEmail"
-        const val USER_REAL_NAME = "userRealName"
-        const val USER_NICK_NAME = "userNickName"
+        const val USER_INFO = "user_info"
 
         const val LOGIN_TAG = "loginTAG"
+        const val REGISTER_TAG = "registerTAG"
         fun currentUserEmail() = SettingInApp.mAuth.currentUser?.email
     }
 }
@@ -37,42 +29,38 @@ class User {
 class PhpUrl {
     companion object{
         const val DOTHOME:String = "http://holo.dothome.co.kr/"
-        const val URL_CREATE_REGISTER:String = "create_register.php"   // TODO("php 파일 연동")
-        const val URL_GET_USER:String = "get_user.php"
+        const val URL_REGISTER:String = "register.php"   // TODO("php 파일 연동")
+        const val ULR_SELECT_USER:String = "login.php"
+        const val URL_NICKNAME_DUPI:String = "nickNameDupli.php"
     }
 }
 
-object RetrofitClient{  // singleton으로 동작
-    private var retrofit:Retrofit? = null
-    private val gson = GsonBuilder().setLenient().create()
+// 캐시 관련
+@Entity
+data class UserCache(
+    @PrimaryKey(autoGenerate = true) val id:Int,
+    var uid: String,
+    var nick_name:String,
+    var real_name:String,
+    var location:String?
+)
 
-    fun getInstance():Retrofit{
-        if ( retrofit == null){
-            retrofit = Retrofit.Builder()
-                .baseUrl(PhpUrl.DOTHOME)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build()
-        }
-        return retrofit!!
-    }
+@Dao
+interface UserCacheDao{
+    @Insert
+    fun insertUser(userCaches: UserCache)
+
+    @Query("UPDATE UserCache SET location =:location WHERE uid =:uid")
+    fun updateLocation(uid:String,location:String)
+
+    @Query("SELECT * FROM UserCache ORDER BY id DESC LIMIT 1")  // 최근 1건 저장된 유저 정보
+    fun selectUser():LiveData<UserCache>
+
+    @Delete
+    fun deleteUser(userCaches: UserCache)
 }
 
-
-
-interface UserApiInterface{
-    // TODO("아이디, 닉네임 중복 체크 확인 변수 php에서 어떤 이름으로 주고 받을지 규리와 상의")
-    @FormUrlEncoded
-    @POST(PhpUrl.URL_CREATE_REGISTER)
-    fun createRegister(
-        @Field("uid") uid:String,
-        @Field("password") password:String,
-        @Field("real_name") realName:String,
-        @Field("nick_name") nickName:String,
-    ):Call<HoloUser>
-
-    @GET(PhpUrl.URL_GET_USER)
-    fun getUserInfo(    // email을 이용해 사용자 정보 가져오기
-        @Query("uid") uid:String
-    ):Call<HoloUser>
-
+@Database(entities = [UserCache::class], version = 1)
+abstract class UserCacheDatabase: RoomDatabase() {
+    abstract val usercacheDao: UserCacheDao
 }
