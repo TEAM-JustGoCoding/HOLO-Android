@@ -180,7 +180,7 @@ class RegisterActivity : AppCompatActivity() {
                     Toast.makeText(this@RegisterActivity,"사용 가능한 닉네임입니다!", Toast.LENGTH_SHORT).show()
                     checkMap["nickName"] = true
                 } else {
-                    editNickname.error = "중복된 이메일입니다."
+                    editNickname.error = "중복된 닉네임입니다."
                     checkMap["nickName"] = false
                 }
             }
