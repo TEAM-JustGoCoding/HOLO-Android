@@ -22,6 +22,8 @@ class AppTag {
 
         const val LOGIN_TAG = "loginTAG"
         const val REGISTER_TAG = "registerTAG"
+        const val PROFILE_TAG = "profileTAG"
+        const val GPS_TAG = "gpsTAG"
         fun currentUserEmail() = SettingInApp.mAuth.currentUser?.email
     }
 }

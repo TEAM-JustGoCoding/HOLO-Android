@@ -32,7 +32,7 @@ class FinishSplashActivity : AppCompatActivity() {
                 intentMain.putExtra(AppTag.REGISTER_TAG, true)
                 startActivity(intentMain)
                 finish()
-            }, (0.5*1000).toLong())
+            }, (1*1000).toLong())
         }
         //TODO("MySQL에서 캐시에 넣을 정보 불러와서 캐시에 삽입, 비동기라서 뺑뺑이 UI 넣기 고려")
         Log.d("회원가입 스플래시1", "${userInfo}")

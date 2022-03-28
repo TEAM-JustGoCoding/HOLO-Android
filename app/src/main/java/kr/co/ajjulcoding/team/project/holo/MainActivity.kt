@@ -3,7 +3,9 @@ package kr.co.ajjulcoding.team.project.holo
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.fragment.app.Fragment
 import kr.co.ajjulcoding.team.project.holo.databinding.ActivityMainBinding
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
     companion object{
@@ -14,7 +16,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var _binding:ActivityMainBinding
     private val binding get() = _binding
     private lateinit var homeFragment:HomeFragment
+    private val profileFragment = ProfileFragment()
+    private val gpsFragment = GpsFragment()
     private var currentTag:String = HOME_TAG
+    private val frgDic = hashMapOf<String, Fragment>(AppTag.PROFILE_TAG to profileFragment, AppTag.GPS_TAG to gpsFragment)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +36,16 @@ class MainActivity : AppCompatActivity() {
     override fun onBackPressed() {
         // TODO("뒤로 가기 버튼 2번 연속 눌러야 종료 추가")
         super.onBackPressed()
+    }
+
+    fun changeFragment(frgTAG: String){
+        val tran = supportFragmentManager.beginTransaction()
+
+        if (currentTag != frgTAG){
+            currentTag = frgTAG
+            frgDic[currentTag]!!.let {tran.replace(R.id.fragmentView, it)}
+            tran.commit()
+        }
     }
 
     private fun saveCache(){

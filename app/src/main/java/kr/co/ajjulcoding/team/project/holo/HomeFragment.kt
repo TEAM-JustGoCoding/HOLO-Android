@@ -32,6 +32,12 @@ class HomeFragment(val currentUser:HoloUser) : Fragment() {
             SettingInApp.mAuth.signOut()
             activity!!.finish()
         }
+        binding.circleImageView.setOnClickListener {
+            (activity!! as MainActivity).changeFragment(AppTag.PROFILE_TAG)
+        }
+        binding.textLocation.setOnClickListener {
+            (activity!! as MainActivity).changeFragment(AppTag.GPS_TAG)
+        }
     }
 
     private fun setProfile(){
