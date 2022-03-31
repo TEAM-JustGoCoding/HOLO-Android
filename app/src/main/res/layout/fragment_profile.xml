@@ -1,14 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/sky_dirty"
     tools:context=".ProfileFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:orientation="vertical">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="80dp">
+            <Button
+                android:id="@+id/btnBack"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/ic__arrow_back"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+            <ImageView
+                android:id="@+id/logo_holo"
+                android:layout_width="120dp"
+                android:layout_height="70dp"
+                android:layout_gravity="center"
+                app:srcCompat="@drawable/logo_holo_white"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/btnBack"
+                app:layout_constraintBottom_toBottomOf="@+id/btnBack"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:text="프로필 수정"
+            android:textSize="@dimen/homeTextTitle"
+            android:textColor="@color/sky_dark"
+            android:fontFamily="@font/bold"
+            android:layout_marginBottom="30dp"/>
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/profilephoto"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:src="@color/white_gray"
+            app:civ_border_color="@color/sky_dark"
+            app:civ_border_width="1dp"
+            android:scaleType="centerCrop"
+            app:civ_border_overlay="true"
+            android:background="@android:color/transparent"
+            android:layout_marginBottom="40dp"/>
+
+        <TextView
+            android:id="@+id/text_nickname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="닉네임"
+            android:textSize="20dp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/light"
+            android:layout_marginBottom="5dp"/>
+
+        <TextView
+            android:id="@+id/text_email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="이메일 주소"
+            android:textSize="15dp"
+            android:textColor="@color/light_gray"
+            android:fontFamily="@font/light"
+            android:layout_marginBottom="160dp"/>
+
+        <Button
+            android:id="@+id/btnFinish"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="@color/sky_dark"
+            android:background="@drawable/round_btn_start"
+            android:text="완료"
+            android:textSize="16dp"
+            android:fontFamily="@font/light"
+            android:textColor="@color/white"
+            android:layout_marginStart="40dp"
+            android:layout_marginEnd="40dp"/>
+
+    </LinearLayout>
 
 </FrameLayout>
