@@ -127,7 +127,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/homeBtnSell"
                         android:layout_margin="@dimen/marginSmallView"
-                        android:padding="@dimen/marginBigView"
+                        android:padding="@dimen/paddingBigView"
                         android:background="@drawable/round_btn_home"
                         android:backgroundTint="@color/home_sell"
                         app:layout_constraintTop_toBottomOf="@+id/editText"
@@ -192,7 +192,7 @@
                                 android:layout_marginLeft="@dimen/marginSmallView"
                                 android:layout_marginRight="@dimen/marginSmallView"
                                 android:layout_marginBottom="@dimen/marginSmallView"
-                                android:padding="@dimen/marginBigView"
+                                android:padding="@dimen/paddingBigView"
                                 android:background="@drawable/round_btn_home"
                                 android:backgroundTint="@color/home_watch">
                                 <TextView
@@ -240,7 +240,7 @@
                                 android:layout_marginLeft="@dimen/marginSmallView"
                                 android:layout_marginRight="@dimen/marginSmallView"
                                 android:layout_marginBottom="@dimen/marginSmallView"
-                                android:padding="@dimen/marginBigView"
+                                android:padding="@dimen/paddingBigView"
                                 android:background="@drawable/round_btn_home"
                                 android:backgroundTint="@color/home_curiosity">
                                 <TextView
@@ -295,7 +295,7 @@
                                 android:layout_marginLeft="@dimen/marginSmallView"
                                 android:layout_marginRight="@dimen/marginSmallView"
                                 android:layout_marginBottom="@dimen/marginSmallView"
-                                android:padding="@dimen/marginBigView"
+                                android:padding="@dimen/paddingBigView"
                                 android:background="@drawable/round_btn_home"
                                 android:backgroundTint="@color/home_sight">
                                 <TextView
@@ -343,7 +343,7 @@
                                 android:layout_marginLeft="@dimen/marginSmallView"
                                 android:layout_marginRight="@dimen/marginSmallView"
                                 android:layout_marginBottom="@dimen/marginSmallView"
-                                android:padding="@dimen/marginBigView"
+                                android:padding="@dimen/paddingBigView"
                                 android:background="@drawable/round_btn_home"
                                 android:backgroundTint="@color/home_policy">
                                 <TextView

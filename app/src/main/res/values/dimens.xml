@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+<!--    App-->
+    <dimen name="hActionBar">70dp</dimen>
+    <dimen name="marginBigView">40dp</dimen>
+    <dimen name="textSizeBig">40dp</dimen>
+    <dimen name="textSizeMedium">22dp</dimen>
+    <dimen name="textSizeSmall">16dp</dimen>
+<!--    HomeFragment-->
     <dimen name="txtProfileName">22dp</dimen>
     <dimen name="txtProfileName_small">16dp</dimen>
     <dimen name="marginSmallView">10dp</dimen>
     <dimen name="marginMediumView">20dp</dimen>
     <dimen name="homeBtnSell">200dp</dimen>
     <dimen name="homeTextTitle">30dp</dimen>
-    <dimen name="marginBigView">15dp</dimen>
+    <dimen name="paddingBigView">15dp</dimen>
     <dimen name="homeBtnWatch">230dp</dimen>
 </resources>

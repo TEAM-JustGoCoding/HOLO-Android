@@ -43,9 +43,19 @@ class MainActivity : AppCompatActivity() {
 
         if (currentTag != frgTAG){
             currentTag = frgTAG
-            frgDic[currentTag]!!.let {tran.replace(R.id.fragmentView, it)}
+            if (AppTag.HOME_TAG == currentTag)
+                tran.replace(R.id.fragmentView, homeFragment)
+            else
+                frgDic[currentTag]!!.let {tran.replace(R.id.fragmentView, it)}
             tran.commit()
         }
+    }
+
+    fun setLocationToHome(location:String){
+        sharedPref = this.getSharedPreferences(AppTag.USER_INFO,0)
+        editor = sharedPref.edit()
+        homeFragment.setUserLocation(location)
+        editor.putString("location",location).apply()   // save location
     }
 
     private fun saveCache(){
