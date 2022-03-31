@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import kr.co.ajjulcoding.team.project.holo.databinding.ActivityMainBinding
 import java.util.*
+import kotlin.collections.HashMap
 
 class MainActivity : AppCompatActivity() {
     companion object{
@@ -16,16 +17,20 @@ class MainActivity : AppCompatActivity() {
     private lateinit var _binding:ActivityMainBinding
     private val binding get() = _binding
     private lateinit var homeFragment:HomeFragment
-    private val profileFragment = ProfileFragment()
+    private lateinit var profileFragment:ProfileFragment
+    private lateinit var mUserInfo:HoloUser
     private val gpsFragment = GpsFragment()
     private var currentTag:String = HOME_TAG
-    private val frgDic = hashMapOf<String, Fragment>(AppTag.PROFILE_TAG to profileFragment, AppTag.GPS_TAG to gpsFragment)
+    private lateinit var frgDic:HashMap<String, Fragment>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        mUserInfo = intent.getSerializableExtra(AppTag.USER_INFO) as HoloUser
+        profileFragment = ProfileFragment(mUserInfo)
         //binding.contraintMain.setOnClickListener { }
-        showHomeFragment(intent.getSerializableExtra(AppTag.USER_INFO) as HoloUser)
+        showHomeFragment(mUserInfo)
+        frgDic = hashMapOf<String, Fragment>(AppTag.PROFILE_TAG to profileFragment, AppTag.GPS_TAG to gpsFragment)
+
         if (intent.getBooleanExtra(AppTag.LOGIN_TAG, false)) {
             saveCache()
         }else if (intent.getBooleanExtra(AppTag.REGISTER_TAG, false)){
@@ -44,9 +49,9 @@ class MainActivity : AppCompatActivity() {
         if (currentTag != frgTAG){
             currentTag = frgTAG
             if (AppTag.HOME_TAG == currentTag)
-                tran.replace(R.id.fragmentView, homeFragment)
+                tran.replace(R.id.fragmentView, homeFragment)   // 이전 프래그먼트 제거
             else
-                frgDic[currentTag]!!.let {tran.replace(R.id.fragmentView, it)}
+                frgDic[currentTag]!!.let {tran.add(R.id.fragmentView, it)}  // 걍 위에 얹음
             tran.commit()
         }
     }

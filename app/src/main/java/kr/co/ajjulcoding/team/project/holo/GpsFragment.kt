@@ -70,6 +70,9 @@ class GpsFragment : Fragment(), OnMapReadyCallback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.btnBack.setOnClickListener {
+            (requireActivity() as MainActivity).changeFragment(AppTag.HOME_TAG)
+        }
         binding.btnMap.setOnClickListener {
             updateLocation()
             val marker = LatLng(latitude, longitude)
