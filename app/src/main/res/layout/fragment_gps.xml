@@ -3,12 +3,123 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/sky_dirty"
     tools:context=".GpsFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="match_parent">
+        <Button
+            android:id="@+id/btnBack"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/ic__arrow_back"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/logo_holo"/>
+        <ImageView
+            android:id="@+id/logo_holo"
+            android:layout_width="120dp"
+            android:layout_height="@dimen/hActionBar"
+            app:srcCompat="@drawable/logo_holo_white"
+            android:layout_marginBottom="80dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+            android:id="@+id/textTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/sky_dark"
+            android:textSize="@dimen/textSizeBig"
+            android:fontFamily="@font/bold"
+            android:text="나의 동네 설정"
+            android:layout_marginLeft="@dimen/marginSmallView"
+            android:layout_marginTop="@dimen/marginBigView"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/logo_holo"/>
+        <TextView
+            android:id="@+id/textDesc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="@dimen/textSizeSmall"
+            android:fontFamily="@font/light"
+            android:text="내 주변 1인 가구 사람들과 공동구매를 진행해보세요!\n위치와 관련한 모든 데이터는 캐시로 저장됩니다."
+            android:layout_marginTop="@dimen/marginSmallView"
+            app:layout_constraintTop_toBottomOf="@id/textTitle"
+            app:layout_constraintLeft_toLeftOf="@+id/textTitle"/>
+
+        <RelativeLayout
+            android:id="@+id/relativeLayoutMap"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_margin="@dimen/marginSmallView"
+            app:layout_constraintTop_toBottomOf="@+id/textDesc"
+            app:layout_constraintBottom_toTopOf="@id/guideHMap"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent">
+            <com.google.android.gms.maps.MapView
+                xmlns:map="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/mapView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/btnMap"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/white"
+                android:src="@drawable/icon_gps_fixed"
+                android:layout_margin="@dimen/marginSmallView"
+                android:layout_alignBottom="@+id/mapView"
+                android:layout_alignEnd="@+id/mapView"/>
+        </RelativeLayout>
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideHMap"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.75"/>
+
+        <TextView
+            android:id="@+id/textLocation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/textSizeMedium"
+            android:textColor="@color/white"
+            android:fontFamily="@font/light"
+            android:bufferType="spannable"
+            android:text="&quot;탐색 중..&quot;"
+            app:layout_constraintTop_toBottomOf="@+id/guideHMap"
+            app:layout_constraintBottom_toTopOf="@+id/btnCpl"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideHCmp"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.92"/>
+        <Button
+            android:id="@+id/btnCpl"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:backgroundTint="@color/sky_dark"
+            android:background="@drawable/round_btn_start"
+            android:textColor="@color/white"
+            android:fontFamily="@font/light"
+            android:textSize="@dimen/textSizeMedium"
+            android:text="해당 위치로 설정하기"
+            android:layout_marginLeft="@dimen/marginSmallView"
+            android:layout_marginRight="@dimen/marginSmallView"
+            app:layout_constraintTop_toBottomOf="@id/guideHCmp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>

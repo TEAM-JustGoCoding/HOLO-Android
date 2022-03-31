@@ -5,9 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 class HomeViewModel: ViewModel() {
-    private val repository = Repository()
-//    private var _userInfo:MutableLiveData<UserCache> = MutableLiveData<UserCache>()
-//    val userInfo: LiveData<UserCache> = _userInfo
-//
-//    fun setUserInfo()
+    private var _userLocation = MutableLiveData<String>()
+    val userLocation: LiveData<String> = _userLocation
+
+    fun setUserLocation(location:String){
+        _userLocation.value = location
+    }
 }

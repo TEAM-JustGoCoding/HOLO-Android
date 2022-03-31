@@ -12,7 +12,7 @@
     <ImageView
         android:id="@+id/logo_holo"
         android:layout_width="120dp"
-        android:layout_height="70dp"
+        android:layout_height="@dimen/hActionBar"
         android:layout_gravity="center"
         app:srcCompat="@drawable/logo_holo_white"
         android:layout_marginBottom="80dp"/>
@@ -30,7 +30,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="40dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="@dimen/marginSmallView"
         android:text="안전한 사용을 위해 본인확인을 \n해주세요"
         android:textSize="16dp"
         android:textColor="@color/white"
