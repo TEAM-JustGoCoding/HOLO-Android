@@ -1,5 +1,6 @@
 package kr.co.ajjulcoding.team.project.holo
 
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -56,6 +57,10 @@ class HomeFragment(val currentUser:HoloUser) : Fragment() {
     fun setUserLocation(location:String) {
         homeViewModel.setUserLocation(location)
         currentUser.location = location
+    }
+
+    fun setUserProfileImg(imgUri: Uri){
+
     }
 
 }

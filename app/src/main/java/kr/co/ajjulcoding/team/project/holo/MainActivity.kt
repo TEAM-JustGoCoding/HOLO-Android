@@ -1,10 +1,22 @@
 package kr.co.ajjulcoding.team.project.holo
 
 import android.content.SharedPreferences
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Environment
+import android.util.Log
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.UploadTask
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kr.co.ajjulcoding.team.project.holo.databinding.ActivityMainBinding
+import java.io.File
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -50,8 +62,9 @@ class MainActivity : AppCompatActivity() {
             currentTag = frgTAG
             if (AppTag.HOME_TAG == currentTag)
                 tran.replace(R.id.fragmentView, homeFragment)   // 이전 프래그먼트 제거
-            else
-                frgDic[currentTag]!!.let {tran.add(R.id.fragmentView, it)}  // 걍 위에 얹음
+            else {
+                frgDic[currentTag]!!.let { tran.replace(R.id.fragmentView, it) }
+            }
             tran.commit()
         }
     }
@@ -61,6 +74,28 @@ class MainActivity : AppCompatActivity() {
         editor = sharedPref.edit()
         homeFragment.setUserLocation(location)
         editor.putString("location",location).apply()   // save location
+    }
+
+    suspend fun setProfileImgToHome(fileName:String){
+        val dir = File(Environment.DIRECTORY_PICTURES + "/profile_img")
+        if (!dir.isDirectory()){
+            dir.mkdir()    // 가져온 이미지 저장할 디렉토리 만들기
+        }
+        CoroutineScope(Dispatchers.IO).async {
+            downloadImg(fileName)
+        }.await()
+    }
+
+    private fun downloadImg(fileName: String){
+        val FBstorage = FirebaseStorage.getInstance()
+        val FBstorageRef = FBstorage.reference
+        FBstorageRef.child("profile_img/"+fileName).downloadUrl
+            .addOnSuccessListener { imgUri ->
+                Log.d("저장한 프로필 url", imgUri.toString())
+                Toast.makeText(this, "프로필 이미지 변경 완료!",Toast.LENGTH_SHORT).show()
+                Glide.with(this).load(imgUri).into(findViewById(R.id.circleImageView))
+            }
+
     }
 
     private fun saveCache(){
