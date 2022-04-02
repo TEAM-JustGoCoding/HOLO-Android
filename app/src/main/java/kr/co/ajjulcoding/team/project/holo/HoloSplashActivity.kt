@@ -53,6 +53,7 @@ class HoloSplashActivity : AppCompatActivity() {
             , sharedPref.getString("realName", "실명 없음")!!
             ,sharedPref.getString("nickName", "별명 없음")!!
             ,sharedPref.getString("location", null)
+            ,sharedPref.getString("profile", null)
         )
         Log.d("사용자 정보 캐시 확인", result.toString())
         return result

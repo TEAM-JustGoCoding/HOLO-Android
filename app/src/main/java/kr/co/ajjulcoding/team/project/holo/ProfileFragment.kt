@@ -24,6 +24,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
 import kotlinx.coroutines.CoroutineScope
@@ -43,11 +46,7 @@ class ProfileFragment(var currentUser:HoloUser) : Fragment() {
     private lateinit var _activity:MainActivity
     private val mActivity get() = _activity
     private var selectedUri:Uri? = null
-    lateinit var ivProfile: ImageView
-    lateinit var imagePath: String
-    lateinit var tempFile: File
     private var twiceValid = false
-    private var temp = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -127,12 +126,22 @@ class ProfileFragment(var currentUser:HoloUser) : Fragment() {
     private fun initView(){
         binding.textEmail.setText(currentUser.uid)
         binding.textNickname.setText(currentUser.nickName)
+        currentUser.profileImg?.let {
+            Glide.with(_activity).load(Uri.parse(it)).apply {
+                RequestOptions()
+                    .skipMemoryCache(true)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+            }.into(binding.profilephoto)
+        }
     }
 
     private var imgLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         uri?.let { // 사진 정상적으로 가져옴
             selectedUri = uri
+            binding.profilephoto.setImageBitmap(null)   // glide로 설정한 이미지 제거
+            binding.profilephoto.setImageURI(null)
             binding.profilephoto.setImageURI(selectedUri)
+            Log.d("사진 가져오기", "$uri")
         }
     }
 

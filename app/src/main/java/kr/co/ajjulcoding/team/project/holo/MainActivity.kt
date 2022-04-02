@@ -9,6 +9,8 @@ import android.util.Log
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
 import kotlinx.coroutines.CoroutineScope
@@ -51,8 +53,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
+        if (currentTag == AppTag.PROFILE_TAG ||
+                currentTag == AppTag.GPS_TAG){
+            changeFragment(AppTag.HOME_TAG)
+        }
         // TODO("뒤로 가기 버튼 2번 연속 눌러야 종료 추가")
-        super.onBackPressed()
+//        super.onBackPressed()
     }
 
     fun changeFragment(frgTAG: String){
@@ -92,8 +98,16 @@ class MainActivity : AppCompatActivity() {
         FBstorageRef.child("profile_img/"+fileName).downloadUrl
             .addOnSuccessListener { imgUri ->
                 Log.d("저장한 프로필 url", imgUri.toString())
+                Glide.with(this).load(imgUri).apply {
+                    RequestOptions()
+                        .skipMemoryCache(true)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                }.into(findViewById(R.id.circleImageView))
                 Toast.makeText(this, "프로필 이미지 변경 완료!",Toast.LENGTH_SHORT).show()
-                Glide.with(this).load(imgUri).into(findViewById(R.id.circleImageView))
+                homeFragment.setUserProfile(imgUri.toString())
+                sharedPref = this.getSharedPreferences(AppTag.USER_INFO,0)  // 캐시 저장
+                editor = sharedPref.edit()
+                editor.putString("profile",imgUri.toString()).apply()
             }
 
     }
