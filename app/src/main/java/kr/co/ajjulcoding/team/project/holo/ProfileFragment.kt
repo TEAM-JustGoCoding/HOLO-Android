@@ -24,6 +24,16 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.UploadTask
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import kr.co.ajjulcoding.team.project.holo.databinding.FragmentProfileBinding
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -33,16 +43,15 @@ import java.net.URLEncoder
 class ProfileFragment(var currentUser:HoloUser) : Fragment() {
     private lateinit var _binding:FragmentProfileBinding
     private val binding get() = _binding
+    private lateinit var _activity:MainActivity
+    private val mActivity get() = _activity
     private var selectedUri:Uri? = null
-    lateinit var ivProfile: ImageView
-    lateinit var imagePath: String
-    lateinit var tempFile: File
     private var twiceValid = false
-    private var temp = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         checkPermissionForStorage(requireActivity())
+        _activity = requireActivity() as MainActivity
     }
 
     private fun checkPermissionForStorage(context: Context): Boolean{
@@ -117,209 +126,69 @@ class ProfileFragment(var currentUser:HoloUser) : Fragment() {
     private fun initView(){
         binding.textEmail.setText(currentUser.uid)
         binding.textNickname.setText(currentUser.nickName)
+        currentUser.profileImg?.let {
+            Glide.with(_activity).load(Uri.parse(it)).apply {
+                RequestOptions()
+                    .skipMemoryCache(true)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+            }.into(binding.profilephoto)
+        }
     }
 
+    private var imgLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        uri?.let { // 사진 정상적으로 가져옴
+            selectedUri = uri
+            binding.profilephoto.setImageBitmap(null)   // glide로 설정한 이미지 제거
+            binding.profilephoto.setImageURI(null)
+            binding.profilephoto.setImageURI(selectedUri)
+            Log.d("사진 가져오기", "$uri")
+        }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.btnBack.setOnClickListener {
-            (requireActivity() as MainActivity).changeFragment(AppTag.HOME_TAG)
+            mActivity.changeFragment(AppTag.HOME_TAG)
+        }
+        binding.profilephoto.setOnClickListener {
+            imgLauncher.launch("image/*")
         }
         binding.btnFinish.setOnClickListener {
-            if (selectedUri != null) {
-//                (requireActivity() as MainActivity).postProfileImg(imagePath)
-//                (requireActivity() as MainActivity).saveProfileCache(selectedUri.toString())
+            selectedUri?.let {
+                val fileName = "profile_" + currentUser.uid!!.replace(".", "") + ".jpg"
+                createProfile(fileName) // 기존에 같은 이름이 존재하면 덮어쓰는듯
             }
-            (requireActivity() as MainActivity).changeFragment(AppTag.HOME_TAG)
 
-//            (requireActivity() as MainActivity).saveProfileCache(uri)
         }
     }
 
-
+//    private suspend fun deleteExistProfile(fileName:String){
+//        val FBstorage = FirebaseStorage.getInstance()
+//        val FBstorageRef = FBstorage.reference
+//        val delRef = FBstorageRef.child("profile_img/"+fileName)
 //
-//    private val requestPermissionLauncher = registerForActivityResult(
-//        ActivityResultContracts.RequestMultiplePermissions()
-//    ) { result: MutableMap<String, Boolean> ->
-//        val deniedList: List<String> = result.filter {
-//            !it.value
-//        }.map { it.key }
-//        when {
-//            deniedList.isNotEmpty() -> {
-//                val map = deniedList.groupBy { permission ->
-//                    if (shouldShowRequestPermissionRationale(permission)) "DENIED" else "EXPLAINED"
-//                }
-//                map["DENIED"]?.let {
-//                    // 뒤로 가기로 거부했을 때
-//                    // request denied , request again
-//                    Log.d("위치 권한", "onRequestPermissionsResult() _ 권한 허용 거부")
-//                    (requireActivity() as MainActivity).changeFragment(AppTag.HOME_TAG)
-//                    Toast.makeText(requireActivity(), "위치 권한이 없어 해당 기능을 수행할 수 없습니다!", Toast.LENGTH_SHORT).show()
-//                }
-//                map["EXPLAINED"]?.let {
-//                    // 거부 버튼 눌렀을 때
-//                    // request denied ,send to settings
-//                    Log.d("위치 권한", "한() _ 권한 허용 거부")
-//                    (requireActivity() as MainActivity).changeFragment(AppTag.HOME_TAG)
-//                    Toast.makeText(requireActivity(), "위치 권한이 없어 해당 기능을 수행할 수 없습니다!", Toast.LENGTH_SHORT).show()
-//                }
+//        coroutineScope {
+//            delRef.delete().addOnSuccessListener {
+//                Log.d("프로필 삭제 성공",it.toString())
+//            }.addOnFailureListener {
+//                Log.d("프로필 삭제 실패",it.toString())
 //            }
-//            else -> { // All request are permitted
-//                Log.d("위치 권한", "onRequestPermissionsResult() _ 권한 허용")
-//                updateLocation()
-//                binding.mapView.getMapAsync(this)
-//            }
-//        }
+//        }.await()
 //    }
 
-    private fun initImageViewProfile() {
-        ivProfile = binding.profilephoto
-
-        ivProfile.setOnClickListener {
-            when {
-                // 갤러리 접근 권한이 있는 경우
-                ContextCompat.checkSelfPermission(
-                    requireActivity(),
-                    android.Manifest.permission.READ_EXTERNAL_STORAGE
-                ) == PackageManager.PERMISSION_GRANTED
-                -> {
-                    navigateGallery()
-                }
-
-                // 갤러리 접근 권한이 없는 경우 & 교육용 팝업을 보여줘야 하는 경우
-                shouldShowRequestPermissionRationale(android.Manifest.permission.READ_EXTERNAL_STORAGE)
-                -> {
-                    showPermissionContextPopup()
-                }
-
-                // 권한 요청 하기(requestPermissions) -> 갤러리 접근(onRequestPermissionResult)
-                else -> requestPermissions(
-                    arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),
-                    1000
-                )
+    private fun createProfile(fileName:String){
+        Toast.makeText(mActivity, "프로필 이미지 번경 중..", Toast.LENGTH_SHORT).show()
+        val FBstorage = FirebaseStorage.getInstance()
+        val FBstorageRef = FBstorage.reference
+        val postRef = FBstorageRef.child("profile_img/"+fileName)
+        val uploadTask:UploadTask = postRef.putFile(selectedUri!!)
+        uploadTask.addOnSuccessListener {
+            CoroutineScope(Dispatchers.Main).launch {
+                mActivity.setProfileImgToHome(fileName)
+                mActivity.changeFragment(AppTag.HOME_TAG)
             }
-        }
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        when (requestCode) {
-            1000 -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                    navigateGallery()
-                else
-                    Toast.makeText((requireActivity() as MainActivity), "권한을 거부하셨습니다.", Toast.LENGTH_SHORT).show()
-            }
-            else -> {
-                //
-            }
-        }
-    }
-
-    private fun navigateGallery() {
-        // Intent.ACTION_GET_CONTENT: 핸드폰의 컨텐츠를 가져오는 안드로이드 내장 액티비티를 시작한다.
-        val intent = Intent(Intent.ACTION_GET_CONTENT)
-        // 가져올 컨텐츠들 중에서 Image 만을 가져온다.
-        intent.type = "image/*"
-        // 갤러리에서 이미지를 선택한 후, 프로필 이미지뷰를 수정하기 위해 갤러리에서 수행한 값을 받아오는 startActivityForeResult를 사용한다.
-        startActivityForResult(intent, 2000)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        // 예외처리
-        if (resultCode != Activity.RESULT_OK)
-            return
-
-        when (requestCode) {
-            // 2000: 이미지 컨텐츠를 가져오는 액티비티를 수행한 후 실행되는 Activity 일 때만 수행하기 위해서
-            2000 -> {
-                val selectedImageUri: Uri? = data?.data
-                if (selectedImageUri != null) {
-                    //(requireActivity() as MainActivity).setPermission(selectedImageUri)
-//                    val converter = BitmapConverter()
-                    //val bmp = (requireActivity() as MainActivity).uriToBitmap(selectedImageUri) as Bitmap
-                    imagePath = getRealPathFromUri(selectedImageUri)
-                    var cursor: Cursor? = null
-                    try {
-                        val proj = arrayOf(MediaStore.Images.Media.DATA)
-                        assert(selectedImageUri != null)
-                        cursor = requireContext().contentResolver.query(selectedImageUri, proj, null, null, null)
-                        assert(cursor != null)
-                        val column_index: Int = cursor!!.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
-                        cursor.moveToFirst()
-                        tempFile = File(cursor.getString(column_index))
-                    } finally {
-                        if (cursor != null) {
-                            cursor.close()
-                        }
-                    }
-                    setImage()
-                    //ivProfile.setImageURI(selectedImageUri)
-                    selectedUri = selectedImageUri
-                    //(requireActivity() as MainActivity).changeProfile(bmp)
-
-                    //Glide.with(this).load(ivProfile).circleCrop().into(binding.profilephoto)
-                } else {
-                    Toast.makeText((requireActivity() as MainActivity), "사진을 가져오지 못했습니다.", Toast.LENGTH_SHORT).show()
-                }
-            }
-            else -> {
-                Toast.makeText((requireActivity() as MainActivity), "사진을 가져오지 못했습니다.", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-
-    private fun showPermissionContextPopup() {
-        AlertDialog.Builder((requireActivity() as MainActivity))
-            .setTitle("권한이 필요합니다.")
-            .setMessage("프로필 이미지를 바꾸기 위해서는 갤러리 접근 권한이 필요합니다.")
-            .setPositiveButton("동의하기") { _, _ ->
-                requestPermissions(arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE), 1000)
-            }
-            .setNegativeButton("취소하기") { _, _ -> }
-            .create()
-            .show()
-    }
-
-
-
-    private fun getRealPathFromUri(uri: Uri): String {
-        var column_index = 0
-        val proj = arrayOf(MediaStore.Images.Media.DATA)
-        val cursor: Cursor? = requireContext().contentResolver.query(uri, proj, null, null, null)
-        if (cursor != null) {
-            if (cursor.moveToFirst()) {
-                column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
-            }
-        }
-        return cursor!!.getString(column_index)
-    }
-
-    private fun setImage() {
-        val options = BitmapFactory.Options()
-        val originalBm = BitmapFactory.decodeFile(tempFile.getAbsolutePath(), options)
-        BitMapToString(originalBm)
-        ivProfile.setImageBitmap(originalBm)
-    }
-
-    private fun BitMapToString(bitmap: Bitmap) {
-        val baos = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos) //bitmap compress
-
-        val arr: ByteArray = baos.toByteArray()
-        val image: String = Base64.encodeToString(arr, Base64.DEFAULT)
-        try {
-            temp = "&imagedevice=" + URLEncoder.encode(image, "utf-8")
-        } catch (e: Exception) {
-            Log.e("exception", e.toString())
-        } catch (e: OutOfMemoryError) {
-            Toast.makeText(context, "이미지 용량이 너무 큽니다.", Toast.LENGTH_SHORT).show()
+        }.addOnFailureListener{
+            Log.d("프로필 이미지 변경 오류", it.toString())
         }
     }
 

@@ -39,6 +39,7 @@ class GpsFragment : Fragment(), OnMapReadyCallback {
     private var latitude:Double = 37.568291
     private var longitude:Double = 126.997780
     private var validCpl:Boolean = false
+    private var lastestLocation:SpannableString? = null
     private val binding get() = _binding
     private var mFusedLocationProviderClient: FusedLocationProviderClient? = null // 현재 위치를 가져오기 위한 변수
     private lateinit var town:String
@@ -79,6 +80,9 @@ class GpsFragment : Fragment(), OnMapReadyCallback {
             gMap!!.moveCamera(CameraUpdateFactory.zoomTo(15f))
             gMap!!.addMarker(MarkerOptions().position(marker).title("내 위치"))
             gMap!!.moveCamera(CameraUpdateFactory.newLatLng(marker))
+        }
+        lastestLocation?.let {
+            binding.textLocation.setText(it)
         }
         binding.btnCpl.setOnClickListener {
             if (validCpl != true) {
@@ -216,6 +220,7 @@ class GpsFragment : Fragment(), OnMapReadyCallback {
                     0,1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 spannableString.setSpan(ForegroundColorSpan(Color.parseColor("#1D4999")),
                     showTextAll.length-1,showTextAll.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                lastestLocation = spannableString
                 binding.textLocation.setText(spannableString)
             }
             Log.d("주소 변환",address.get(0).thoroughfare)

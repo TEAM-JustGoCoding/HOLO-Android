@@ -1,21 +1,29 @@
 package kr.co.ajjulcoding.team.project.holo
 
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import kr.co.ajjulcoding.team.project.holo.databinding.FragmentHomeBinding
 
 
 class HomeFragment(val currentUser:HoloUser) : Fragment() {
+    private lateinit var _activity:MainActivity
+    private val mActivity get() = _activity
     private lateinit var _binding:FragmentHomeBinding
     private val binding get() = _binding
     private val homeViewModel: HomeViewModel by viewModels<HomeViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        _activity = requireActivity() as MainActivity
     }
 
     override fun onCreateView(
@@ -32,30 +40,49 @@ class HomeFragment(val currentUser:HoloUser) : Fragment() {
         homeViewModel.userLocation.observe(viewLifecycleOwner){
             binding.textLocation.setText(it)
         }
+        homeViewModel.userProfile.observe(viewLifecycleOwner){imgUri -> // TODO: 사용자 정보 수정될 때 호출되게
+            Glide.with(_activity).load(imgUri).apply {
+                RequestOptions()
+                    .skipMemoryCache(true)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+            }.into(binding.circleImageView)
+        }
         binding.btnNotifi.setOnClickListener {
             // TODO("테스트를 위해 지금은 로그아웃 버튼으로 사용, 추후에 수정")
             SettingInApp.mAuth.signOut()
-            requireActivity().finish()
+            mActivity.finish()
         }
         binding.circleImageView.setOnClickListener {
-            (requireActivity() as MainActivity).changeFragment(AppTag.PROFILE_TAG)
+            mActivity.changeFragment(AppTag.PROFILE_TAG)
         }
         binding.textLocation.setOnClickListener {
-            (requireActivity() as MainActivity).changeFragment(AppTag.GPS_TAG)
+            mActivity.changeFragment(AppTag.GPS_TAG)
         }
     }
 
     private fun setProfile(){
+        Log.d("실행", "onRequestPermissionsResult() _ 권한 허용")
         binding.textProfileName.setText(currentUser.nickName)
         if (currentUser.location == null){
             binding.textLocation.setText("위치 등록")
         }else
             binding.textLocation.setText(currentUser.location)
+        currentUser.profileImg?.let {
+            Glide.with(_activity).load(Uri.parse(it)).apply {
+                RequestOptions()
+                    .skipMemoryCache(true)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+            }.into(binding.circleImageView)
+        }
     }
 
     fun setUserLocation(location:String) {
         homeViewModel.setUserLocation(location)
         currentUser.location = location
+    }
+
+    fun setUserProfile(url:String){
+        currentUser.profileImg = url
     }
 
 }
