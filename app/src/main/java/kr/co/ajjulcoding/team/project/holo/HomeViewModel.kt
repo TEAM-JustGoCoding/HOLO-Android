@@ -10,6 +10,8 @@ class HomeViewModel: ViewModel() {
     val userLocation: LiveData<String> = _userLocation
     private var _userProile = MutableLiveData<Uri>()
     val userProfile:LiveData<Uri> = _userProile
+    private var _chatRoom = MutableLiveData<ChatRoom>()
+    val chatRoom:LiveData<ChatRoom> = _chatRoom
 
     fun setUserLocation(location:String){
         _userLocation.value = location
@@ -17,5 +19,9 @@ class HomeViewModel: ViewModel() {
 
     fun setUserProfile(imgUri: Uri){
         _userProile.value = imgUri
+    }
+
+    fun createChatRoom(data:ChatRoom){
+        _chatRoom.value = data
     }
 }

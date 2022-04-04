@@ -1,5 +1,6 @@
 package kr.co.ajjulcoding.team.project.holo
 
+import android.app.AlertDialog
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -46,6 +47,12 @@ class HomeFragment(val currentUser:HoloUser) : Fragment() {
                     .skipMemoryCache(true)
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
             }.into(binding.circleImageView)
+        }
+        binding.btnTouchSell.setOnClickListener {
+//            val data = ChatRoom("힐스테이트 커피시켜 먹으실 분", "leeyeah8245", )
+//            homeViewModel.createChatRoom()
+            // TODO: 데베 두개에 접근해서/ 채팅 목록, 방 UI로 띄우게 하기
+            mActivity.showAlertDialog("채팅방이 개설됐습니다!", *arrayOf("확인"))
         }
         binding.btnNotifi.setOnClickListener {
             // TODO("테스트를 위해 지금은 로그아웃 버튼으로 사용, 추후에 수정")

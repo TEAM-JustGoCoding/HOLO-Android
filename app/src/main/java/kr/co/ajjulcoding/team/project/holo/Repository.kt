@@ -1,7 +1,9 @@
 package kr.co.ajjulcoding.team.project.holo
 
 import android.util.Log
+import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.*
+import kotlinx.coroutines.tasks.await
 import okhttp3.*
 import org.json.JSONObject
 import java.io.IOException
@@ -15,7 +17,7 @@ class Repository {
 
 
         val client = OkHttpClient()
-        val mySearchUrl = HttpUrl.parse(PhpUrl.DOTHOME+PhpUrl.ULR_SELECT_USER)!!.newBuilder()
+        val mySearchUrl = HttpUrl.parse(PhpUrl.DOTHOME+PhpUrl.URL_SELECT_USER)!!.newBuilder()
         mySearchUrl.addQueryParameter("uid",email)
         val request = Request.Builder().url(mySearchUrl.build().toString()).build()
 
@@ -90,7 +92,6 @@ class Repository {
             try {
                 val response = client.newCall(request).execute()   // 동기로 실행
                 val str_response = response.body()!!.string()   // string()은 딱 한 번만 호출 가능
-                Log.d("회원가입 데이터 정보!!", str_response)
                 result = str_response.toBoolean()
             }catch (e:IOException){
                 Log.d("닉네임 중복 통신 정보", "통신 실패(인터넷 끊김 등): ${e}")
@@ -98,5 +99,33 @@ class Repository {
         }.await()
 
         return result
+    }
+
+    suspend fun setToken(userEmail:String): String?{
+        var token:String? = null
+        FirebaseMessaging.getInstance().token.addOnSuccessListener { task ->
+            token = task
+            token?.let {
+                postToken(userEmail,it)
+            }
+        }.await()
+        return token
+    }
+
+    fun postToken(email:String, token:String){
+        val client = OkHttpClient()
+        val url = PhpUrl.DOTHOME+PhpUrl.URL_POST_TOKEN
+        val body: RequestBody = FormBody.Builder().add("uid", email)
+            .add("token", token).build() as RequestBody
+        val request = Request.Builder().url(url).post(body).build()
+
+        CoroutineScope(Dispatchers.IO).async {
+            try {
+                val response = client.newCall(request).execute()   // 동기로 실행
+                val str_response = response.body()!!.string()   // string()은 딱 한 번만 호출 가능
+            } catch (e: IOException) {
+                Log.d("토큰 데이터 정보!!", "통신 실패(인터넷 끊김 등): ${e}")
+            }
+        }
     }
 }

@@ -33,8 +33,9 @@ class PhpUrl {
     companion object{
         const val DOTHOME:String = "http://holo.dothome.co.kr/"
         const val URL_REGISTER:String = "register.php"   // TODO("php 파일 연동")
-        const val ULR_SELECT_USER:String = "login.php"
+        const val URL_SELECT_USER:String = "login.php"
         const val URL_NICKNAME_DUPI:String = "nickNameDupli.php"
+        const val URL_POST_TOKEN:String = "postToken.php"
     }
 }
 

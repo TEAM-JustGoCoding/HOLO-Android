@@ -1,5 +1,7 @@
 package kr.co.ajjulcoding.team.project.holo
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.SharedPreferences
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
@@ -119,6 +121,7 @@ class MainActivity : AppCompatActivity() {
         editor.putString("uid", userInfo.uid).apply()
         editor.putString("realName",userInfo.realName).apply()
         editor.putString("nickName",userInfo.nickName).apply()
+        editor.putString("token", userInfo.token).apply()
     }
 
     private fun showHomeFragment(userInfo:HoloUser){
@@ -128,5 +131,17 @@ class MainActivity : AppCompatActivity() {
         tran.commit()
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+    }
+
+    fun showAlertDialog(msg:String, vararg option:String){
+        AlertDialog.Builder(this)
+            .setTitle(msg)
+            .setCancelable(false)
+            .setItems(option, object : DialogInterface.OnClickListener{
+                override fun onClick(dialog: DialogInterface, idx: Int) {
+                    dialog.dismiss()
+                }
+            })
+            .create().show()
     }
 }

@@ -8,6 +8,9 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class HoloSplashActivity : AppCompatActivity() {
     private val selectMain = "MainActivity"
@@ -22,12 +25,15 @@ class HoloSplashActivity : AppCompatActivity() {
         setContentView(R.layout.activity_holosplash)
         sharedPref = this.getSharedPreferences(AppTag.USER_INFO,0)
         editor = sharedPref.edit()
-
-        if (SettingInApp.mAuth.currentUser != null) {
-            userInfo = getUserCache()
-            waitTime = 1.0
+        CoroutineScope(Dispatchers.Main).launch {
+            if (SettingInApp.mAuth.currentUser != null) {
+                val repository = Repository() // 토큰 변경 여부 검사
+                val token = repository.setToken(SettingInApp.mAuth.currentUser!!.email!!)
+                userInfo = getUserCache(token)
+                waitTime = 1.0
+            }
+            delaySec(waitTime, userInfo)   // 1.5 or 1.0 초 지연
         }
-        delaySec(waitTime, userInfo)   // 1.5 or 1.0 초 지연
     }
 
     private fun delaySec(sec: Double, userCache:HoloUser?){
@@ -47,14 +53,16 @@ class HoloSplashActivity : AppCompatActivity() {
     }
 
     @SuppressLint("CommitPrefEdits")
-    private fun getUserCache(): HoloUser{
+    private fun getUserCache(token:String?): HoloUser{
         val result = HoloUser(
             sharedPref.getString("uid","아이디 없음")!!
             , sharedPref.getString("realName", "실명 없음")!!
             ,sharedPref.getString("nickName", "별명 없음")!!
             ,sharedPref.getString("location", null)
             ,sharedPref.getString("profile", null)
+            ,sharedPref.getString("token", null)
         )
+        result.token = token ?: sharedPref.getString("token", null) // 인터넷 연결 없으면 토큰 캐시 정보 불러오기
         Log.d("사용자 정보 캐시 확인", result.toString())
         return result
     }
