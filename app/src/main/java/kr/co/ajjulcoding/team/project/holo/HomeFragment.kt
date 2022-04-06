@@ -12,6 +12,10 @@ import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
+import com.google.firebase.Timestamp
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kr.co.ajjulcoding.team.project.holo.databinding.FragmentHomeBinding
 
 
@@ -24,6 +28,7 @@ class HomeFragment(val currentUser:HoloUser) : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d("홈 프래그먼트", "onCreate")
         _activity = requireActivity() as MainActivity
     }
 
@@ -33,11 +38,13 @@ class HomeFragment(val currentUser:HoloUser) : Fragment() {
     ): View? {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         setProfile()
+        Log.d("홈 프래그먼트", "onCreateView")
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Log.d("홈 프래그먼트", "onViewCreated")
         homeViewModel.userLocation.observe(viewLifecycleOwner){
             binding.textLocation.setText(it)
         }
@@ -48,11 +55,24 @@ class HomeFragment(val currentUser:HoloUser) : Fragment() {
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
             }.into(binding.circleImageView)
         }
+        homeViewModel.chatRoom.observe(viewLifecycleOwner){chatRoomData ->
+            mActivity.showAlertDialog("채팅방이 개설되었습니다!", *arrayOf("확인"))
+        }
         binding.btnTouchSell.setOnClickListener {
-//            val data = ChatRoom("힐스테이트 커피시켜 먹으실 분", "leeyeah8245", )
-//            homeViewModel.createChatRoom()
-            // TODO: 데베 두개에 접근해서/ 채팅 목록, 방 UI로 띄우게 하기
-            mActivity.showAlertDialog("채팅방이 개설됐습니다!", *arrayOf("확인"))
+            CoroutineScope(Dispatchers.Main).launch {
+                val receiverEmail = "lyy8201et@gmail.com"
+                val rNicknameAndToken = homeViewModel.getUserNicknameAndToken(receiverEmail)
+                val receiverNickname = rNicknameAndToken.await().first
+                val receiverToken = rNicknameAndToken.await().second
+                val chatRoomData = ChatRoom("힐스테이트 커피시켜 먹으실 분", currentUser.uid!!, currentUser.nickName
+                    ,currentUser.token ?: "토큰캐시없음", receiverEmail, receiverNickname, receiverToken
+                    , Timestamp.now())
+                val valid = homeViewModel.createChatRoom(chatRoomData)
+                if (!(valid.await())){
+                    mActivity.showAlertDialog("네트워크 연결을 확인할 수 없습니다!", *arrayOf("확인"))
+                    return@launch
+                }
+            }
         }
         binding.btnNotifi.setOnClickListener {
             // TODO("테스트를 위해 지금은 로그아웃 버튼으로 사용, 추후에 수정")
@@ -91,5 +111,4 @@ class HomeFragment(val currentUser:HoloUser) : Fragment() {
     fun setUserProfile(url:String){
         currentUser.profileImg = url
     }
-
 }

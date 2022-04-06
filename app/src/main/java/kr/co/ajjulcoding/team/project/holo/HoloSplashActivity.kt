@@ -20,6 +20,10 @@ class HoloSplashActivity : AppCompatActivity() {
     private lateinit var sharedPref:SharedPreferences
     private lateinit var editor:SharedPreferences.Editor
 
+    init {
+        SettingInApp.db.firestoreSettings = SettingInApp.settings
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_holosplash)
@@ -30,18 +34,20 @@ class HoloSplashActivity : AppCompatActivity() {
                 val repository = Repository() // 토큰 변경 여부 검사
                 val token = repository.setToken(SettingInApp.mAuth.currentUser!!.email!!)
                 userInfo = getUserCache(token)
+                editor.putString("token", token).apply()
                 waitTime = 1.0
             }
-            delaySec(waitTime, userInfo)   // 1.5 or 1.0 초 지연
+            delaySec(waitTime, userInfo!!)   // 1.5 or 1.0 초 지연
         }
     }
 
-    private fun delaySec(sec: Double, userCache:HoloUser?){
+    private fun delaySec(sec: Double, userCache:HoloUser){
         Handler(Looper.myLooper()!!).postDelayed({
             if (SettingInApp.mAuth.currentUser != null){
                 val intentMain = Intent(this, MainActivity::class.java)
                 SettingInApp.uniqueActivity(intentMain)
-                intentMain.putExtra(AppTag.USER_INFO, userCache!!)
+                Log.d("로그인 당시 토큰",userCache.token.toString())
+                intentMain.putExtra(AppTag.USER_INFO, userCache)
                 startActivity(intentMain)
             }else{
                 val intentLogin = Intent(this, LoginActivity::class.java)
