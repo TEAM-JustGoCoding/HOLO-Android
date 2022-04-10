@@ -60,11 +60,12 @@ class HomeFragment(val currentUser:HoloUser) : Fragment() {
         }
         binding.btnTouchSell.setOnClickListener {
             CoroutineScope(Dispatchers.Main).launch {
-                val receiverEmail = "lyy8201et@gmail.com"
+                val receiverEmail = "lyy8201@gmail.com"
                 val rNicknameAndToken = homeViewModel.getUserNicknameAndToken(receiverEmail)
                 val receiverNickname = rNicknameAndToken.await().first
                 val receiverToken = rNicknameAndToken.await().second
-                val chatRoomData = ChatRoom("힐스테이트 커피시켜 먹으실 분", currentUser.uid!!, currentUser.nickName
+                val chatRoomData = ChatRoom("힐스테이트 커피시켜 먹으실 분", arrayListOf(currentUser.uid, receiverEmail)
+                    , currentUser.uid!!, currentUser.nickName
                     ,currentUser.token ?: "토큰캐시없음", receiverEmail, receiverNickname, receiverToken
                     , Timestamp.now())
                 val valid = homeViewModel.createChatRoom(chatRoomData)

@@ -1,14 +1,23 @@
 package kr.co.ajjulcoding.team.project.holo
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
+import com.google.firebase.storage.FirebaseStorage
+import kotlinx.coroutines.tasks.await
 import kr.co.ajjulcoding.team.project.holo.databinding.FragmentChatListBinding
-import kr.co.ajjulcoding.team.project.holo.databinding.ItemChatListBinding
+import kr.co.ajjulcoding.team.project.holo.databinding.ItemChatListRecyclerBinding
 
 class ChatListFragment(val userInfo:HoloUser) : Fragment() {
     private lateinit var _activity:MainActivity
@@ -19,6 +28,7 @@ class ChatListFragment(val userInfo:HoloUser) : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        _activity = requireActivity() as MainActivity
         chatListViewModel.getUserChatRoomLi(userInfo.uid)
     }
 
@@ -34,15 +44,97 @@ class ChatListFragment(val userInfo:HoloUser) : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         //val chatListAdapter:ChatListAdapter = ChatListAdapter(chatListViewModel.userChatRoomLi.value!!)
+        binding.recyclerChatList.adapter = ChatListAdapter()
         chatListViewModel.userChatRoomLi.observe(viewLifecycleOwner){
             // TODO: 내일 여기서부터 시작
+
+            (binding.recyclerChatList.adapter as ChatListAdapter).replaceItems(it)
         }
     }
-    // TODO: 아이템 만들고 시작하기
-//    inner class ChatListAdapter(private var itemLi: ArrayList<ChatRoom>):
-//            RecyclerView.Adapter<ChatListAdapter.ViewHolder>(){
-//
-//                inner class ViewHolder(view: ItemChatListBinding)
-//
-//            }
+
+    private class CRoomAsyncDifCallback : DiffUtil.ItemCallback<ChatRoom>(){
+        override fun areItemsTheSame(oldItem: ChatRoom, newItem: ChatRoom): Boolean{
+            Log.d("옵저버 데이터 확인2", oldItem.latestTime.toString()+" "+newItem.latestTime.toString())
+            return oldItem.latestTime == newItem.latestTime
+        }
+
+        override fun areContentsTheSame(oldItem: ChatRoom, newItem: ChatRoom):Boolean {
+            Log.d("옵저버 데이터 확인3", oldItem.toString()+"다름 "+newItem.toString())
+            return oldItem == newItem && oldItem.latestTime == newItem.latestTime
+        }
+
+
+    }
+    companion object{
+        val chatRoomDifUtil = object : DiffUtil.ItemCallback<ChatRoom>() {
+            override fun areItemsTheSame(oldItem: ChatRoom, newItem: ChatRoom): Boolean {
+                Log.d("옵저버 데이터 확인2", oldItem.latestTime.toString()+" "+newItem.latestTime.toString())
+                return oldItem.latestTime == newItem.latestTime
+            }
+
+            override fun areContentsTheSame(oldItem: ChatRoom, newItem: ChatRoom): Boolean {
+                Log.d("옵저버 데이터 확인3", oldItem.toString()+"다름 "+newItem.toString())
+                return oldItem == newItem && oldItem.latestTime == newItem.latestTime
+            }
+
+        }
+    }
+    inner class ChatListAdapter():
+           ListAdapter<ChatRoom, ChatListAdapter.ViewHolder>(chatRoomDifUtil){
+
+        //private val asyncDiffer = AsyncListDiffer(this, CRoomAsyncDifCallback())
+        val FBstorage = FirebaseStorage.getInstance()
+        val FBstorageRef = FBstorage.reference
+
+        inner class ViewHolder(view: ItemChatListRecyclerBinding):RecyclerView.ViewHolder(view.root){
+            val imgProfile = view.circleImageView
+            val textNickName = view.textNickName
+            val textTitle = view.textTitle
+            val textMSG = view.textPreMSG
+        }
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+            val view = ItemChatListRecyclerBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            return ViewHolder(view)
+        }
+
+        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+            //Log.d("옵저버 데이터 확인1", asyncDiffer.currentList[position].toString())
+            currentList!!.get(position).let { item ->
+                with(holder){
+                    var fileName = "profile_"
+                    var nickName:String
+                    if (item.remail == userInfo.uid){
+                        fileName += item.semail.replace(".", "") + ".jpg"
+                        nickName = item.snickName
+                    }else{
+                        fileName += item.remail.replace(".", "") + ".jpg"
+                        nickName = item.rnickName
+                    }
+                    textNickName.setText(nickName)
+                    textTitle.setText(item.title)
+//                    textMSG.setText(item.talkContent[item.talkContent?.size-1])
+                    FBstorageRef.child("profile_img/"+fileName).downloadUrl
+                        .addOnSuccessListener { imgUrl ->
+                            Log.d("채팅 목록 프로필 url", imgUrl.toString())
+                            Glide.with(mActivity).load(imgUrl).thumbnail(0.1f)
+                                .override(100, 100).into(imgProfile)
+//                                .apply {
+//                                RequestOptions()
+//                                    .skipMemoryCache(true)
+//                                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+//                            }
+                        }
+                }
+                // TODO: 터치하면 채팅방 액티배티 나오게 클릭 리스너 추가하기
+            }
+        }
+
+        override fun getItemCount() = currentList.size
+
+        fun replaceItems(newItemLi: ArrayList<ChatRoom>){
+            submitList(newItemLi.toMutableList())   // 사본 생성: 객체 달라짐
+        }
+
+    }
 }

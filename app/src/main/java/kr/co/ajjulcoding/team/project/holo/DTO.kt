@@ -12,12 +12,12 @@ data class HoloUser(val uid: String, val realName: String, val nickName: String,
         var location:String? = null, var profileImg:String? = null, var token:String? = null):Serializable
 
 //채팅방 등록 TODO: 이것도 캐시로 저장해야할듯
-@Parcelize
-data class ChatRoom(val title:String,
-                    val sEmail:String, val sNickName:String, var sToken:String,
-                    val rEmail:String, val rNickName:String, var rToken:String,
-                    var latestTime:Timestamp,
+data class ChatRoom(val title:String="",
+                    val participant:ArrayList<String> = ArrayList<String>(),
+                    val semail:String="", val snickName:String="", var stoken:String="",
+                    val remail:String="", val rnickName:String="", var rtoken:String="",
+                    var latestTime:Timestamp?= null,
                     val talkContent: ArrayList<String> = arrayListOf<String>(),
                     val talkNickName: ArrayList<String> = arrayListOf<String>(),
                     val talkTimestamp: ArrayList<Timestamp> = arrayListOf<Timestamp>(),
-                    var sInputStar:Int? = null, var rInputStar:Int? = null):Parcelable
+                    var sInputStar:Int? = null, var rInputStar:Int? = null)

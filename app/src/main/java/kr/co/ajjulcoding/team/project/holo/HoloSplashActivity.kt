@@ -32,21 +32,26 @@ class HoloSplashActivity : AppCompatActivity() {
         CoroutineScope(Dispatchers.Main).launch {
             if (SettingInApp.mAuth.currentUser != null) {
                 val repository = Repository() // 토큰 변경 여부 검사
+                Log.d("사용자 정보 캐시 확인1", "1")
                 val token = repository.setToken(SettingInApp.mAuth.currentUser!!.email!!)
+                Log.d("사용자 정보 캐시 확인2", token.toString())
                 userInfo = getUserCache(token)
+                Log.d("사용자 정보 캐시 확인3", userInfo.toString())
                 editor.putString("token", token).apply()
                 waitTime = 1.0
+                delaySec(waitTime, userInfo!!)   // 1.5 or 1.0 초 지연
+            }else{
+                delaySec(waitTime)
             }
-            delaySec(waitTime, userInfo!!)   // 1.5 or 1.0 초 지연
         }
     }
 
-    private fun delaySec(sec: Double, userCache:HoloUser){
+    private fun delaySec(sec: Double, userCache:HoloUser?=null){
         Handler(Looper.myLooper()!!).postDelayed({
             if (SettingInApp.mAuth.currentUser != null){
                 val intentMain = Intent(this, MainActivity::class.java)
                 SettingInApp.uniqueActivity(intentMain)
-                Log.d("로그인 당시 토큰",userCache.token.toString())
+                Log.d("로그인 당시 토큰",userCache!!.token.toString())
                 intentMain.putExtra(AppTag.USER_INFO, userCache)
                 startActivity(intentMain)
             }else{
@@ -70,6 +75,7 @@ class HoloSplashActivity : AppCompatActivity() {
         )
         result.token = token ?: sharedPref.getString("token", null) // 인터넷 연결 없으면 토큰 캐시 정보 불러오기
         Log.d("사용자 정보 캐시 확인", result.toString())
+
         return result
     }
 }

@@ -1,6 +1,7 @@
 package kr.co.ajjulcoding.team.project.holo
 
 import android.content.Intent
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.DiffUtil
 import androidx.room.*
@@ -31,6 +32,7 @@ class SettingInApp {
 class AppTag {
     companion object {
         const val USER_INFO = "user_info"
+        const val PARTICIPANT = "participant"
         const val RECEIVER_EMAIL = "remail"
         const val SENDER_EMAIL = "semail"
         const val LATEST_TIME = "latestTime"
@@ -56,7 +58,7 @@ class PhpUrl {
     }
 }
 
-class DiffUtilCallBack(private val oldLi:ArrayList<ChatRoom>, private val newLi: ArrayList<ChatRoom>)
+class ChatRoomDiffUtilCallBack(private val oldLi:ArrayList<ChatRoom>, private val newLi: ArrayList<ChatRoom>)
     :DiffUtil.Callback(){
     override fun getOldListSize(): Int = oldLi.size
 
@@ -67,12 +69,14 @@ class DiffUtilCallBack(private val oldLi:ArrayList<ChatRoom>, private val newLi:
         val newItem = newLi[newItemPosition]
 
         return if ((oldItem is ChatRoom) && (newItem is ChatRoom)){
+            Log.d("Diff 확인", oldItem.latestTime.toString()+"  "+newItem.latestTime.toString())
             oldItem.latestTime == newItem.latestTime
         }else
             false
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        Log.d("Diff 확인", oldLi[oldItemPosition].toString()+"  "+newLi[newItemPosition])
         return oldLi[oldItemPosition] == newLi[newItemPosition]
     }
 

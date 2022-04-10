@@ -139,6 +139,7 @@ class Repository {
         val client = OkHttpClient()
         val mySearchUrl = HttpUrl.parse(PhpUrl.DOTHOME+PhpUrl.URL_GET_TOKEN)!!.newBuilder()
         mySearchUrl.addQueryParameter("uid",email)
+        Log.d("이메일 받은 거 확인", email.toString())
         val request = Request.Builder().url(mySearchUrl.build().toString()).build()
         var nickName:String? = null
         var token:String? = null
@@ -149,7 +150,6 @@ class Repository {
                 val str_response = response.body()!!.string()   // string()은 딱 한 번만 호출 가능
                 Log.d("데베 토큰 정보", "성공: ${str_response}")
                 val jsonobj = JSONObject(str_response)
-                Log.d("데베 토큰 정보!!", jsonobj.getString("uid"))
                 nickName = jsonobj.getString("nick_name")
                 token = jsonobj.getString("token")
             }catch (e:IOException){
@@ -179,18 +179,22 @@ class Repository {
 
     suspend fun getUserChatRoomLi(userEmail:String, userChatRoomLi:MutableLiveData<ArrayList<ChatRoom>>)
     :  ListenerRegistration{
+        Log.d("데이터 들어오는지 확인",userEmail)
         // 사용자가 대표일 때와 참가자일 때 모두 고려
-        val listenerRgst:ListenerRegistration = SettingInApp.db.collection("chatRoom").whereEqualTo(AppTag.SENDER_EMAIL, userEmail)
-            .whereEqualTo(AppTag.RECEIVER_EMAIL, userEmail)
+        val listenerRgst:ListenerRegistration = SettingInApp.db.collection("chatRoom")
+            .whereArrayContains(AppTag.PARTICIPANT, userEmail)
             .orderBy(AppTag.LATEST_TIME, Query.Direction.ASCENDING)
             .addSnapshotListener { querySnapshot, e ->
                 Log.d("오류 코드", "getUserChatRoomLi: $e")
+                Log.d("오류 코드", "getUserChatRoomLi: ${querySnapshot}")
                 if (querySnapshot == null) return@addSnapshotListener
                 if (userChatRoomLi.value!!.size == querySnapshot.size()) // 중복 방지 TODO: 리스너 단일로 만들고 삭제해보기
                     return@addSnapshotListener
                 val tempArray:ArrayList<ChatRoom> = userChatRoomLi.value!!
                 querySnapshot.documentChanges.forEachIndexed { idx, dcm ->
+                    Log.d("오류 코드", "getUserChatRoomLi: ${idx}  $dcm")
                     if (dcm.type == DocumentChange.Type.ADDED){
+                        Log.d("오류 코드2", "getUserChatRoomLi: ${dcm.document.toObject(ChatRoom::class.java)}  $dcm")
                         tempArray.add(0, dcm.document.toObject(ChatRoom::class.java))
                         userChatRoomLi.value = tempArray
                     }

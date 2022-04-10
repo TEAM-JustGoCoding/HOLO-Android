@@ -15,12 +15,10 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.*
 import kr.co.ajjulcoding.team.project.holo.databinding.ActivityMainBinding
 import java.io.File
+import java.time.LocalDate
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -34,6 +32,7 @@ class MainActivity : AppCompatActivity() {
     private val binding get() = _binding
     private lateinit var homeFragment:HomeFragment
     private lateinit var profileFragment:ProfileFragment
+    private lateinit var chatListFragment:ChatListFragment
     private lateinit var mUserInfo:HoloUser
     private val gpsFragment = GpsFragment()
     private var currentTag:String = HOME_TAG
@@ -43,14 +42,33 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         mUserInfo = intent.getSerializableExtra(AppTag.USER_INFO) as HoloUser
         profileFragment = ProfileFragment(mUserInfo)
+        chatListFragment = ChatListFragment(mUserInfo)
         //binding.contraintMain.setOnClickListener { }
         showHomeFragment(mUserInfo)
-        frgDic = hashMapOf<String, Fragment>(AppTag.PROFILE_TAG to profileFragment, AppTag.GPS_TAG to gpsFragment)
+        frgDic = hashMapOf<String, Fragment>(AppTag.PROFILE_TAG to profileFragment, AppTag.GPS_TAG to gpsFragment
+        , AppTag.ChatList_TAG to chatListFragment)
 
         if (intent.getBooleanExtra(AppTag.LOGIN_TAG, false)) {
+            CoroutineScope(Dispatchers.Main).launch {
+                setProfileImgToHome("profile_" + mUserInfo.uid!!.replace(".", "") + ".jpg")
+            }
             saveCache()
         }else if (intent.getBooleanExtra(AppTag.REGISTER_TAG, false)){
             saveCache()
+        }
+
+        binding.navigationBar.setOnItemSelectedListener { item ->
+            Log.d("프래그먼트 변경 요청", currentTag.toString())
+            when (item.itemId) {
+                R.id.menu_home -> {
+                    changeFragment(AppTag.HOME_TAG)
+                }
+                R.id.menu_chatting -> {
+                    Log.d("프래그먼트 변경 요청", currentTag.toString())
+                    changeFragment(AppTag.ChatList_TAG)
+                }
+            }
+            true
         }
     }
 
@@ -58,9 +76,9 @@ class MainActivity : AppCompatActivity() {
         if (currentTag == AppTag.PROFILE_TAG ||
                 currentTag == AppTag.GPS_TAG){
             changeFragment(AppTag.HOME_TAG)
-        }
+        }else
+            super.onBackPressed()
         // TODO("뒤로 가기 버튼 2번 연속 눌러야 종료 추가")
-//        super.onBackPressed()
     }
 
     fun changeFragment(frgTAG: String){
@@ -71,7 +89,7 @@ class MainActivity : AppCompatActivity() {
             if (AppTag.HOME_TAG == currentTag)
                 tran.replace(R.id.fragmentView, homeFragment)   // (스택에 있는)이전 프래그먼트 전부 제거
             else {
-                frgDic[currentTag]!!.let { tran.add(R.id.fragmentView, it) }
+                frgDic[currentTag]!!.let { tran.replace(R.id.fragmentView, it) }
             }
             tran.commit()
         }
@@ -105,7 +123,7 @@ class MainActivity : AppCompatActivity() {
                         .skipMemoryCache(true)
                         .diskCacheStrategy(DiskCacheStrategy.NONE)
                 }.into(findViewById(R.id.circleImageView))
-                Toast.makeText(this, "프로필 이미지 변경 완료!",Toast.LENGTH_SHORT).show()
+                //Toast.makeText(this, "프로필 이미지 변경 완료!",Toast.LENGTH_SHORT).show()
                 homeFragment.setUserProfile(imgUri.toString())
                 sharedPref = this.getSharedPreferences(AppTag.USER_INFO,0)  // 캐시 저장
                 editor = sharedPref.edit()
@@ -127,7 +145,7 @@ class MainActivity : AppCompatActivity() {
     private fun showHomeFragment(userInfo:HoloUser){
         val tran = supportFragmentManager.beginTransaction()
         homeFragment = HomeFragment(userInfo)
-        tran.add(R.id.fragmentView, homeFragment)
+        tran.replace(R.id.fragmentView, homeFragment)
         tran.commit()
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
