@@ -1,15 +1,23 @@
 package kr.co.ajjulcoding.team.project.holo
 
+import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.DiffUtil
 import androidx.room.*
+import com.bumptech.glide.Glide
+import com.bumptech.glide.Registry
+import com.bumptech.glide.annotation.GlideModule
+import com.bumptech.glide.module.AppGlideModule
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.firestoreSettings
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.StorageReference
+import com.firebase.ui.storage.images.FirebaseImageLoader
+import java.io.InputStream
 
 class SettingInApp {
     companion object{
@@ -58,29 +66,29 @@ class PhpUrl {
     }
 }
 
-class ChatRoomDiffUtilCallBack(private val oldLi:ArrayList<ChatRoom>, private val newLi: ArrayList<ChatRoom>)
-    :DiffUtil.Callback(){
-    override fun getOldListSize(): Int = oldLi.size
-
-    override fun getNewListSize(): Int = newLi.size
-
-    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        val oldItem = oldLi[oldItemPosition]
-        val newItem = newLi[newItemPosition]
-
-        return if ((oldItem is ChatRoom) && (newItem is ChatRoom)){
-            Log.d("Diff 확인", oldItem.latestTime.toString()+"  "+newItem.latestTime.toString())
-            oldItem.latestTime == newItem.latestTime
-        }else
-            false
-    }
-
-    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        Log.d("Diff 확인", oldLi[oldItemPosition].toString()+"  "+newLi[newItemPosition])
-        return oldLi[oldItemPosition] == newLi[newItemPosition]
-    }
-
-}
+//class ChatRoomDiffUtilCallBack(private val oldLi:ArrayList<ChatRoom>, private val newLi: ArrayList<ChatRoom>)
+//    :DiffUtil.Callback(){
+//    override fun getOldListSize(): Int = oldLi.size
+//
+//    override fun getNewListSize(): Int = newLi.size
+//
+//    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+//        val oldItem = oldLi[oldItemPosition]
+//        val newItem = newLi[newItemPosition]
+//
+//        return if ((oldItem is ChatRoom) && (newItem is ChatRoom)){
+//            Log.d("Diff 확인", oldItem.latestTime.toString()+"  "+newItem.latestTime.toString())
+//            oldItem.latestTime == newItem.latestTime
+//        }else
+//            false
+//    }
+//
+//    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+//        Log.d("Diff 확인", oldLi[oldItemPosition].toString()+"  "+newLi[newItemPosition])
+//        return oldLi[oldItemPosition] == newLi[newItemPosition]
+//    }
+//
+//}
 
 // 캐시 관련
 @Entity

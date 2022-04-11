@@ -18,6 +18,7 @@ import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.tasks.await
 import kr.co.ajjulcoding.team.project.holo.databinding.FragmentChatListBinding
 import kr.co.ajjulcoding.team.project.holo.databinding.ItemChatListRecyclerBinding
+import java.io.File
 
 class ChatListFragment(val userInfo:HoloUser) : Fragment() {
     private lateinit var _activity:MainActivity
@@ -113,18 +114,10 @@ class ChatListFragment(val userInfo:HoloUser) : Fragment() {
                     }
                     textNickName.setText(nickName)
                     textTitle.setText(item.title)
-//                    textMSG.setText(item.talkContent[item.talkContent?.size-1])
-                    FBstorageRef.child("profile_img/"+fileName).downloadUrl
-                        .addOnSuccessListener { imgUrl ->
-                            Log.d("채팅 목록 프로필 url", imgUrl.toString())
-                            Glide.with(mActivity).load(imgUrl).thumbnail(0.1f)
-                                .override(100, 100).into(imgProfile)
-//                                .apply {
-//                                RequestOptions()
-//                                    .skipMemoryCache(true)
-//                                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-//                            }
-                        }
+                    val mountainRef = FBstorageRef.child("profile_img/"+fileName)
+                    GlideApp.with(this@ChatListFragment).load(mountainRef)
+                        .thumbnail(0.1f)
+                        .into(imgProfile)
                 }
                 // TODO: 터치하면 채팅방 액티배티 나오게 클릭 리스너 추가하기
             }

@@ -23,4 +23,6 @@ class ChatListViewModel: ViewModel() {
             listenerRgst = repository.getUserChatRoomLi(userEmail, _userChatRoomLi)
         Log.d("채팅목록 리스너 등록", listenerRgst.toString())
     }
+
+    // TODO: 리스너 삭제 추가
 }
