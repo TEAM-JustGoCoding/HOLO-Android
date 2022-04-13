@@ -38,7 +38,6 @@ class ChatListFragment(val userInfo:HoloUser) : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentChatListBinding.inflate(inflater, container, false)
-
         return binding.root
     }
 

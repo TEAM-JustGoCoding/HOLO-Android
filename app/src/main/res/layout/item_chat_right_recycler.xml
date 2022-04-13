@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/home_policy">
+    <TextView
+        android:id="@+id/txtRightChat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxWidth="310dp"
+        android:background="@drawable/icon_bubble_right"
+        android:fontFamily="@font/light"
+        android:textColor="@color/black"
+        android:textSize="@dimen/textSizeMedium"
+        android:text=""
+        app:layout_constrainedWidth="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+    <TextView
+        android:id="@+id/txtRightDate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:fontFamily="@font/light"
+        android:textSize="@dimen/textSizeSmall"
+        android:textColor="@color/black"
+        android:textAlignment="textEnd"
+        android:text="수요일, 15:06"
+        android:layout_marginBottom="5dp"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/txtRightChat"
+        app:layout_constraintLeft_toLeftOf="parent"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
