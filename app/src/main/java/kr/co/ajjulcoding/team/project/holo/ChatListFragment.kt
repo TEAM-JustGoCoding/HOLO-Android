@@ -47,8 +47,6 @@ class ChatListFragment(val userInfo:HoloUser) : Fragment() {
         //val chatListAdapter:ChatListAdapter = ChatListAdapter(chatListViewModel.userChatRoomLi.value!!)
         binding.recyclerChatList.adapter = ChatListAdapter()
         chatListViewModel.userChatRoomLi.observe(viewLifecycleOwner){
-            // TODO: 내일 여기서부터 시작
-
             (binding.recyclerChatList.adapter as ChatListAdapter).replaceItems(it)
         }
     }
@@ -82,8 +80,6 @@ class ChatListFragment(val userInfo:HoloUser) : Fragment() {
     }
     inner class ChatListAdapter():
            ListAdapter<ChatRoom, ChatListAdapter.ViewHolder>(chatRoomDifUtil){
-
-        //private val asyncDiffer = AsyncListDiffer(this, CRoomAsyncDifCallback())
         val FBstorage = FirebaseStorage.getInstance()
         val FBstorageRef = FBstorage.reference
 
@@ -105,6 +101,7 @@ class ChatListFragment(val userInfo:HoloUser) : Fragment() {
                 with(holder){
                     var fileName = "profile_"
                     var nickName:String
+                    Log.d("아이디 이메일 확인", item.remail+"  "+userInfo.uid)
                     if (item.remail == userInfo.uid){
                         fileName += item.semail.replace(".", "") + ".jpg"
                         nickName = item.snickName
@@ -114,6 +111,11 @@ class ChatListFragment(val userInfo:HoloUser) : Fragment() {
                     }
                     textNickName.setText(nickName)
                     textTitle.setText(item.title)
+                    item.talkContent.let {
+                        if (it.size >0){
+                            textMSG.setText(it[it.size-1])
+                        }
+                    }
                     val mountainRef = FBstorageRef.child("profile_img/"+fileName)
                     GlideApp.with(this@ChatListFragment).load(mountainRef)
                         .thumbnail(0.1f)
