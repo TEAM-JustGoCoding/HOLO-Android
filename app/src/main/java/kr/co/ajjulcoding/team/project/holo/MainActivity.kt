@@ -40,13 +40,13 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mUserInfo = intent.getSerializableExtra(AppTag.USER_INFO) as HoloUser
+        mUserInfo = intent.getParcelableExtra((AppTag.USER_INFO))!!
         profileFragment = ProfileFragment(mUserInfo)
         chatListFragment = ChatListFragment(mUserInfo)
         //binding.contraintMain.setOnClickListener { }
         showHomeFragment(mUserInfo)
         frgDic = hashMapOf<String, Fragment>(AppTag.PROFILE_TAG to profileFragment, AppTag.GPS_TAG to gpsFragment
-        , AppTag.ChatList_TAG to chatListFragment)
+        , AppTag.CHATLIST_TAG to chatListFragment)
 
         if (intent.getBooleanExtra(AppTag.LOGIN_TAG, false)) {
             CoroutineScope(Dispatchers.Main).launch {
@@ -65,7 +65,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.menu_chatting -> {
                     Log.d("프래그먼트 변경 요청", currentTag.toString())
-                    changeFragment(AppTag.ChatList_TAG)
+                    changeFragment(AppTag.CHATLIST_TAG)
                 }
             }
             true

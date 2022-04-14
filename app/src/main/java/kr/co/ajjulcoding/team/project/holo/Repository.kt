@@ -109,12 +109,16 @@ class Repository {
 
     suspend fun setToken(userEmail:String): String?{
         var token:String? = null
-        FirebaseMessaging.getInstance().token.addOnSuccessListener { task ->
-            token = task
-            token?.let {
-                postToken(userEmail,it)
+        // onSuccess 리스너 사용해서 await 주니까 항상 성공한다는 보장이 없어서인지 await 안 걸림 따라서 비동기 컨트롤이
+        // 안되기 때문에 addOnComplete 사용
+        FirebaseMessaging.getInstance().token.addOnCompleteListener {
+            if (it.isSuccessful){
+                token = it.result
+                postToken(userEmail,it.result)
+                return@addOnCompleteListener
             }
         }.await()
+        Log.d("토큰 생성 확인2",token.toString())
         return token
     }
 
@@ -194,9 +198,15 @@ class Repository {
                 querySnapshot.documentChanges.forEachIndexed { idx, dcm ->
                     Log.d("오류 코드", "getUserChatRoomLi: ${idx}  $dcm")
                     if (dcm.type == DocumentChange.Type.ADDED){
-                        Log.d("오류 코드2", "getUserChatRoomLi: ${dcm.document.toObject(ChatRoom::class.java)}  $dcm")
+                        Log.d("채팅방 추가", "getUserChatRoomLi: ${dcm.document.toObject(ChatRoom::class.java)}  $dcm")
                         tempArray.add(0, dcm.document.toObject(ChatRoom::class.java))
                         userChatRoomLi.value = tempArray
+                    }else if(dcm.type == DocumentChange.Type.REMOVED){
+                        Log.d("채팅방 제거", "getUserChatRoomLi: ${dcm.document.toObject(ChatRoom::class.java)}  $dcm")
+                        val reObject = dcm.document.toObject(ChatRoom::class.java)
+                        val reIdx = userChatRoomLi.value?.filter { it.randomDouble == reObject.randomDouble }?.get(0)
+                        Log.d("채팅방 제거 인덱스", reIdx.toString())
+                        userChatRoomLi.value?.remove(reIdx)
                     }
                     // TODO: 채팅방 거래 완료 이벤트 받으면 삭제 타입도 처리하기
                     //if (dcm.type == DocumentChange.Type.REMOVED)

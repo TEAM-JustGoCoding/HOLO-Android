@@ -1,5 +1,6 @@
 package kr.co.ajjulcoding.team.project.holo
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -119,6 +120,15 @@ class ChatListFragment(val userInfo:HoloUser) : Fragment() {
                     GlideApp.with(this@ChatListFragment).load(mountainRef)
                         .thumbnail(0.1f)
                         .into(imgProfile)
+                    itemView.setOnClickListener {
+                        val intentChatRoom = Intent(mActivity, ChatRoomActivity::class.java)
+                        SettingInApp.uniqueActivity(intentChatRoom)
+                        val scrData = SimpleChatRoom(item.title,item.participant,item.latestTime,item.semail,
+                        item.snickName,item.stoken,item.remail,item.rnickName,item.rtoken)
+                        Log.d("채팅방 입장 데이터", scrData.toString())
+                        intentChatRoom.putExtra(AppTag.CHATROOM_TAG, scrData)
+                        startActivity(intentChatRoom)
+                    }
                 }
                 // TODO: 터치하면 채팅방 액티배티 나오게 클릭 리스너 추가하기
             }

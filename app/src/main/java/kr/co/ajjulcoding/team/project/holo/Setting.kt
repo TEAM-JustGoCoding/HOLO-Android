@@ -50,7 +50,10 @@ class AppTag {
         const val PROFILE_TAG = "profileTAG"
         const val GPS_TAG = "gpsTAG"
         const val HOME_TAG = "homeTAG"
-        const val ChatList_TAG = "chatListTAG"
+        const val CHATLIST_TAG = "chatListTAG"
+        const val CHATROOM_TAG = "chatRoomTAG"
+        const val BUBBLELEFT_TAG = "bubbleLeftTAG"
+        const val BUBBLERIGHT_TAG = "bubbleRightTAG"
         fun currentUserEmail() = SettingInApp.mAuth.currentUser?.email
     }
 }

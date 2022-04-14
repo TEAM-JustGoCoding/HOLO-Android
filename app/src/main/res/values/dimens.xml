@@ -18,4 +18,5 @@
 <!--    ChatListFragment-->
     <dimen name="imgProfile">60dp</dimen>
     <dimen name="civBorderWidth">3dp</dimen>
+    <dimen name="chatTextSize">17dp</dimen>
 </resources>
