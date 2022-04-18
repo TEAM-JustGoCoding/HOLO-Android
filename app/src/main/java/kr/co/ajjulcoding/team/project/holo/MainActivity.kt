@@ -89,7 +89,7 @@ class MainActivity : AppCompatActivity() {
             if (AppTag.HOME_TAG == currentTag)
                 tran.replace(R.id.fragmentView, homeFragment)   // (스택에 있는)이전 프래그먼트 전부 제거
             else {
-                frgDic[currentTag]!!.let { tran.replace(R.id.fragmentView, it) }
+                frgDic[currentTag]!!.let { tran.add(R.id.fragmentView, it) }
             }
             tran.commit()
         }

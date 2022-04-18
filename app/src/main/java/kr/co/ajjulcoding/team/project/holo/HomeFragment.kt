@@ -55,11 +55,13 @@ class HomeFragment(val currentUser:HoloUser) : Fragment() {
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
             }.into(binding.circleImageView)
         }
-        homeViewModel.chatRoom.observe(viewLifecycleOwner){chatRoomData ->
+        homeViewModel.chatRoom.observe(viewLifecycleOwner){
             mActivity.showAlertDialog("채팅방이 개설되었습니다!", *arrayOf("확인"))
         }
+
         binding.btnTouchSell.setOnClickListener {
             CoroutineScope(Dispatchers.Main).launch {
+                Log.d("채팅방 열기 버튼 클릭", "들어옴")
                 val receiverEmail = "lyy8201@gmail.com"
                 val rNicknameAndToken = homeViewModel.getUserNicknameAndToken(receiverEmail)
                 val receiverNickname = rNicknameAndToken.await().first
@@ -68,7 +70,7 @@ class HomeFragment(val currentUser:HoloUser) : Fragment() {
                     , currentUser.uid!!, currentUser.nickName
                     ,currentUser.token ?: "토큰캐시없음", receiverEmail, receiverNickname, receiverToken
                     , Timestamp.now())
-                val valid = homeViewModel.createChatRoom(chatRoomData)
+                val valid = homeViewModel.createChatRoom(chatRoomData, mActivity)
                 if (!(valid.await())){
                     mActivity.showAlertDialog("네트워크 연결을 확인할 수 없습니다!", *arrayOf("확인"))
                     return@launch

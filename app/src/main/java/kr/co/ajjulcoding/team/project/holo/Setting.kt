@@ -41,6 +41,8 @@ class AppTag {
     companion object {
         const val USER_INFO = "user_info"
         const val PARTICIPANT = "participant"
+        const val CHAT_TITLE = "title"
+        const val CHAT_RANDOM = "randomDouble"
         const val RECEIVER_EMAIL = "remail"
         const val SENDER_EMAIL = "semail"
         const val LATEST_TIME = "latestTime"

@@ -19,14 +19,15 @@ data class ChatRoom(val title:String="",
                     val semail:String="", val snickName:String="", var stoken:String="",
                     val remail:String="", val rnickName:String="", var rtoken:String="",
                     var latestTime:Timestamp?= null,
-                    val talkContent: ArrayList<String> = arrayListOf<String>(),
-                    val talkNickName: ArrayList<String> = arrayListOf<String>(),
-                    val talkTimestamp: ArrayList<Timestamp> = arrayListOf<Timestamp>(),
+                    val talkContent: ArrayList<ChatBubble> = arrayListOf<ChatBubble>(),
                     val randomDouble:Double = Math.random(),
                     var sInputStar:Int? = null, var rInputStar:Int? = null):Parcelable
 
 @Parcelize
 data class SimpleChatRoom(val title:String="", val participant:ArrayList<String> = ArrayList<String>(),
-                          var latestTime:Timestamp?= null,
+                          var randomDouble:Double? = null,
                           val semail:String="", val snickName:String="", var stoken:String="",
                           val remail:String="", val rnickName:String="", var rtoken:String="",): Parcelable
+
+@Parcelize
+data class ChatBubble(val nickname:String? = null, val content:String = "", val currentTime:Timestamp? = null):Parcelable

@@ -51,19 +51,6 @@ class ChatListFragment(val userInfo:HoloUser) : Fragment() {
         }
     }
 
-    private class CRoomAsyncDifCallback : DiffUtil.ItemCallback<ChatRoom>(){
-        override fun areItemsTheSame(oldItem: ChatRoom, newItem: ChatRoom): Boolean{
-            Log.d("옵저버 데이터 확인2", oldItem.latestTime.toString()+" "+newItem.latestTime.toString())
-            return oldItem.latestTime == newItem.latestTime
-        }
-
-        override fun areContentsTheSame(oldItem: ChatRoom, newItem: ChatRoom):Boolean {
-            Log.d("옵저버 데이터 확인3", oldItem.toString()+"다름 "+newItem.toString())
-            return oldItem == newItem && oldItem.latestTime == newItem.latestTime
-        }
-
-
-    }
     companion object{
         val chatRoomDifUtil = object : DiffUtil.ItemCallback<ChatRoom>() {
             override fun areItemsTheSame(oldItem: ChatRoom, newItem: ChatRoom): Boolean {
@@ -113,7 +100,7 @@ class ChatListFragment(val userInfo:HoloUser) : Fragment() {
                     textTitle.setText(item.title)
                     item.talkContent.let {
                         if (it.size >0){
-                            textMSG.setText(it[it.size-1])
+                            textMSG.setText(it[it.size-1].content)
                         }
                     }
                     val mountainRef = FBstorageRef.child("profile_img/"+fileName)
@@ -123,9 +110,10 @@ class ChatListFragment(val userInfo:HoloUser) : Fragment() {
                     itemView.setOnClickListener {
                         val intentChatRoom = Intent(mActivity, ChatRoomActivity::class.java)
                         SettingInApp.uniqueActivity(intentChatRoom)
-                        val scrData = SimpleChatRoom(item.title,item.participant,item.latestTime,item.semail,
+                        val scrData = SimpleChatRoom(item.title,item.participant, item.randomDouble,item.semail,
                         item.snickName,item.stoken,item.remail,item.rnickName,item.rtoken)
                         Log.d("채팅방 입장 데이터", scrData.toString())
+                        intentChatRoom.putExtra(AppTag.USER_INFO, userInfo)
                         intentChatRoom.putExtra(AppTag.CHATROOM_TAG, scrData)
                         startActivity(intentChatRoom)
                     }
