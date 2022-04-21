@@ -5,17 +5,22 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.ListenerRegistration
 import kotlinx.coroutines.launch
 import kotlin.Exception
 
 class ChatRoomViewModel: ViewModel() {
     private var listenerRgst:ListenerRegistration? = null
-    private var _chatBubbleLi = MutableLiveData<ChatRoom>()
-    private val chatBubbleLi:LiveData<ChatRoom> get() = _chatBubbleLi
+    private var _chatBubbleLi = MutableLiveData<ArrayList<ChatBubble>>()
+    val chatBubbleLi:LiveData<ArrayList<ChatBubble>> get() = _chatBubbleLi
     private var _sendError = MutableLiveData<Exception>()
     val sendError: LiveData<Exception> = _sendError
     private val repository = Repository()
+
+    init {
+        _chatBubbleLi.value = ArrayList<ChatBubble>()
+    }
 
     fun setChatBubble(userData:HoloUser, chatData:SimpleChatRoom, content: String) = viewModelScope.launch {
         repository.setChatBubble(userData, chatData, content, _sendError)
@@ -25,4 +30,10 @@ class ChatRoomViewModel: ViewModel() {
             listenerRgst = repository.getChatBubbleLi(title, randomDouble, _chatBubbleLi)
         Log.d("채팅방 리스너 등록", listenerRgst.toString())
     }
+
+//    override fun onCleared() {
+//        super.onCleared()
+//        listenerRgst?.remove()
+//        listenerRgst = null
+//    }
 }

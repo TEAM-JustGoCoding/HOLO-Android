@@ -237,7 +237,7 @@ class Repository {
         return
     }
 
-    fun getChatBubbleLi(title:String, randomDouble:Double, _chatBubbleLi:MutableLiveData<ChatRoom>)
+    fun getChatBubbleLi(title:String, randomDouble:Double, _chatBubbleLi:MutableLiveData<ArrayList<ChatBubble>>)
     : ListenerRegistration{
         // TODO: 채팅 입력 기능 완성 후에 테스트하기
         Log.d("채팅방 데이터 들어오는지 확인", _chatBubbleLi.value.toString())
@@ -250,15 +250,29 @@ class Repository {
                 if (querySnapshot == null) return@addSnapshotListener
                 querySnapshot.documentChanges.forEachIndexed { idx, dcm ->
                     Log.d("오류 코드", "getUserChatRoom: ${idx}  $dcm")
-                    if (dcm.type == DocumentChange.Type.ADDED){
-                        Log.d("채팅방 추가", "getUserChatRoomLi: ${dcm.document.toObject(ChatRoom::class.java)}  $dcm")
-                        val chatRoomObj = dcm.document.toObject(ChatRoom::class.java)
-                        _chatBubbleLi.value = chatRoomObj
-                    }else if (dcm.type == DocumentChange.Type.MODIFIED){
-                        Log.d("채팅방 수정", "getUserChatRoomLi: ${dcm.document.toObject(ChatRoom::class.java)}  $dcm")
-                        val chatRoomObj = dcm.document.toObject(ChatRoom::class.java)
-                        _chatBubbleLi.value = chatRoomObj
+                    val fbBubbleLi:ArrayList<ChatBubble> = dcm.document.toObject(ChatRoom::class.java).talkContent
+                    if (_chatBubbleLi.value!!.size == fbBubbleLi.size) { // 중복 방지 TODO: 리스너 단일로 만들고 삭제해보기
+                        return@addSnapshotListener
+                        return@forEachIndexed
                     }
+                    var tempLi = ArrayList<ChatBubble>() // 깊은 복사(객체 영향 X)
+                    tempLi.addAll(fbBubbleLi)
+                    if (dcm.type == DocumentChange.Type.ADDED){
+                        if (_chatBubbleLi.value!!.size == fbBubbleLi.size) {
+                            return@addSnapshotListener
+                            return@forEachIndexed
+                        }
+                        Log.d("말풍선 추가", "getUserChatRoomLi: ${fbBubbleLi[fbBubbleLi.lastIndex]}")
+
+                        Log.d("말풍선 추가2", "getUserChatRoomLi: ${_chatBubbleLi.value}")
+                    }else if (dcm.type == DocumentChange.Type.MODIFIED){
+                        if (_chatBubbleLi.value!!.size == fbBubbleLi.size) {
+                            return@addSnapshotListener
+                            return@forEachIndexed
+                        }
+                        Log.d("말풍선 수정", "getUserChatRoomLi: ${dcm.document.toObject(ChatRoom::class.java)}  $dcm")
+                    }
+                    _chatBubbleLi.value = tempLi
                 }
             }
         return listenerRgst

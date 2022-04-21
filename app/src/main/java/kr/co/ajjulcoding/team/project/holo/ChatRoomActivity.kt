@@ -8,9 +8,21 @@ import android.net.NetworkCapabilities
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.TextView
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.Timestamp
 import kr.co.ajjulcoding.team.project.holo.databinding.ActivityChatRoomBinding
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class ChatRoomActivity() : AppCompatActivity() {
     private lateinit var userEmail:String
@@ -29,6 +41,15 @@ class ChatRoomActivity() : AppCompatActivity() {
         _binding = ActivityChatRoomBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setViewData()
+        chatRoomViewModel.getChatBubbleLi(chatRoomData.title, chatRoomData.randomDouble!!)
+        binding.recyclerBubble.adapter = ChatRoomAdapter()
+        val bubbleObserver = object : Observer<ArrayList<ChatBubble>>{
+            override fun onChanged(bubbleLi: ArrayList<ChatBubble>?) {
+                Log.d("채팅방 옵저버 확인", bubbleLi.toString())
+                (binding.recyclerBubble.adapter as ChatRoomAdapter).replaceBubbles(bubbleLi!!)
+            }
+        }
+        chatRoomViewModel.chatBubbleLi.observe(this, bubbleObserver)
         binding.btnSendText.setOnClickListener {
             Log.d("네트워크 확인", checkNetwork().toString())
             if (!checkNetwork()){   // 네트워크 X
@@ -95,6 +116,108 @@ class ChatRoomActivity() : AppCompatActivity() {
 
     private fun sendStar(){}
 
+    companion object{
+        const val LEFT_BUBBLE = 1
+        const val RIGHT_BUBBLE = 2
+        val chatBubbleDiffUtil = object : DiffUtil.ItemCallback<ChatBubble>(){
+            override fun areItemsTheSame(oldItem: ChatBubble, newItem: ChatBubble): Boolean {
+                Log.d("옵저버버 데이터 확인4", oldItem.currentTime.toString()+" "+newItem.currentTime.toString())
+                return oldItem.currentTime == newItem.currentTime
+            }
+
+            override fun areContentsTheSame(oldItem: ChatBubble, newItem: ChatBubble): Boolean {
+                Log.d("옵저버 데이터 확인5", oldItem.toString()+"다름 "+newItem.toString())
+                return oldItem == newItem && oldItem.currentTime == newItem.currentTime
+            }
+
+        }
+    }
     // TODO: 채팅 실시간 보내서 UI 출력
-    //inner class ChatRoomAdapter():
+    inner class ChatRoomAdapter(): ListAdapter<ChatBubble, RecyclerView.ViewHolder>(chatBubbleDiffUtil){
+
+        inner class LeftViewHolder(view: View): RecyclerView.ViewHolder(view){
+            private val textChat: TextView = view.findViewById(R.id.txtLeftChat)
+            private val textDate: TextView = view.findViewById(R.id.txtLeftDate)
+
+            fun bind(item: ChatBubble){
+                val time:Timestamp = item.currentTime!!
+                val millisec:Long = time.seconds * 1000 + time.nanoseconds / 1000000
+                val sdf = SimpleDateFormat("yyyyMMdd", Locale.KOREA)
+                val tmpDate = Date(millisec)
+                val date = sdf.parse(sdf.format(tmpDate).toString()) as Date
+                val calendar:Calendar = Calendar.getInstance()
+                calendar.time = date
+                Log.d("왼쪽 요일 출력", calendar.get(Calendar.DAY_OF_WEEK).toString())
+                textDate.setText(calendar.get(Calendar.DAY_OF_WEEK).toString())
+                textChat.setText(item.content)
+            }
+        }
+        inner class RightViewHolder(view: View): RecyclerView.ViewHolder(view){
+            private val textChat: TextView = view.findViewById(R.id.txtRightChat)
+            private val textDate: TextView = view.findViewById(R.id.txtRightDate)
+
+            fun bind(item: ChatBubble){
+                val time:Timestamp = item.currentTime!!
+                val millisec:Long = time.seconds * 1000 + time.nanoseconds / 1000000
+                val sdf = SimpleDateFormat("yyyyMMdd", Locale.KOREA)
+                val tmpDate = Date(millisec)
+                val date = sdf.parse(sdf.format(tmpDate).toString()) as Date
+                val calendar:Calendar = Calendar.getInstance()
+                calendar.time = date
+                Log.d("오른쪽 요일 출력", calendar.get(Calendar.DAY_OF_WEEK).toString())
+                textDate.setText(calendar.get(Calendar.DAY_OF_WEEK).toString())
+                textChat.setText(item.content)
+            }
+        }
+        override fun getItemViewType(position: Int): Int {
+            return currentList!!.get(position).let { bubble ->
+                if (bubble.nickname == userInfo.nickName)
+                    RIGHT_BUBBLE
+                else
+                    LEFT_BUBBLE
+            }
+        }
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+            val view: View?
+            return when (viewType) {
+                LEFT_BUBBLE -> {
+                    view = LayoutInflater.from(parent.context).inflate(
+                        R.layout.item_chat_left_recycler,
+                        parent,
+                        false)
+                    LeftViewHolder(view)
+                }
+
+                else -> {
+                    view = LayoutInflater.from(parent.context).inflate(
+                        R.layout.item_chat_right_recycler,
+                        parent,
+                        false)
+                    RightViewHolder(view)
+                }
+            }
+        }
+
+        override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+            currentList!!.get(position).let { bubble ->
+                var bubbleType:Int = LEFT_BUBBLE
+                if (bubble.nickname == userInfo.nickName)
+                    bubbleType = RIGHT_BUBBLE
+                when (bubbleType){
+                    LEFT_BUBBLE -> {
+                        (holder as LeftViewHolder).bind(bubble)
+                    }
+                    else -> {
+                        (holder as RightViewHolder).bind(bubble)
+                    }
+                }
+            }
+        }
+
+        fun replaceBubbles(newBubbleLi: ArrayList<ChatBubble>){
+            submitList(newBubbleLi.toMutableList()) // 사본 생성: 객체 달라짐 TODO: 나중에 제거해보기
+        }
+
+    }
 }

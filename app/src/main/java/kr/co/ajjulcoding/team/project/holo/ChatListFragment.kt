@@ -8,18 +8,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.storage.FirebaseStorage
-import kotlinx.coroutines.tasks.await
 import kr.co.ajjulcoding.team.project.holo.databinding.FragmentChatListBinding
 import kr.co.ajjulcoding.team.project.holo.databinding.ItemChatListRecyclerBinding
-import java.io.File
 
 class ChatListFragment(val userInfo:HoloUser) : Fragment() {
     private lateinit var _activity:MainActivity
@@ -52,7 +46,7 @@ class ChatListFragment(val userInfo:HoloUser) : Fragment() {
     }
 
     companion object{
-        val chatRoomDifUtil = object : DiffUtil.ItemCallback<ChatRoom>() {
+        val chatRoomDiffUtil = object : DiffUtil.ItemCallback<ChatRoom>() {
             override fun areItemsTheSame(oldItem: ChatRoom, newItem: ChatRoom): Boolean {
                 Log.d("옵저버 데이터 확인2", oldItem.latestTime.toString()+" "+newItem.latestTime.toString())
                 return oldItem.latestTime == newItem.latestTime
@@ -66,7 +60,7 @@ class ChatListFragment(val userInfo:HoloUser) : Fragment() {
         }
     }
     inner class ChatListAdapter():
-           ListAdapter<ChatRoom, ChatListAdapter.ViewHolder>(chatRoomDifUtil){
+           ListAdapter<ChatRoom, ChatListAdapter.ViewHolder>(chatRoomDiffUtil){
         val FBstorage = FirebaseStorage.getInstance()
         val FBstorageRef = FBstorage.reference
 
