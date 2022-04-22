@@ -17,7 +17,7 @@ class FinishSplashActivity : AppCompatActivity() {
         setContentView(R.layout.activity_finishsplash)
 
         val repository = Repository()
-        val userInfo: HoloUser = intent.getSerializableExtra("userInfo") as HoloUser
+        val userInfo: HoloUser = intent.getParcelableExtra<HoloUser>("userInfo") as HoloUser
 
         CoroutineScope(Dispatchers.Main).launch {
             val result = repository.insertRegister(userInfo)

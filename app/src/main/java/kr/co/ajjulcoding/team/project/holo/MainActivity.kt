@@ -133,7 +133,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun saveCache(){
-        val userInfo = intent.getSerializableExtra(AppTag.USER_INFO) as HoloUser
+        val userInfo = intent.getParcelableExtra<HoloUser>(AppTag.USER_INFO) as HoloUser
         sharedPref = this.getSharedPreferences(AppTag.USER_INFO,0)
         editor = sharedPref.edit()
         editor.putString("uid", userInfo.uid).apply()
