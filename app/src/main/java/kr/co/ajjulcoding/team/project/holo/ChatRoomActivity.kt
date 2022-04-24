@@ -142,13 +142,10 @@ class ChatRoomActivity() : AppCompatActivity() {
             fun bind(item: ChatBubble){
                 val time:Timestamp = item.currentTime!!
                 val millisec:Long = time.seconds * 1000 + time.nanoseconds / 1000000
-                val sdf = SimpleDateFormat("yyyyMMdd", Locale.KOREA)
+                val sdf = SimpleDateFormat("E요일, kk:mm", Locale.KOREA)
                 val tmpDate = Date(millisec)
-                val date = sdf.parse(sdf.format(tmpDate).toString()) as Date
-                val calendar:Calendar = Calendar.getInstance()
-                calendar.time = date
-                Log.d("왼쪽 요일 출력", calendar.get(Calendar.DAY_OF_WEEK).toString())
-                textDate.setText(calendar.get(Calendar.DAY_OF_WEEK).toString())
+                val date = sdf.format(tmpDate)
+                textDate.setText(date)
                 textChat.setText(item.content)
             }
         }
@@ -159,13 +156,10 @@ class ChatRoomActivity() : AppCompatActivity() {
             fun bind(item: ChatBubble){
                 val time:Timestamp = item.currentTime!!
                 val millisec:Long = time.seconds * 1000 + time.nanoseconds / 1000000
-                val sdf = SimpleDateFormat("yyyyMMdd", Locale.KOREA)
+                val sdf = SimpleDateFormat("E요일, kk:mm", Locale.KOREA)
                 val tmpDate = Date(millisec)
-                val date = sdf.parse(sdf.format(tmpDate).toString()) as Date
-                val calendar:Calendar = Calendar.getInstance()
-                calendar.time = date
-                Log.d("오른쪽 요일 출력", calendar.get(Calendar.DAY_OF_WEEK).toString())
-                textDate.setText(calendar.get(Calendar.DAY_OF_WEEK).toString())
+                val date = sdf.format(tmpDate)
+                textDate.setText(date)
                 textChat.setText(item.content)
             }
         }
