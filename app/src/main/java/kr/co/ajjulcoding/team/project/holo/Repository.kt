@@ -194,8 +194,8 @@ class Repository {
                 Log.d("오류 코드", "getUserChatRoomLi: $e")
                 Log.d("오류 코드", "getUserChatRoomLi: ${querySnapshot}")
                 if (querySnapshot == null) return@addSnapshotListener
-                if (_userChatRoomLi.value!!.size == querySnapshot.size()) // 중복 방지 TODO: 리스너 단일로 만들고 삭제해보기
-                    return@addSnapshotListener
+//                if (_userChatRoomLi.value!!.size == querySnapshot.size()) // 중복 방지 TODO: 리스너 단일로 만들고 삭제해보기
+//                    return@addSnapshotListener
                 val tempArray:ArrayList<ChatRoom> = _userChatRoomLi.value!!
                 querySnapshot.documentChanges.forEachIndexed { idx, dcm ->
                     Log.d("오류 코드", "getUserChatRoomLi: ${idx}  $dcm")
@@ -209,6 +209,13 @@ class Repository {
                         val reIdx = _userChatRoomLi.value?.filter { it.randomDouble == reObject.randomDouble }?.get(0)
                         Log.d("채팅방 제거 인덱스", reIdx.toString())
                         _userChatRoomLi.value?.remove(reIdx)
+                    }else if (dcm.type == DocumentChange.Type.MODIFIED){
+                        Log.d("채팅방 수정", "getUserChatRoomLi: ${_userChatRoomLi.value}  $dcm")
+                        val roomData = dcm.document.toObject(ChatRoom::class.java) as ChatRoom
+                        tempArray.addAll(_userChatRoomLi.value!!)
+                        tempArray.removeIf { it.randomDouble == roomData.randomDouble }
+                        tempArray.add(0, roomData)
+                        _userChatRoomLi.value = tempArray
                     }
                     // TODO: 채팅방 거래 완료 이벤트 받으면 삭제 타입도 처리하기
                     //if (dcm.type == DocumentChange.Type.REMOVED)
@@ -222,17 +229,15 @@ class Repository {
                               , _sendError:MutableLiveData<Exception>){
         coroutineScope {
             val dRef = SettingInApp.db.collection("chatRoom").document("${chatRoomData.title} ${chatRoomData.randomDouble}")
-//            SettingInApp.db.runTransaction { transition ->
-//                val snapshot = transition.get(dRef)
-//                dRef.update("talkContent",FieldValue.arrayUnion(ChatBubble(userData.nickName, content, Timestamp.now())))
-//                dRef.update("talkNickName", FieldValue.arrayUnion(userData.nickName))
-//                dRef.update("talkTimestamp",FieldValue.arrayUnion(Timestamp.now()))
-//            }.addOnFailureListener {
-//                Log.d("채팅 트랜잭션 실패", it.toString())
-//                _sendError.value = it
-//            }
-            dRef.update("talkContent",FieldValue.arrayUnion(ChatBubble(userData.nickName, content, Timestamp.now())))
-
+            SettingInApp.db.runTransaction { transition ->
+                val snapshot = transition.get(dRef)
+                val timestamp:Timestamp = Timestamp.now()
+                dRef.update("talkContent",FieldValue.arrayUnion(ChatBubble(userData.nickName, content, timestamp)))
+                dRef.update("latestTime", timestamp)
+            }.addOnFailureListener {
+                Log.d("채팅 트랜잭션 실패", it.toString())
+                _sendError.value = it
+            }
         }.await()
         return
     }
@@ -245,8 +250,8 @@ class Repository {
             .whereEqualTo(AppTag.CHAT_TITLE, title)
             .whereEqualTo(AppTag.CHAT_RANDOM, randomDouble)
             .addSnapshotListener { querySnapshot, e ->
-                Log.d("채팅방 오류 코드1", "getUserChatRoomLi: $e")
-                Log.d("채팅방 오류 코드2", "getUserChatRoomLi: ${querySnapshot}")
+                Log.d("채팅방 오류 코드1", "getChatBubbleLi: $e")
+                Log.d("채팅방 오류 코드2", "getChatBubbleLi: ${querySnapshot}")
                 if (querySnapshot == null) return@addSnapshotListener
                 querySnapshot.documentChanges.forEachIndexed { idx, dcm ->
                     Log.d("오류 코드", "getUserChatRoom: ${idx}  $dcm")

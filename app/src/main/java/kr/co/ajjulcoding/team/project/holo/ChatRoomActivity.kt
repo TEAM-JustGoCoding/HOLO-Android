@@ -3,6 +3,7 @@ package kr.co.ajjulcoding.team.project.holo
 import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
+import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import androidx.appcompat.app.AppCompatActivity
@@ -107,11 +108,6 @@ class ChatRoomActivity() : AppCompatActivity() {
         val content = binding.editChat.text.toString()
         chatRoomViewModel.setChatBubble(userInfo, chatRoomData, content)
         binding.editChat.setText("")
-        // 키보드 내리고 포커스 아웃
-        val imm =
-            this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(binding.editChat.windowToken, 0)
-        binding.editChat.clearFocus()
     }
 
     private fun sendStar(){}
@@ -210,7 +206,7 @@ class ChatRoomActivity() : AppCompatActivity() {
         }
 
         fun replaceBubbles(newBubbleLi: ArrayList<ChatBubble>){
-            submitList(newBubbleLi.toMutableList()) // 사본 생성: 객체 달라짐 TODO: 나중에 제거해보기
+            submitList(newBubbleLi)
         }
 
     }
