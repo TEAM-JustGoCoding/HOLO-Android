@@ -230,7 +230,6 @@ class Repository {
         coroutineScope {
             val dRef = SettingInApp.db.collection("chatRoom").document("${chatRoomData.title} ${chatRoomData.randomDouble}")
             SettingInApp.db.runTransaction { transition ->
-                val snapshot = transition.get(dRef)
                 val timestamp:Timestamp = Timestamp.now()
                 dRef.update("talkContent",FieldValue.arrayUnion(ChatBubble(userData.nickName, content, timestamp)))
                 dRef.update("latestTime", timestamp)
@@ -261,7 +260,7 @@ class Repository {
                         return@forEachIndexed
                     }
                     var tempLi = ArrayList<ChatBubble>() // 깊은 복사(객체 영향 X)
-                    tempLi.addAll(fbBubbleLi)
+                    tempLi.addAll(fbBubbleLi.reversed())
                     if (dcm.type == DocumentChange.Type.ADDED){
                         if (_chatBubbleLi.value!!.size == fbBubbleLi.size) {
                             return@addSnapshotListener

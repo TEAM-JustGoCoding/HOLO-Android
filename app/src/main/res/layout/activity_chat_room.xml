@@ -74,6 +74,7 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             android:orientation="vertical"
             android:padding="@dimen/marginSmallView"
+            app:reverseLayout="true"
             app:layout_constraintTop_toBottomOf="@id/ratingBar"
             app:layout_constraintBottom_toTopOf="@+id/editChat"
             app:layout_constraintRight_toRightOf="parent"

@@ -50,6 +50,8 @@ class ChatRoomActivity() : AppCompatActivity() {
                 (binding.recyclerBubble.adapter as ChatRoomAdapter).replaceBubbles(bubbleLi!!)
             }
         }
+        binding.recyclerBubble.adapter!!.registerAdapterDataObserver(ChatDataObserver())
+
         chatRoomViewModel.chatBubbleLi.observe(this, bubbleObserver)
         binding.btnSendText.setOnClickListener {
             Log.d("네트워크 확인", checkNetwork().toString())
@@ -128,6 +130,12 @@ class ChatRoomActivity() : AppCompatActivity() {
 
         }
     }
+    inner class ChatDataObserver(): RecyclerView.AdapterDataObserver(){
+        override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+            binding.recyclerBubble.scrollToPosition(0)
+            super.onItemRangeInserted(positionStart, itemCount)
+        }
+    }
     // TODO: 채팅 실시간 보내서 UI 출력
     inner class ChatRoomAdapter(): ListAdapter<ChatBubble, RecyclerView.ViewHolder>(chatBubbleDiffUtil){
 
@@ -203,6 +211,10 @@ class ChatRoomActivity() : AppCompatActivity() {
                     }
                 }
             }
+        }
+
+        override fun getItemCount(): Int {
+            return currentList.size
         }
 
         fun replaceBubbles(newBubbleLi: ArrayList<ChatBubble>){
