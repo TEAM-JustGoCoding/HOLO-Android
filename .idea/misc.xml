@@ -26,6 +26,7 @@
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.15" />
         <entry key="app/src/main/res/layout/activity_register.xml" value="0.2545289855072464" />
         <entry key="app/src/main/res/layout/activity_signin.xml" value="0.22" />
+        <entry key="app/src/main/res/layout/dialog_fragment_post_score.xml" value="0.2598958333333333" />
         <entry key="app/src/main/res/layout/fragment_chat_list.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_gps.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.25" />
