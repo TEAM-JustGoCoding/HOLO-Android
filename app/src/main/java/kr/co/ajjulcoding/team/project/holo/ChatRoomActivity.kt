@@ -76,7 +76,17 @@ class ChatRoomActivity() : AppCompatActivity() {
                 showAlertDialog("별점을 드래그하여 점수를 설정해주세요!", *arrayOf("확인"))
                 return@setOnClickListener
             }
-            chatRoomViewModel.postScore(userInfo.uid, numStar)   // 별점 전송
+            val dialog: PostScoreDialogFragment = PostScoreDialogFragment()
+            supportFragmentManager.let { fragmentManager ->
+                if (null == fragmentManager.findFragmentByTag(AppTag.POSTSCORE_TAG))
+                    dialog!!.show(fragmentManager, AppTag.POSTSCORE_TAG)
+            }
+            dialog!!.setPostOnBtnClicked(object : PostScoreDialogFragment.PostOnBtnClickListener{
+                override fun PostOnBtnClicked(vaild: Boolean) {
+                    if (vaild == true)
+                        chatRoomViewModel.postScore(userInfo.uid, numStar)   // 별점 전송
+                }
+            })
         }
     }
 

@@ -54,6 +54,7 @@ class AppTag {
         const val HOME_TAG = "homeTAG"
         const val CHATLIST_TAG = "chatListTAG"
         const val CHATROOM_TAG = "chatRoomTAG"
+        const val POSTSCORE_TAG = "postScoreTAG"
         fun currentUserEmail() = SettingInApp.mAuth.currentUser?.email
     }
 }
