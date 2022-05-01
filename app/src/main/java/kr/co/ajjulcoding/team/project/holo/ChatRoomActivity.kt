@@ -20,6 +20,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.Timestamp
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kr.co.ajjulcoding.team.project.holo.databinding.ActivityChatRoomBinding
 import java.text.SimpleDateFormat
 import java.util.*
@@ -54,8 +58,7 @@ class ChatRoomActivity() : AppCompatActivity() {
 
         chatRoomViewModel.chatBubbleLi.observe(this, bubbleObserver)
         chatRoomViewModel.validScore.observe(this){
-            Log.d("채팅방 삭제 시작","ㅇㅇ")
-            // TODO: 채팅방 삭제하기
+
         }
         binding.btnSendText.setOnClickListener {
             Log.d("네트워크 확인", checkNetwork().toString())
@@ -83,8 +86,13 @@ class ChatRoomActivity() : AppCompatActivity() {
             }
             dialog!!.setPostOnBtnClicked(object : PostScoreDialogFragment.PostOnBtnClickListener{
                 override fun PostOnBtnClicked(vaild: Boolean) {
-                    if (vaild == true)
-                        chatRoomViewModel.postScore(userInfo.uid, numStar)   // 별점 전송
+                    val deferred:Deferred<Boolean> = chatRoomViewModel.postScore(userInfo.uid, numStar)   // 별점 전송
+                    CoroutineScope(Dispatchers.Main).launch {
+                        val resultDeferred:Boolean = deferred.await()
+                        if (resultDeferred){
+                            deleteChatRoom()
+                        }
+                    }
                 }
             })
         }
@@ -127,6 +135,19 @@ class ChatRoomActivity() : AppCompatActivity() {
         val content = binding.editChat.text.toString()
         chatRoomViewModel.setChatBubble(userInfo, chatRoomData, content)
         binding.editChat.setText("")
+    }
+
+    private fun deleteChatRoom(){
+        Log.d("채팅방 삭제 시작","ㅇㅇ")
+        val deferred:Deferred<Boolean> = chatRoomViewModel.deleteChatRoom(chatRoomData.title, chatRoomData.randomDouble!!)
+        CoroutineScope(Dispatchers.Main).launch {
+            val resultDeferred:Boolean = deferred.await()
+            if (resultDeferred)
+                finish()
+            else
+                showAlertDialog("서버 오류입니다. 나중에 다시 시도해주세요.", *arrayOf("확인"))
+        }
+        // TODO: 채팅방 삭제하기
     }
 
     companion object{

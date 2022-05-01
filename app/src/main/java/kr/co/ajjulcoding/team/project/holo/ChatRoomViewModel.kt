@@ -7,6 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.ListenerRegistration
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlin.Exception
 
@@ -15,7 +17,7 @@ class ChatRoomViewModel: ViewModel() {
     private var _chatBubbleLi = MutableLiveData<ArrayList<ChatBubble>>()
     val chatBubbleLi:LiveData<ArrayList<ChatBubble>> get() = _chatBubbleLi
     private var _sendError = MutableLiveData<Exception>()
-    private var _validScore: MutableLiveData<Boolean> = MutableLiveData(false)
+    private var _validScore = MutableLiveData<Boolean>()
     val validScore: LiveData<Boolean> get() = _validScore
     val sendError: LiveData<Exception> = _sendError
     private val repository = Repository()
@@ -34,9 +36,15 @@ class ChatRoomViewModel: ViewModel() {
         Log.d("채팅방 리스너 등록", listenerRgst.toString())
     }
 
-    fun postScore(email:String, star:Float) = viewModelScope.launch {
-        if (repository.postScore(email, star))
-            _validScore.value = _validScore.value!!.not()
+    fun postScore(email:String, star:Float) = viewModelScope.async {
+        val result: Boolean = repository.postScore(email, star)
+        return@async result == true
+    }
+
+    fun deleteChatRoom(chatTitle:String, chatRandom:Double) = viewModelScope.async {
+            val result: Boolean = repository.deleteChatRoom(chatTitle, chatRandom)
+            Log.d("채팅방 삭제 결과", result.toString())
+            return@async result == true
     }
 //    override fun onCleared() {
 //        super.onCleared()

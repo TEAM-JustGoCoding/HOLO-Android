@@ -210,10 +210,10 @@ class Repository {
                         val reIdx = _userChatRoomLi.value?.filter { it.randomDouble == reObject.randomDouble }?.get(0)
                         Log.d("채팅방 제거 인덱스", reIdx.toString())
                         _userChatRoomLi.value?.remove(reIdx)
+                        _userChatRoomLi.value = _userChatRoomLi.value
                     }else if (dcm.type == DocumentChange.Type.MODIFIED){
                         Log.d("채팅방 수정", "getUserChatRoomLi: ${_userChatRoomLi.value}  $dcm")
                         val roomData = dcm.document.toObject(ChatRoom::class.java) as ChatRoom
-                        tempArray.addAll(_userChatRoomLi.value!!)
                         tempArray.removeIf { it.randomDouble == roomData.randomDouble }
                         tempArray.add(0, roomData)
                         _userChatRoomLi.value = tempArray
@@ -302,6 +302,17 @@ class Repository {
             }
         }.await()
         Log.d("별점 등록 결과", result.toString())
+        return result
+    }
+
+    suspend fun deleteChatRoom(chatTitle:String, chatRandom:Double):Boolean{
+        var result:Boolean = false
+        coroutineScope {
+            SettingInApp.db.collection("chatRoom")
+                .document("${chatTitle} ${chatRandom}").delete()
+                .addOnSuccessListener { result = true }
+                .addOnFailureListener { Log.d("오류 발생","deleteChatRoom: $it") }
+        }.await()
         return result
     }
 }
