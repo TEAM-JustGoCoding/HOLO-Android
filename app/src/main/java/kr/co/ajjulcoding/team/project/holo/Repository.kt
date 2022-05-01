@@ -13,6 +13,7 @@ import kotlinx.coroutines.tasks.await
 import okhttp3.*
 import org.json.JSONObject
 import java.io.IOException
+import kotlin.math.log
 
 class Repository {
 
@@ -132,7 +133,7 @@ class Repository {
                 val response = client.newCall(request).execute()   // 동기로 실행
                 val str_response = response.body()!!.string()   // string()은 딱 한 번만 호출 가능
             } catch (e: IOException) {
-                Log.d("토큰 데이터 정보!!", "통신 실패(인터넷 끊김 등): ${e}")
+                Log.d("토큰 데이터 전송!!", "통신 실패(인터넷 끊김 등): ${e}")
             }
         }
     }
@@ -280,5 +281,27 @@ class Repository {
                 }
             }
         return listenerRgst
+    }
+
+    suspend fun postScore(userEmail:String, star:Float): Boolean{
+        var result: Boolean = false
+        val client = OkHttpClient()
+        val url = PhpUrl.DOTHOME + PhpUrl.URL_POST_SCORE
+        val body: RequestBody = FormBody.Builder().add("uid", userEmail)
+            .add("star", star.toString()).build() as RequestBody
+        val request = Request.Builder().url(url).post(body).build()
+
+        CoroutineScope(Dispatchers.IO).async {
+            try {
+                val response = client.newCall(request).execute()
+                val str_reponse = response.body()!!.string()
+                Log.d("별점 등록 데이터 전송", str_reponse)
+                result = true
+            }catch (e: IOException){
+                Log.d("별점 등록 데이터 전송!!", "통신 실패(인터넷 끊김 등): ${e}")
+            }
+        }.await()
+        Log.d("별점 등록 결과", result.toString())
+        return result
     }
 }

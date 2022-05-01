@@ -54,8 +54,6 @@ class AppTag {
         const val HOME_TAG = "homeTAG"
         const val CHATLIST_TAG = "chatListTAG"
         const val CHATROOM_TAG = "chatRoomTAG"
-        const val BUBBLELEFT_TAG = "bubbleLeftTAG"
-        const val BUBBLERIGHT_TAG = "bubbleRightTAG"
         fun currentUserEmail() = SettingInApp.mAuth.currentUser?.email
     }
 }
@@ -67,33 +65,10 @@ class PhpUrl {
         const val URL_SELECT_USER:String = "login.php"
         const val URL_NICKNAME_DUPI:String = "nickNameDupli.php"
         const val URL_POST_TOKEN:String = "postToken.php"
+        const val URL_POST_SCORE:String = "postScore.php"
         const val URL_GET_TOKEN:String = "getNicknameAndToken.php"
     }
 }
-
-//class ChatRoomDiffUtilCallBack(private val oldLi:ArrayList<ChatRoom>, private val newLi: ArrayList<ChatRoom>)
-//    :DiffUtil.Callback(){
-//    override fun getOldListSize(): Int = oldLi.size
-//
-//    override fun getNewListSize(): Int = newLi.size
-//
-//    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-//        val oldItem = oldLi[oldItemPosition]
-//        val newItem = newLi[newItemPosition]
-//
-//        return if ((oldItem is ChatRoom) && (newItem is ChatRoom)){
-//            Log.d("Diff 확인", oldItem.latestTime.toString()+"  "+newItem.latestTime.toString())
-//            oldItem.latestTime == newItem.latestTime
-//        }else
-//            false
-//    }
-//
-//    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-//        Log.d("Diff 확인", oldLi[oldItemPosition].toString()+"  "+newLi[newItemPosition])
-//        return oldLi[oldItemPosition] == newLi[newItemPosition]
-//    }
-//
-//}
 
 // 캐시 관련
 @Entity

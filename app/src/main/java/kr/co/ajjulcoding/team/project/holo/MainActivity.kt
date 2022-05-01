@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mUserInfo = intent.getParcelableExtra((AppTag.USER_INFO))!!
+        mUserInfo = intent.getParcelableExtra<HoloUser>(AppTag.USER_INFO)!!
         profileFragment = ProfileFragment(mUserInfo)
         chatListFragment = ChatListFragment(mUserInfo)
         //binding.contraintMain.setOnClickListener { }

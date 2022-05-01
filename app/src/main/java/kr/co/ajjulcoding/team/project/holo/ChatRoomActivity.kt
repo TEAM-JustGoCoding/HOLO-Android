@@ -53,6 +53,10 @@ class ChatRoomActivity() : AppCompatActivity() {
         binding.recyclerBubble.adapter!!.registerAdapterDataObserver(ChatDataObserver())
 
         chatRoomViewModel.chatBubbleLi.observe(this, bubbleObserver)
+        chatRoomViewModel.validScore.observe(this){
+            Log.d("채팅방 삭제 시작","ㅇㅇ")
+            // TODO: 채팅방 삭제하기
+        }
         binding.btnSendText.setOnClickListener {
             Log.d("네트워크 확인", checkNetwork().toString())
             if (!checkNetwork()){   // 네트워크 X
@@ -67,10 +71,13 @@ class ChatRoomActivity() : AppCompatActivity() {
                 showAlertDialog("네트워크 연결을 확인할 수 없습니다!", *arrayOf("확인"))
                 return@setOnClickListener
             }
-
-            sendStar()   // 별점 전송
+            val numStar:Float = binding.ratingBar.rating // 0.1f
+            if (numStar == 0f){
+                showAlertDialog("별점을 드래그하여 점수를 설정해주세요!", *arrayOf("확인"))
+                return@setOnClickListener
+            }
+            chatRoomViewModel.postScore(userInfo.uid, numStar)   // 별점 전송
         }
-        // TODO: 리사이클러뷰 스크롤 아래 정렬
     }
 
     private fun setViewData(){
@@ -111,8 +118,6 @@ class ChatRoomActivity() : AppCompatActivity() {
         chatRoomViewModel.setChatBubble(userInfo, chatRoomData, content)
         binding.editChat.setText("")
     }
-
-    private fun sendStar(){}
 
     companion object{
         const val LEFT_BUBBLE = 1
