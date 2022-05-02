@@ -36,8 +36,13 @@ class ChatRoomViewModel: ViewModel() {
         Log.d("채팅방 리스너 등록", listenerRgst.toString())
     }
 
-    fun postScore(email:String, star:Float) = viewModelScope.async {
-        val result: Boolean = repository.postScore(email, star)
+    fun checkValidStar(userEmail: String, chatTitle:String, chatRandom:Double) = viewModelScope.async {
+        val result: Pair<Boolean, String> = repository.checkValidStar(userEmail, chatTitle, chatRandom)
+        return@async result
+    }
+
+    fun postScore(email:String, direction: String, star:Float, chatTitle:String, chatRandom:Double) = viewModelScope.async {
+        val result: Boolean = repository.postScore(email, direction, star, chatTitle, chatRandom)
         return@async result == true
     }
 

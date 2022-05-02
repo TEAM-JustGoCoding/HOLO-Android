@@ -79,27 +79,23 @@ class ChatRoomActivity() : AppCompatActivity() {
                 showAlertDialog("별점을 드래그하여 점수를 설정해주세요!", *arrayOf("확인"))
                 return@setOnClickListener
             }
-            val dialog: PostScoreDialogFragment = PostScoreDialogFragment()
-            supportFragmentManager.let { fragmentManager ->
-                if (null == fragmentManager.findFragmentByTag(AppTag.POSTSCORE_TAG))
-                    dialog!!.show(fragmentManager, AppTag.POSTSCORE_TAG)
+            // TODO: 별점 등록 확인
+            CoroutineScope(Dispatchers.Main).launch {
+                val result: Deferred<Pair<Boolean, String>> = chatRoomViewModel.checkValidStar(userInfo.uid ,chatRoomData.title,
+                    chatRoomData.randomDouble!!
+                )
+                val resultDefer: Pair<Boolean, String> = result.await()
+                if (resultDefer.first == true)
+                    showPostScoreDialog(numStar, resultDefer.second)
+                else
+                    showAlertDialog("이미 별점을 등록하셨습니다.", *arrayOf("확인"))
             }
-            dialog!!.setPostOnBtnClicked(object : PostScoreDialogFragment.PostOnBtnClickListener{
-                override fun PostOnBtnClicked(vaild: Boolean) {
-                    val deferred:Deferred<Boolean> = chatRoomViewModel.postScore(userInfo.uid, numStar)   // 별점 전송
-                    CoroutineScope(Dispatchers.Main).launch {
-                        val resultDeferred:Boolean = deferred.await()
-                        if (resultDeferred){
-                            deleteChatRoom()
-                        }
-                    }
-                }
-            })
+
         }
     }
 
     private fun setViewData(){
-        if (chatRoomData.semail == userEmail){  // 사용자는 semail
+        if (chatRoomData.semail != userEmail){  // 사용자는 remail
             binding.txtNickName.setText(chatRoomData.snickName)
         }else
             binding.txtNickName.setText(chatRoomData.rnickName)
@@ -137,8 +133,28 @@ class ChatRoomActivity() : AppCompatActivity() {
         binding.editChat.setText("")
     }
 
+    private fun showPostScoreDialog(numStar: Float, direction: String){
+        val dialog: PostScoreDialogFragment = PostScoreDialogFragment()
+        supportFragmentManager.let { fragmentManager ->
+            if (null == fragmentManager.findFragmentByTag(AppTag.POSTSCORE_TAG))
+                dialog!!.show(fragmentManager, AppTag.POSTSCORE_TAG)
+        }
+        dialog!!.setPostOnBtnClicked(object : PostScoreDialogFragment.PostOnBtnClickListener{
+            override fun PostOnBtnClicked(vaild: Boolean) {
+                val deferred:Deferred<Boolean> = chatRoomViewModel.postScore(userInfo.uid, direction,
+                    numStar, chatRoomData.title, chatRoomData.randomDouble!!)   // 별점 전송
+                CoroutineScope(Dispatchers.Main).launch {
+                    val resultDeferred:Boolean = deferred.await()
+                    if (resultDeferred){
+                        deleteChatRoom()    // 채팅방 삭제 체커
+                    }
+                }
+            }
+        })
+    }
+
     private fun deleteChatRoom(){
-        Log.d("채팅방 삭제 시작","ㅇㅇ")
+        Log.d("채팅방 삭제 확인 시작","ㅇㅇ")
         val deferred:Deferred<Boolean> = chatRoomViewModel.deleteChatRoom(chatRoomData.title, chatRoomData.randomDouble!!)
         CoroutineScope(Dispatchers.Main).launch {
             val resultDeferred:Boolean = deferred.await()

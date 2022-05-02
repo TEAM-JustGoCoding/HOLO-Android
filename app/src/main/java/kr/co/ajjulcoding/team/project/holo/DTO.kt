@@ -21,7 +21,7 @@ data class ChatRoom(val title:String="",
                     var latestTime:Timestamp?= null,
                     val talkContent: ArrayList<ChatBubble> = arrayListOf<ChatBubble>(),
                     val randomDouble:Double = Math.random(),
-                    var sInputStar:Int? = null, var rInputStar:Int? = null):Parcelable
+                    var sinputStar:Boolean? = null, var rinputStar:Boolean? = null):Parcelable
 
 @Parcelize
 data class SimpleChatRoom(val title:String="", val participant:ArrayList<String> = ArrayList<String>(),

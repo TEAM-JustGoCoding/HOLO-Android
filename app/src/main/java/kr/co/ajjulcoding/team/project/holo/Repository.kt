@@ -3,10 +3,7 @@ package kr.co.ajjulcoding.team.project.holo
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.Timestamp
-import com.google.firebase.firestore.DocumentChange
-import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.ListenerRegistration
-import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.*
 import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
@@ -283,7 +280,37 @@ class Repository {
         return listenerRgst
     }
 
-    suspend fun postScore(userEmail:String, star:Float): Boolean{
+    suspend fun checkValidStar(userEmail: String, chatTitle:String, chatRandom:Double): Pair<Boolean, String>{
+        var vaild: Boolean = true
+        var direction: String = "rinputStar"
+        coroutineScope {
+            SettingInApp.db.collection("chatRoom")
+                .document("${chatTitle} ${chatRandom}").get()
+                .addOnSuccessListener { snapshot ->
+                    val remail: String = snapshot["remail"] as String
+                    val semail: String = snapshot["semail"] as String
+                    Log.d("체커 이메일 확인", "$userEmail $remail $semail")
+                    if (remail == userEmail){
+                        snapshot["rinputStar"]?.let {
+                            vaild = false
+                        }
+                    }else{
+                        direction = "sinputStar"
+                        snapshot["sinputStar"]?.let {
+                            vaild = false
+                        }
+                    }
+                }
+                .addOnFailureListener {
+                    Log.d("오류 발생","deleteChatRoom: $it")
+                    vaild = false
+                }
+        }.await()
+        return Pair(vaild, direction)
+    }
+
+    suspend fun postScore(userEmail:String, direction: String, star:Float,
+                          chatTitle: String, chatRandom: Double): Boolean{
         var result: Boolean = false
         val client = OkHttpClient()
         val url = PhpUrl.DOTHOME + PhpUrl.URL_POST_SCORE
@@ -295,22 +322,33 @@ class Repository {
             try {
                 val response = client.newCall(request).execute()
                 val str_reponse = response.body()!!.string()
+                val documentRef:DocumentReference = SettingInApp.db.collection("chatRoom")
+                    .document("${chatTitle} ${chatRandom}")
                 Log.d("별점 등록 데이터 전송", str_reponse)
-                result = true
+                documentRef.update(direction, true).addOnSuccessListener {
+                }.await()
+            documentRef.get().addOnSuccessListener { snp ->
+                Log.d(" 별점 등록 사용자 확인", "${snp["rinputStar"]} ${snp["sinputStar"]}")
+                if ((snp["rinputStar"] != null) && (snp["sinputStar"] != null)){
+                    Log.d(" 별점 등록 사용자 올", "${snp["rinputStar"]} ${snp["sinputStar"]}")
+                    result = true
+                }
+                }.await()   // await로 나열하지 않고 블록 안으로 넣으면 각각의 스레드로 판별해서 흐름 통일 안됨
             }catch (e: IOException){
                 Log.d("별점 등록 데이터 전송!!", "통신 실패(인터넷 끊김 등): ${e}")
             }
         }.await()
+
         Log.d("별점 등록 결과", result.toString())
         return result
     }
 
-    suspend fun deleteChatRoom(chatTitle:String, chatRandom:Double):Boolean{
+    suspend fun deleteChatRoom(chatTitle:String, chatRandom:Double):Boolean{    // 채팅방 삭제 체커
         var result:Boolean = false
         coroutineScope {
             SettingInApp.db.collection("chatRoom")
                 .document("${chatTitle} ${chatRandom}").delete()
-                .addOnSuccessListener { result = true }
+                .addOnSuccessListener { result = true } // TODO: 상대방도 별점 등록했으면 방 삭제
                 .addOnFailureListener { Log.d("오류 발생","deleteChatRoom: $it") }
         }.await()
         return result
