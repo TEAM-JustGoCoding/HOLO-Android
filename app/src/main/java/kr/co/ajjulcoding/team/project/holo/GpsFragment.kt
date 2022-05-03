@@ -72,7 +72,7 @@ class GpsFragment : Fragment(), OnMapReadyCallback {
         super.onViewCreated(view, savedInstanceState)
 
         binding.btnBack.setOnClickListener {
-            (requireActivity() as MainActivity).changeFragment(AppTag.HOME_TAG)
+            (requireActivity() as MainActivity).changeFragment(AppTag.SETTING_TAG)
         }
         binding.btnMap.setOnClickListener {
             updateLocation()
@@ -90,7 +90,7 @@ class GpsFragment : Fragment(), OnMapReadyCallback {
             }else{
                 Log.d("동네 이름", "$town")
                 (requireActivity() as MainActivity).setLocationToHome(town)
-                (requireActivity() as MainActivity).changeFragment(AppTag.HOME_TAG)
+                (requireActivity() as MainActivity).changeFragment(AppTag.SETTING_TAG)
             }
         }
     }
@@ -124,14 +124,14 @@ class GpsFragment : Fragment(), OnMapReadyCallback {
                 // 뒤로 가기로 거부했을 때
                 // request denied , request again
                 Log.d("위치 권한", "onRequestPermissionsResult() _ 권한 허용 거부")
-                (requireActivity() as MainActivity).changeFragment(AppTag.HOME_TAG)
+                (requireActivity() as MainActivity).changeFragment(AppTag.SETTING_TAG)
                 Toast.makeText(requireActivity(), "위치 권한이 없어 해당 기능을 수행할 수 없습니다!", Toast.LENGTH_SHORT).show()
             }
             map["EXPLAINED"]?.let {
                 // 거부 버튼 눌렀을 때
                 // request denied ,send to settings
                 Log.d("위치 권한", "한() _ 권한 허용 거부")
-                (requireActivity() as MainActivity).changeFragment(AppTag.HOME_TAG)
+                (requireActivity() as MainActivity).changeFragment(AppTag.SETTING_TAG)
                 Toast.makeText(requireActivity(), "위치 권한이 없어 해당 기능을 수행할 수 없습니다!", Toast.LENGTH_SHORT).show()
             }
         }

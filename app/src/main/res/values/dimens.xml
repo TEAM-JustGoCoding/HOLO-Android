@@ -15,4 +15,8 @@
     <dimen name="homeTextTitle">30dp</dimen>
     <dimen name="paddingBigView">15dp</dimen>
     <dimen name="homeBtnWatch">230dp</dimen>
+<!--    ChatListFragment-->
+    <dimen name="imgProfile">60dp</dimen>
+    <dimen name="civBorderWidth">3dp</dimen>
+    <dimen name="chatTextSize">17dp</dimen>
 </resources>

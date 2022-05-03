@@ -53,7 +53,7 @@ class ProfileFragment(var currentUser:HoloUser) : Fragment() {
                     Manifest.permission.WRITE_EXTERNAL_STORAGE))
                 Log.d("저장소 권한 없음", "없음")
                 if (twiceValid == true){
-                    (requireActivity() as MainActivity).changeFragment(AppTag.HOME_TAG)
+                    (requireActivity() as MainActivity).changeFragment(AppTag.SETTING_TAG)
                     Toast.makeText(requireActivity(), "저장소 접근 권한이 없어 해당 기능을 수행할 수 없습니다!", Toast.LENGTH_SHORT).show()
                 }
                 false
@@ -80,7 +80,7 @@ class ProfileFragment(var currentUser:HoloUser) : Fragment() {
                     // 뒤로 가기로 거부했을 때
                     // request denied , request again
                     Log.d("저장소 권한", "onRequestPermissionsResult() _ 권한 허용 거부")
-                    (requireActivity() as MainActivity).changeFragment(AppTag.HOME_TAG)
+                    (requireActivity() as MainActivity).changeFragment(AppTag.SETTING_TAG)
                     Toast.makeText(requireActivity(), "저장소 접근 권한이 없어 해당 기능을 수행할 수 없습니다!", Toast.LENGTH_SHORT).show()
                 }
                 map["EXPLAINED"]?.let {
@@ -88,7 +88,7 @@ class ProfileFragment(var currentUser:HoloUser) : Fragment() {
                     // request denied ,send to settings
                     Log.d("저장소 권한", "한() _ 권한 허용 거부")
                     twiceValid = true
-                    (requireActivity() as MainActivity).changeFragment(AppTag.HOME_TAG)
+                    (requireActivity() as MainActivity).changeFragment(AppTag.SETTING_TAG)
                     Toast.makeText(requireActivity(), "저장소 접근 권한이 없어 해당 기능을 수행할 수 없습니다!", Toast.LENGTH_SHORT).show()
                 }
             }
@@ -132,7 +132,7 @@ class ProfileFragment(var currentUser:HoloUser) : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.btnBack.setOnClickListener {
-            mActivity.changeFragment(AppTag.HOME_TAG)
+            mActivity.changeFragment(AppTag.SETTING_TAG)
         }
         binding.profilephoto.setOnClickListener {
             imgLauncher.launch("image/*")
@@ -146,20 +146,6 @@ class ProfileFragment(var currentUser:HoloUser) : Fragment() {
         }
     }
 
-//    private suspend fun deleteExistProfile(fileName:String){
-//        val FBstorage = FirebaseStorage.getInstance()
-//        val FBstorageRef = FBstorage.reference
-//        val delRef = FBstorageRef.child("profile_img/"+fileName)
-//
-//        coroutineScope {
-//            delRef.delete().addOnSuccessListener {
-//                Log.d("프로필 삭제 성공",it.toString())
-//            }.addOnFailureListener {
-//                Log.d("프로필 삭제 실패",it.toString())
-//            }
-//        }.await()
-//    }
-
     private fun createProfile(fileName:String){
         Toast.makeText(mActivity, "프로필 이미지 번경 중..", Toast.LENGTH_SHORT).show()
         val FBstorage = FirebaseStorage.getInstance()
@@ -169,7 +155,7 @@ class ProfileFragment(var currentUser:HoloUser) : Fragment() {
         uploadTask.addOnSuccessListener {
             CoroutineScope(Dispatchers.Main).launch {
                 mActivity.setProfileImgToHome(fileName)
-                mActivity.changeFragment(AppTag.HOME_TAG)
+                mActivity.changeFragment(AppTag.SETTING_TAG)
             }
         }.addOnFailureListener{
             Log.d("프로필 이미지 변경 오류", it.toString())

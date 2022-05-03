@@ -16,4 +16,5 @@
     <color name="home_sight">#DDCAFA</color>
     <color name="home_curiosity">#C7ECFD</color>
     <color name="home_policy">#C9D3FB</color>
+    <color name="chat_star">#F8CE00</color>
 </resources>
