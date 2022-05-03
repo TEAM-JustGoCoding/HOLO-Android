@@ -64,7 +64,8 @@ class RegisterActivity : AppCompatActivity() {
                             intentFiSplash.putExtra("userInfo", HoloUser(
                                 binding.editEmail.text.toString(),
                                 binding.editName.text.toString(),
-                                binding.editNickname.text.toString()
+                                binding.editNickname.text.toString(),
+                                "0"
                             ))
                             startActivity(intentFiSplash)
                         }

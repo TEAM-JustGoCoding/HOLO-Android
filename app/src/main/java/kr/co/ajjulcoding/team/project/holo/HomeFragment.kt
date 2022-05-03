@@ -114,4 +114,8 @@ class HomeFragment(val currentUser:HoloUser) : Fragment() {
     fun setUserProfile(url:String){
         currentUser.profileImg = url
     }
+
+    fun setUserAccount(account:String){
+        currentUser.account = account
+    }
 }

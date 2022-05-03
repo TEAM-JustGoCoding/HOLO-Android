@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/sky_dirty"
+    tools:context=".UsersettingFragment">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="프로필"
+                android:textSize="@dimen/homeTextTitle"
+                android:textColor="@color/sky_dark"
+                android:fontFamily="@font/bold"
+                android:layout_marginTop="40dp"
+                android:layout_marginBottom="30dp"/>
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/profilePhoto"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center"
+                android:src="@color/white_gray"
+                app:civ_border_color="@color/sky_dark"
+                app:civ_border_width="1dp"
+                android:scaleType="centerCrop"
+                app:civ_border_overlay="true"
+                android:background="@android:color/transparent"
+                android:layout_marginBottom="20dp"/>
+
+            <!--        <android.support.design.widget.FloatingActionButton-->
+            <!--            android:id="@+id/fab"-->
+            <!--            android:layout_width="22dp"-->
+            <!--            android:layout_height="wrap_content"-->
+            <!--            android:clickable="true"-->
+            <!--            android:src="@drawable/fab_profile"-->
+            <!--            app:fabSize="normal"-->
+            <!--            app:layout_anchor="@id/profilephoto"-->
+            <!--            app:layout_anchorGravity="right|end" />-->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/textNickname"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="닉네임"
+                    android:textSize="20dp"
+                    android:textColor="@color/black"
+                    android:fontFamily="@font/light"
+                    android:layout_marginBottom="5dp"/>
+
+                <TextView
+                    android:id="@+id/textLocation"
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:padding="3dp"
+                    android:background="@drawable/round_small_textview_navy"
+                    android:textSize="15dp"
+                    android:textColor="@color/white"
+                    android:textAlignment="center"
+                    android:text="위치"
+                    android:layout_marginBottom="10dp"/>
+
+            </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/textEmail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="이메일 주소"
+                android:textSize="15dp"
+                android:textColor="@color/light_gray"
+                android:fontFamily="@font/light"
+                android:layout_marginBottom="60dp"/>
+
+            <TextView
+                android:id="@+id/textScore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:text="내 평점 현황"
+                android:textSize="20dp"
+                android:textColor="@color/black"
+                android:fontFamily="@font/light"
+                android:layout_marginBottom="20dp"/>
+
+            <TextView
+                android:id="@+id/textLocationSet"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:text="내 동네 설정"
+                android:textSize="20dp"
+                android:textColor="@color/black"
+                android:fontFamily="@font/light"
+                android:layout_marginBottom="20dp"/>
+
+            <TextView
+                android:id="@+id/textUtilityBill"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:text="공과금 납부일 설정"
+                android:textSize="20dp"
+                android:textColor="@color/black"
+                android:fontFamily="@font/light"
+                android:layout_marginBottom="20dp"/>
+
+            <TextView
+                android:id="@+id/textAccount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:text="내 계좌번호 등록"
+                android:textSize="20dp"
+                android:textColor="@color/black"
+                android:fontFamily="@font/light"
+                android:layout_marginBottom="20dp"/>
+
+            <TextView
+                android:id="@+id/textAlarm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:text="알림"
+                android:textSize="20dp"
+                android:textColor="@color/black"
+                android:fontFamily="@font/light"
+                android:layout_marginBottom="20dp"/>
+
+            <TextView
+                android:id="@+id/textLogout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:text="로그아웃"
+                android:textSize="20dp"
+                android:textColor="@color/black"
+                android:fontFamily="@font/light"
+                android:layout_marginBottom="20dp"/>
+
+            <TextView
+                android:id="@+id/textWithdrawal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:text="탈퇴"
+                android:textSize="20dp"
+                android:textColor="@color/black"
+                android:fontFamily="@font/light"
+                android:layout_marginBottom="20dp"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+</FrameLayout>

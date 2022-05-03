@@ -43,8 +43,6 @@ class AppTag {
         const val PARTICIPANT = "participant"
         const val CHAT_TITLE = "title"
         const val CHAT_RANDOM = "randomDouble"
-        const val RECEIVER_EMAIL = "remail"
-        const val SENDER_EMAIL = "semail"
         const val LATEST_TIME = "latestTime"
 
         const val LOGIN_TAG = "loginTAG"
@@ -55,6 +53,12 @@ class AppTag {
         const val CHATLIST_TAG = "chatListTAG"
         const val CHATROOM_TAG = "chatRoomTAG"
         const val POSTSCORE_TAG = "postScoreTAG"
+
+        const val SETTING_TAG = "settingTAG"
+        const val WITHDRAWALDIALOG_TAG = "withdrawaldialogTAG"
+        const val UTILITYBILLDIALOG_TAG = "utilitybilldialogTAG"
+        const val SCORE_TAG = "scoreTAG"
+        const val ACCOUNT_TAG = "accountTAG"
         fun currentUserEmail() = SettingInApp.mAuth.currentUser?.email
     }
 }
@@ -68,6 +72,8 @@ class PhpUrl {
         const val URL_POST_TOKEN:String = "postToken.php"
         const val URL_POST_SCORE:String = "postScore.php"
         const val URL_GET_TOKEN:String = "getNicknameAndToken.php"
+        const val URL_DELETE_USER:String = "withdrawal.php"
+        const val URL_UPDATE_SCORE:String = "userScore.php"
     }
 }
 

@@ -32,6 +32,7 @@ class FinishSplashActivity : AppCompatActivity() {
                 SettingInApp.uniqueActivity(intentMain)
                 intentMain.putExtra(AppTag.USER_INFO, userInfo)
                 intentMain.putExtra(AppTag.REGISTER_TAG, true)
+                intentMain.putExtra("first", "first")
                 startActivity(intentMain)
                 finish()
             }, (1*1000).toLong())

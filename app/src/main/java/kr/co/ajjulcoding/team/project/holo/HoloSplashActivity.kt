@@ -69,8 +69,10 @@ class HoloSplashActivity : AppCompatActivity() {
             sharedPref.getString("uid","아이디 없음")!!
             , sharedPref.getString("realName", "실명 없음")!!
             ,sharedPref.getString("nickName", "별명 없음")!!
+            ,sharedPref.getString("score", "평점 없음")!!
             ,sharedPref.getString("location", null)
             ,sharedPref.getString("profile", null)
+            ,sharedPref.getString("account", null)
             ,sharedPref.getString("token", null)
         )
         result.token = token ?: sharedPref.getString("token", null) // 인터넷 연결 없으면 토큰 캐시 정보 불러오기

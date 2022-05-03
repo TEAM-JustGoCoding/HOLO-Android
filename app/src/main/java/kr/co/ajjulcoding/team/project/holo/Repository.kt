@@ -32,28 +32,36 @@ class Repository {
                 Log.d("로그인 데이터 정보!!", jsonobj.getString("nick_name"))
                 result = HoloUser(jsonobj.getString("uid"),
                     jsonobj.getString("real_name"),
-                    jsonobj.getString("nick_name"))
+                    jsonobj.getString("nick_name"),
+                    jsonobj.getString("score"))
             }catch (e:IOException){
                 Log.d("로그인 데이터 정보", "통신 실패(인터넷 끊김 등): ${e}")
             }
         }.await()
-//        client.newCall(request).enqueue(object : okhttp3.Callback {
-//            override fun onFailure(call: okhttp3.Call, e: IOException) {
-//                Log.d("로그인 데이터 정보", "통신 실패(인터넷 끊김 등): ${e}")
-//            }
-//
-//            override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
-//                val str_response = response.body()!!.string()   // string()은 딱 한 번만 호출 가능
-//                Log.d("로그인 데이터 정보", "성공: ${str_response}")
-//                val jsonobj = JSONObject(str_response)
-//                Log.d("로그인 데이터 정보!!", jsonobj.getString("nick_name"))
-//                result = HoloUser(jsonobj.getString("uid"),
-//                                jsonobj.getString("real_name"),
-//                                jsonobj.getString("nick_name"))
-//            }
-//
-//        })
+
         Log.d("이메일", email.toString())
+
+        return result
+    }
+
+    suspend fun deleteUserInfo(email:String): Boolean{
+        var result:Boolean = false
+
+        val client = OkHttpClient()
+        val url = PhpUrl.DOTHOME+PhpUrl.URL_DELETE_USER
+        val body: RequestBody = FormBody.Builder().add("uid", email).build() as RequestBody
+        val request = Request.Builder().url(url).post(body).build()
+
+        CoroutineScope(Dispatchers.IO).async {  // 메인스레드에서 네트워크 접근 금지 되어있어서 코루틴 사용
+            try {
+                val response = client.newCall(request).execute()   // 동기로 실행
+                val str_response = response.body()!!.string()   // string()은 딱 한 번만 호출 가능
+                Log.d("탈퇴 데이터 정보", "성공: ${str_response}")
+                result = str_response.toBoolean()
+            }catch (e:IOException){
+                Log.d("탈퇴 통신 정보", "통신 실패(인터넷 끊김 등): ${e}")
+            }
+        }.await()
 
         return result
     }
@@ -351,6 +359,29 @@ class Repository {
                 .addOnSuccessListener { result = true } // TODO: 상대방도 별점 등록했으면 방 삭제
                 .addOnFailureListener { Log.d("오류 발생","deleteChatRoom: $it") }
         }.await()
+        return result
+    }
+
+    suspend fun updateUserScore(uid: String): String{
+        var result:String = ""
+
+        val client = OkHttpClient()
+        val mySearchUrl = HttpUrl.parse(PhpUrl.DOTHOME+PhpUrl.URL_UPDATE_SCORE)!!.newBuilder()
+        mySearchUrl.addQueryParameter("uid",uid)
+        val request = Request.Builder().url(mySearchUrl.build().toString()).build()
+
+        CoroutineScope(Dispatchers.IO).async {
+            try {
+                val response = client.newCall(request).execute()   // 동기로 실행
+                val str_response = response.body()!!.string()   // string()은 딱 한 번만 호출 가능
+                Log.d("평점 데이터 정보", "성공: ${str_response}")
+                val jsonobj = JSONObject(str_response)
+                result = jsonobj.getString("score")
+            }catch (e:IOException){
+                Log.d("평점 데이터 정보", "통신 실패(인터넷 끊김 등): ${e}")
+            }
+        }.await()
+
         return result
     }
 }

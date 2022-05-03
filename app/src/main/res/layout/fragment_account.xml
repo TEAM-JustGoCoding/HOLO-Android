@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/sky_dirty"
+    tools:context=".AccountFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <Button
+            android:id="@+id/btnBack"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/ic__arrow_back"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/logo_holo"/>
+        <ImageView
+            android:id="@+id/logo_holo"
+            android:layout_width="120dp"
+            android:layout_height="@dimen/hActionBar"
+            app:srcCompat="@drawable/logo_holo_white"
+            android:layout_marginBottom="80dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+            android:id="@+id/textTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/sky_dark"
+            android:textSize="@dimen/textSizeBig"
+            android:fontFamily="@font/bold"
+            android:text="계좌번호 등록하기"
+            android:layout_marginLeft="@dimen/marginSmallView"
+            android:layout_marginTop="@dimen/marginBigView"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/logo_holo"/>
+        <TextView
+            android:id="@+id/textDesc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="@dimen/textSizeSmall"
+            android:fontFamily="@font/light"
+            android:text="거래에 참여할 때 마다 계좌번호를 입력할 필요 없이\n등록한 계좌번호를 바로 붙여 넣을 수 있어요!\n계좌번호와 관련한 모든 데이터는 캐시로 저장됩니다."
+            android:layout_marginTop="@dimen/marginSmallView"
+            app:layout_constraintTop_toBottomOf="@id/textTitle"
+            app:layout_constraintLeft_toLeftOf="@+id/textTitle"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideHText"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.4"/>
+
+        <LinearLayout
+            android:id="@+id/textLinear"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            app:layout_constraintTop_toBottomOf="@id/guideHText"
+            app:layout_constraintLeft_toLeftOf="@+id/textDesc">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/round_btn_start"
+                android:backgroundTint="@color/white">
+
+                <EditText
+                    android:id="@+id/editAccount"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="10dp"
+                    android:background="@android:color/transparent"
+                    android:hint="예시: 농협 xxxxxxxxxxx"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:maxLines="1" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <View
+                android:layout_width="20dp"
+                android:layout_height="match_parent"/>
+
+            <Button
+                android:id="@+id/btnCopy"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="right"
+                android:backgroundTint="@color/sky_dark"
+                android:background="@drawable/round_btn_start"
+                android:fontFamily="@font/light"
+                android:text="복사"
+                android:textColor="@color/white"
+                android:textSize="14dp" />
+
+        </LinearLayout>
+
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideHCmp"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.92"/>
+        <Button
+            android:id="@+id/btnEnroll"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:backgroundTint="@color/sky_dark"
+            android:background="@drawable/round_btn_start"
+            android:textColor="@color/white"
+            android:fontFamily="@font/light"
+            android:textSize="@dimen/textSizeMedium"
+            android:text="등록하기"
+            android:layout_marginLeft="@dimen/marginSmallView"
+            android:layout_marginRight="@dimen/marginSmallView"
+            app:layout_constraintTop_toBottomOf="@id/guideHCmp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>
