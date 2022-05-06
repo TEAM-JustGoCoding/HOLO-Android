@@ -41,13 +41,6 @@ class UsersettingFragment(val currentUser:HoloUser) : Fragment() {
         usersettingViewModel.userLocation.observe(viewLifecycleOwner){
             binding.textLocation.setText(it)
         }
-        usersettingViewModel.userProfile.observe(viewLifecycleOwner){imgUri -> // TODO: 사용자 정보 수정될 때 호출되게
-            Glide.with(_activity).load(imgUri).apply {
-                RequestOptions()
-                    .skipMemoryCache(true)
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-            }.into(binding.profilePhoto)
-        }
         binding.profilePhoto.setOnClickListener {
             mActivity.changeFragment(AppTag.PROFILE_TAG)
         }
@@ -93,6 +86,10 @@ class UsersettingFragment(val currentUser:HoloUser) : Fragment() {
         usersettingViewModel.setUserLocation(location)
     }
 
+    fun setUserProfile(url:String){
+        currentUser.profileImg = url
+    }
+
     private fun setView(){
         Log.d("실행", "onRequestPermissionsResult() _ 권한 허용")
         binding.textNickname.setText(currentUser.nickName)
@@ -108,5 +105,9 @@ class UsersettingFragment(val currentUser:HoloUser) : Fragment() {
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
             }.into(binding.profilePhoto)
         }
+    }
+
+    fun setUserAccount(account:String){
+        currentUser.account = account
     }
 }

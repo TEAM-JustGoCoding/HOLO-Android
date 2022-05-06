@@ -154,7 +154,7 @@ class ProfileFragment(var currentUser:HoloUser) : Fragment() {
         val uploadTask:UploadTask = postRef.putFile(selectedUri!!)
         uploadTask.addOnSuccessListener {
             CoroutineScope(Dispatchers.Main).launch {
-                mActivity.setProfileImgToHome(fileName)
+                mActivity.setProfileImg(fileName)
                 mActivity.changeFragment(AppTag.SETTING_TAG)
             }
         }.addOnFailureListener{

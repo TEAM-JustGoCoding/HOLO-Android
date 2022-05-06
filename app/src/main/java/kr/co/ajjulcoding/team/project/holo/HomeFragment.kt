@@ -45,16 +45,6 @@ class HomeFragment(val currentUser:HoloUser) : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d("홈 프래그먼트", "onViewCreated")
-//        homeViewModel.userLocation.observe(viewLifecycleOwner){
-//            binding.textLocation.setText(it)
-//        }
-//        homeViewModel.userProfile.observe(viewLifecycleOwner){imgUri -> // TODO: 사용자 정보 수정될 때 호출되게
-//            Glide.with(_activity).load(imgUri).apply {
-//                RequestOptions()
-//                    .skipMemoryCache(true)
-//                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-//            }.into(binding.circleImageView)
-//        }
         homeViewModel.chatRoom.observe(viewLifecycleOwner){
             mActivity.showAlertDialog("채팅방이 개설되었습니다!", *arrayOf("확인"))
         }
@@ -78,16 +68,8 @@ class HomeFragment(val currentUser:HoloUser) : Fragment() {
             }
         }
         binding.btnNotifi.setOnClickListener {
-            // TODO("테스트를 위해 지금은 로그아웃 버튼으로 사용, 추후에 수정")
-            SettingInApp.mAuth.signOut()
-            mActivity.finish()
+            // TODO("알림 목록 띄우기")
         }
-        binding.circleImageView.setOnClickListener {
-            mActivity.changeFragment(AppTag.PROFILE_TAG)
-        }
-//        binding.textLocation.setOnClickListener {
-//            mActivity.changeFragment(AppTag.GPS_TAG)
-//        }
     }
 
     private fun setProfile(){
@@ -104,13 +86,5 @@ class HomeFragment(val currentUser:HoloUser) : Fragment() {
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
             }.into(binding.circleImageView)
         }
-    }
-
-    fun setUserProfile(url:String){
-        currentUser.profileImg = url
-    }
-
-    fun setUserAccount(account:String){
-        currentUser.account = account
     }
 }

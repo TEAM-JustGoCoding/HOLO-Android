@@ -73,7 +73,7 @@ class MainActivity : AppCompatActivity() {
 
         if (intent.getBooleanExtra(AppTag.LOGIN_TAG, false)) {
             CoroutineScope(Dispatchers.Main).launch {
-                setProfileImgToHome("profile_" + mUserInfo.uid!!.replace(".", "") + ".jpg")
+                setProfileImg("profile_" + mUserInfo.uid!!.replace(".", "") + ".jpg")
             }
             saveCache()
         }else if (intent.getBooleanExtra(AppTag.REGISTER_TAG, false)){
@@ -175,11 +175,11 @@ class MainActivity : AppCompatActivity() {
     fun setAccount(account:String){
         sharedPref = this.getSharedPreferences(AppTag.USER_INFO,0)
         editor = sharedPref.edit()
-        homeFragment.setUserAccount(account)
+        userSettingFragment.setUserAccount(account)
         editor.putString("account",account).apply()   // save account
     }
 
-    suspend fun setProfileImgToHome(fileName:String){
+    suspend fun setProfileImg(fileName:String){
         val dir = File(Environment.DIRECTORY_PICTURES + "/profile_img")
         if (!dir.isDirectory()){
             dir.mkdir()    // 가져온 이미지 저장할 디렉토리 만들기
@@ -199,9 +199,9 @@ class MainActivity : AppCompatActivity() {
                     RequestOptions()
                         .skipMemoryCache(true)
                         .diskCacheStrategy(DiskCacheStrategy.NONE)
-                }.into(findViewById(R.id.circleImageView))
-                //Toast.makeText(this, "프로필 이미지 변경 완료!",Toast.LENGTH_SHORT).show()
-                homeFragment.setUserProfile(imgUri.toString())
+                }.into(findViewById(R.id.profilePhoto))
+                Toast.makeText(this, "프로필 이미지 변경 완료!",Toast.LENGTH_SHORT).show()
+                userSettingFragment.setUserProfile(imgUri.toString())
                 sharedPref = this.getSharedPreferences(AppTag.USER_INFO,0)  // 캐시 저장
                 editor = sharedPref.edit()
                 editor.putString("profile",imgUri.toString()).apply()
