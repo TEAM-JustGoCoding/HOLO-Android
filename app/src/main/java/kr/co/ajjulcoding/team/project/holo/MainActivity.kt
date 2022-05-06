@@ -47,6 +47,7 @@ class MainActivity : AppCompatActivity() {
     private var currentTag:String = HOME_TAG
     private lateinit var frgDic:HashMap<String, Fragment>
     private lateinit var dialog: DialogFragment
+    private var waitTime = 0L // 백버튼 2번 시간 간격
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -101,8 +102,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         if (currentTag == AppTag.PROFILE_TAG ||
-                currentTag == AppTag.GPS_TAG){
-            changeFragment(AppTag.HOME_TAG)
+            currentTag == AppTag.GPS_TAG) {
+            changeFragment(AppTag.SETTING_TAG)
+        }else if (System.currentTimeMillis() - waitTime >= 1500){    // 1.5초
+            waitTime = System.currentTimeMillis()
+            Toast.makeText(this,"뒤로가기 버튼을 한번 더 누르면 종료됩니다.",Toast.LENGTH_SHORT).show()
         }else
             super.onBackPressed()
         // TODO("뒤로 가기 버튼 2번 연속 눌러야 종료 추가")
