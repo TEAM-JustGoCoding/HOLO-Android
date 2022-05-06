@@ -1,5 +1,7 @@
 package kr.co.ajjulcoding.team.project.holo
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -67,9 +69,21 @@ class UsersettingFragment(val currentUser:HoloUser) : Fragment() {
             mActivity.changeFragment(AppTag.ACCOUNT_TAG)
         }
         binding.textLogout.setOnClickListener {
-            SettingInApp.mAuth.signOut()
-            Toast.makeText(requireActivity(), "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show()
-            mActivity.changetoLoginActivity()
+            AlertDialog.Builder(mActivity)
+                .setTitle("로그아웃 하시겠습니까?")
+                .setCancelable(false)
+                .setItems(arrayOf("예","아니오"), object : DialogInterface.OnClickListener{
+                    override fun onClick(dialog: DialogInterface?, idx: Int) {
+                        dialog!!.dismiss()
+                        if (idx == 0){
+                            SettingInApp.mAuth.signOut()
+                            Toast.makeText(requireActivity(), "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show()
+                            mActivity.changetoLoginActivity()
+                        }
+                    }
+                })
+                .create()
+                .show()
         }
         binding.textWithdrawal.setOnClickListener {
             mActivity.supportFragmentManager?.let{fragmentManager ->
