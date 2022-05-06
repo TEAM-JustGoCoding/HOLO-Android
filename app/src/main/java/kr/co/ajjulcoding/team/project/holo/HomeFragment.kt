@@ -45,16 +45,16 @@ class HomeFragment(val currentUser:HoloUser) : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d("홈 프래그먼트", "onViewCreated")
-        homeViewModel.userLocation.observe(viewLifecycleOwner){
-            binding.textLocation.setText(it)
-        }
-        homeViewModel.userProfile.observe(viewLifecycleOwner){imgUri -> // TODO: 사용자 정보 수정될 때 호출되게
-            Glide.with(_activity).load(imgUri).apply {
-                RequestOptions()
-                    .skipMemoryCache(true)
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-            }.into(binding.circleImageView)
-        }
+//        homeViewModel.userLocation.observe(viewLifecycleOwner){
+//            binding.textLocation.setText(it)
+//        }
+//        homeViewModel.userProfile.observe(viewLifecycleOwner){imgUri -> // TODO: 사용자 정보 수정될 때 호출되게
+//            Glide.with(_activity).load(imgUri).apply {
+//                RequestOptions()
+//                    .skipMemoryCache(true)
+//                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+//            }.into(binding.circleImageView)
+//        }
         homeViewModel.chatRoom.observe(viewLifecycleOwner){
             mActivity.showAlertDialog("채팅방이 개설되었습니다!", *arrayOf("확인"))
         }
@@ -85,9 +85,9 @@ class HomeFragment(val currentUser:HoloUser) : Fragment() {
         binding.circleImageView.setOnClickListener {
             mActivity.changeFragment(AppTag.PROFILE_TAG)
         }
-        binding.textLocation.setOnClickListener {
-            mActivity.changeFragment(AppTag.GPS_TAG)
-        }
+//        binding.textLocation.setOnClickListener {
+//            mActivity.changeFragment(AppTag.GPS_TAG)
+//        }
     }
 
     private fun setProfile(){
@@ -104,11 +104,6 @@ class HomeFragment(val currentUser:HoloUser) : Fragment() {
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
             }.into(binding.circleImageView)
         }
-    }
-
-    fun setUserLocation(location:String) {
-        homeViewModel.setUserLocation(location)
-        currentUser.location = location
     }
 
     fun setUserProfile(url:String){

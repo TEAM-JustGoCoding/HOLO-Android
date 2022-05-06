@@ -16,12 +16,11 @@ import kr.co.ajjulcoding.team.project.holo.databinding.FragmentUsersettingBindin
 
 
 class UsersettingFragment(val currentUser:HoloUser) : Fragment() {
-
     private lateinit var _activity:MainActivity
     private val mActivity get() = _activity
     private lateinit var _binding: FragmentUsersettingBinding
     private val binding get() = _binding
-    private val homeViewModel: HomeViewModel by viewModels<HomeViewModel>()
+    private val usersettingViewModel: UsersettingViewModel by viewModels<UsersettingViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,16 +32,16 @@ class UsersettingFragment(val currentUser:HoloUser) : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentUsersettingBinding.inflate(inflater, container, false)
-        setProfile()
+        setView()
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        homeViewModel.userLocation.observe(viewLifecycleOwner){
+        usersettingViewModel.userLocation.observe(viewLifecycleOwner){
             binding.textLocation.setText(it)
         }
-        homeViewModel.userProfile.observe(viewLifecycleOwner){imgUri -> // TODO: 사용자 정보 수정될 때 호출되게
+        usersettingViewModel.userProfile.observe(viewLifecycleOwner){imgUri -> // TODO: 사용자 정보 수정될 때 호출되게
             Glide.with(_activity).load(imgUri).apply {
                 RequestOptions()
                     .skipMemoryCache(true)
@@ -89,7 +88,12 @@ class UsersettingFragment(val currentUser:HoloUser) : Fragment() {
         }
     }
 
-    private fun setProfile(){
+    fun setUserLocation(location:String) {
+        currentUser.location = location
+        usersettingViewModel.setUserLocation(location)
+    }
+
+    private fun setView(){
         Log.d("실행", "onRequestPermissionsResult() _ 권한 허용")
         binding.textNickname.setText(currentUser.nickName)
         if (currentUser.location == null){

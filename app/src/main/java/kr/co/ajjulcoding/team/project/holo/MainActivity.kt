@@ -119,8 +119,10 @@ class MainActivity : AppCompatActivity() {
                 dialog = scoreFragment
                 dialog.show(supportFragmentManager, "CustomDialog")
             }
-            else {
+            else if (currentTag == AppTag.GPS_TAG)
                 frgDic[currentTag]!!.let { tran.add(R.id.fragmentView, it) }
+            else {
+                frgDic[currentTag]!!.let { tran.replace(R.id.fragmentView, it) }
             }
             tran.commit()
         }
@@ -166,7 +168,7 @@ class MainActivity : AppCompatActivity() {
     fun setLocationToHome(location:String){
         sharedPref = this.getSharedPreferences(AppTag.USER_INFO,0)
         editor = sharedPref.edit()
-        homeFragment.setUserLocation(location)
+        userSettingFragment.setUserLocation(location)
         editor.putString("location",location).apply()   // save location
     }
 
