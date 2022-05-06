@@ -245,7 +245,7 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(this, Alarm::class.java)
         val pendingIntent = PendingIntent.getBroadcast(
             this, Alarm.NOTIFICATION_ID, intent,
-            PendingIntent.FLAG_UPDATE_CURRENT
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
         val toastMessage = if (true) {
