@@ -52,6 +52,9 @@ class Repository {
         val body: RequestBody = FormBody.Builder().add("uid", email).build() as RequestBody
         val request = Request.Builder().url(url).post(body).build()
 
+        CoroutineScope(Dispatchers.IO).async {
+            val deleteRef = SettingInApp.mAuth.currentUser!!.delete()
+        }.await()
         CoroutineScope(Dispatchers.IO).async {  // 메인스레드에서 네트워크 접근 금지 되어있어서 코루틴 사용
             try {
                 val response = client.newCall(request).execute()   // 동기로 실행
