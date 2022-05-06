@@ -41,8 +41,7 @@ class ScoreFragment(var currentUser:HoloUser) : DialogFragment() {
 
         }
         binding.dialBtn.setOnClickListener {
-//            dismiss()   //대화상자 닫는 함수
-//            mActivity.changeFragment("dialog")
+            dismiss()
             mActivity.changeFragment(AppTag.SETTING_TAG)
         }
         return view
