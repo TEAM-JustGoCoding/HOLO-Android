@@ -1,5 +1,7 @@
 package kr.co.ajjulcoding.team.project.holo
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -16,12 +18,11 @@ import kr.co.ajjulcoding.team.project.holo.databinding.FragmentUsersettingBindin
 
 
 class UsersettingFragment(val currentUser:HoloUser) : Fragment() {
-
     private lateinit var _activity:MainActivity
     private val mActivity get() = _activity
     private lateinit var _binding: FragmentUsersettingBinding
     private val binding get() = _binding
-    private val homeViewModel: HomeViewModel by viewModels<HomeViewModel>()
+    private val usersettingViewModel: UsersettingViewModel by viewModels<UsersettingViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,21 +34,14 @@ class UsersettingFragment(val currentUser:HoloUser) : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentUsersettingBinding.inflate(inflater, container, false)
-        setProfile()
+        setView()
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        homeViewModel.userLocation.observe(viewLifecycleOwner){
+        usersettingViewModel.userLocation.observe(viewLifecycleOwner){
             binding.textLocation.setText(it)
-        }
-        homeViewModel.userProfile.observe(viewLifecycleOwner){imgUri -> // TODO: 사용자 정보 수정될 때 호출되게
-            Glide.with(_activity).load(imgUri).apply {
-                RequestOptions()
-                    .skipMemoryCache(true)
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-            }.into(binding.profilePhoto)
         }
         binding.profilePhoto.setOnClickListener {
             mActivity.changeFragment(AppTag.PROFILE_TAG)
@@ -75,9 +69,21 @@ class UsersettingFragment(val currentUser:HoloUser) : Fragment() {
             mActivity.changeFragment(AppTag.ACCOUNT_TAG)
         }
         binding.textLogout.setOnClickListener {
-            SettingInApp.mAuth.signOut()
-            Toast.makeText(requireActivity(), "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show()
-            mActivity.changetoLoginActivity()
+            AlertDialog.Builder(mActivity)
+                .setTitle("로그아웃 하시겠습니까?")
+                .setCancelable(false)
+                .setItems(arrayOf("예","아니오"), object : DialogInterface.OnClickListener{
+                    override fun onClick(dialog: DialogInterface?, idx: Int) {
+                        dialog!!.dismiss()
+                        if (idx == 0){
+                            SettingInApp.mAuth.signOut()
+                            Toast.makeText(requireActivity(), "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show()
+                            mActivity.changetoLoginActivity()
+                        }
+                    }
+                })
+                .create()
+                .show()
         }
         binding.textWithdrawal.setOnClickListener {
             mActivity.supportFragmentManager?.let{fragmentManager ->
@@ -89,7 +95,16 @@ class UsersettingFragment(val currentUser:HoloUser) : Fragment() {
         }
     }
 
-    private fun setProfile(){
+    fun setUserLocation(location:String) {
+        currentUser.location = location
+        usersettingViewModel.setUserLocation(location)
+    }
+
+    fun setUserProfile(url:String){
+        currentUser.profileImg = url
+    }
+
+    private fun setView(){
         Log.d("실행", "onRequestPermissionsResult() _ 권한 허용")
         binding.textNickname.setText(currentUser.nickName)
         if (currentUser.location == null){
@@ -104,5 +119,9 @@ class UsersettingFragment(val currentUser:HoloUser) : Fragment() {
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
             }.into(binding.profilePhoto)
         }
+    }
+
+    fun setUserAccount(account:String){
+        currentUser.account = account
     }
 }

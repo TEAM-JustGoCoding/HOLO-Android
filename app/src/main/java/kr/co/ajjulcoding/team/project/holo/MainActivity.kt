@@ -47,6 +47,7 @@ class MainActivity : AppCompatActivity() {
     private var currentTag:String = HOME_TAG
     private lateinit var frgDic:HashMap<String, Fragment>
     private lateinit var dialog: DialogFragment
+    private var waitTime = 0L // 백버튼 2번 시간 간격
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,7 +74,7 @@ class MainActivity : AppCompatActivity() {
 
         if (intent.getBooleanExtra(AppTag.LOGIN_TAG, false)) {
             CoroutineScope(Dispatchers.Main).launch {
-                setProfileImgToHome("profile_" + mUserInfo.uid!!.replace(".", "") + ".jpg")
+                setProfileImg("profile_" + mUserInfo.uid!!.replace(".", "") + ".jpg")
             }
             saveCache()
         }else if (intent.getBooleanExtra(AppTag.REGISTER_TAG, false)){
@@ -101,8 +102,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         if (currentTag == AppTag.PROFILE_TAG ||
-                currentTag == AppTag.GPS_TAG){
-            changeFragment(AppTag.HOME_TAG)
+            currentTag == AppTag.GPS_TAG) {
+            changeFragment(AppTag.SETTING_TAG)
+        }else if (System.currentTimeMillis() - waitTime >= 1500){    // 1.5초
+            waitTime = System.currentTimeMillis()
+            Toast.makeText(this,"뒤로가기 버튼을 한번 더 누르면 종료됩니다.",Toast.LENGTH_SHORT).show()
         }else
             super.onBackPressed()
         // TODO("뒤로 가기 버튼 2번 연속 눌러야 종료 추가")
@@ -119,8 +123,10 @@ class MainActivity : AppCompatActivity() {
                 dialog = scoreFragment
                 dialog.show(supportFragmentManager, "CustomDialog")
             }
-            else {
+            else if (currentTag == AppTag.GPS_TAG)
                 frgDic[currentTag]!!.let { tran.add(R.id.fragmentView, it) }
+            else {
+                frgDic[currentTag]!!.let { tran.replace(R.id.fragmentView, it) }
             }
             tran.commit()
         }
@@ -166,18 +172,18 @@ class MainActivity : AppCompatActivity() {
     fun setLocationToHome(location:String){
         sharedPref = this.getSharedPreferences(AppTag.USER_INFO,0)
         editor = sharedPref.edit()
-        homeFragment.setUserLocation(location)
+        userSettingFragment.setUserLocation(location)
         editor.putString("location",location).apply()   // save location
     }
 
     fun setAccount(account:String){
         sharedPref = this.getSharedPreferences(AppTag.USER_INFO,0)
         editor = sharedPref.edit()
-        homeFragment.setUserAccount(account)
+        userSettingFragment.setUserAccount(account)
         editor.putString("account",account).apply()   // save account
     }
 
-    suspend fun setProfileImgToHome(fileName:String){
+    suspend fun setProfileImg(fileName:String){
         val dir = File(Environment.DIRECTORY_PICTURES + "/profile_img")
         if (!dir.isDirectory()){
             dir.mkdir()    // 가져온 이미지 저장할 디렉토리 만들기
@@ -198,14 +204,8 @@ class MainActivity : AppCompatActivity() {
                         .skipMemoryCache(true)
                         .diskCacheStrategy(DiskCacheStrategy.NONE)
                 }.into(findViewById(R.id.circleImageView))
-                // TODO: 테스트 필요
-                Glide.with(this).load(imgUri).apply {
-                    RequestOptions()
-                        .skipMemoryCache(true)
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                }.into(findViewById(R.id.profilePhoto))
                 //Toast.makeText(this, "프로필 이미지 변경 완료!",Toast.LENGTH_SHORT).show()
-                homeFragment.setUserProfile(imgUri.toString())
+                userSettingFragment.setUserProfile(imgUri.toString())
                 sharedPref = this.getSharedPreferences(AppTag.USER_INFO,0)  // 캐시 저장
                 editor = sharedPref.edit()
                 editor.putString("profile",imgUri.toString()).apply()
@@ -251,7 +251,7 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(this, Alarm::class.java)
         val pendingIntent = PendingIntent.getBroadcast(
             this, Alarm.NOTIFICATION_ID, intent,
-            PendingIntent.FLAG_UPDATE_CURRENT
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
         val toastMessage = if (true) {
