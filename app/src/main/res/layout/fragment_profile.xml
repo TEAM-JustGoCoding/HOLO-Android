@@ -46,18 +46,32 @@
             android:fontFamily="@font/bold"
             android:layout_marginBottom="30dp"/>
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/profilephoto"
+        <RelativeLayout
             android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_gravity="center"
-            android:src="@color/white_gray"
-            app:civ_border_color="@color/sky_dark"
-            app:civ_border_width="1dp"
-            android:scaleType="centerCrop"
-            app:civ_border_overlay="true"
-            android:background="@android:color/transparent"
-            android:layout_marginBottom="40dp"/>
+            android:layout_height="110dp"
+            android:layout_gravity="center">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/profilephoto"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_gravity="center"
+                android:background="@android:color/transparent"
+                android:scaleType="centerCrop"
+                android:src="@color/white_gray"
+                app:civ_border_color="@color/sky_dark"
+                app:civ_border_overlay="true"
+                app:civ_border_width="1dp" />
+
+            <Button
+                android:id="@+id/buttonPhotoedit"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
+                android:background="@drawable/button_profileedit"/>
+        </RelativeLayout>
+
 
         <TextView
             android:id="@+id/text_nickname"

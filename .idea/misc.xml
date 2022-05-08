@@ -4,11 +4,14 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/svh/AndroidStudioProjects/Holo-AndroidApp/app/src/main/res/drawable/edittext_rounded_corner_rectangle.xml" value="0.1235" />
+        <entry key="..\:/Users/svh/AndroidStudioProjects/Holo-AndroidApp/app/src/main/res/drawable/round_button.xml" value="0.1" />
         <entry key="..\:/Users/svh/AndroidStudioProjects/Holo-AndroidApp/app/src/main/res/layout/activity_certification.xml" value="0.14322916666666666" />
         <entry key="..\:/Users/svh/AndroidStudioProjects/Holo-AndroidApp/app/src/main/res/layout/activity_finishsplash.xml" value="0.14322916666666666" />
         <entry key="..\:/Users/svh/AndroidStudioProjects/Holo-AndroidApp/app/src/main/res/layout/activity_holosplash.xml" value="0.14322916666666666" />
         <entry key="..\:/Users/svh/AndroidStudioProjects/Holo-AndroidApp/app/src/main/res/layout/activity_login.xml" value="0.14322916666666666" />
         <entry key="..\:/Users/svh/AndroidStudioProjects/Holo-AndroidApp/app/src/main/res/layout/activity_register.xml" value="0.14322916666666666" />
+        <entry key="..\:/Users/svh/AndroidStudioProjects/Holo-AndroidApp/app/src/main/res/layout/fragment_profile.xml" value="0.27793974732750243" />
+        <entry key="..\:/Users/svh/AndroidStudioProjects/Holo-AndroidApp/app/src/main/res/layout/round_button.xml" value="0.14895833333333333" />
         <entry key="app/src/main/res/drawable/ic_baseline_notification.xml" value="0.1715" />
         <entry key="app/src/main/res/drawable/icon_gps_fixed.xml" value="0.2895" />
         <entry key="app/src/main/res/drawable/round_btn_home.xml" value="0.198" />
