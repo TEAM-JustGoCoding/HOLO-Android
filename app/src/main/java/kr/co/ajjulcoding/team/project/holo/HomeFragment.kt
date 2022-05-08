@@ -14,6 +14,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.Timestamp
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kr.co.ajjulcoding.team.project.holo.databinding.FragmentHomeBinding
@@ -45,11 +46,8 @@ class HomeFragment(val currentUser:HoloUser) : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d("홈 프래그먼트", "onViewCreated")
-        homeViewModel.chatRoom.observe(viewLifecycleOwner){
-            mActivity.showAlertDialog("채팅방이 개설되었습니다!", *arrayOf("확인"))
-        }
 
-        binding.btnTouchSell.setOnClickListener {
+        binding.btnSell.setOnClickListener {
             CoroutineScope(Dispatchers.Main).launch {
                 Log.d("채팅방 열기 버튼 클릭", "들어옴")
                 val receiverEmail = "lyy8201@gmail.com"
@@ -60,12 +58,16 @@ class HomeFragment(val currentUser:HoloUser) : Fragment() {
                     , currentUser.uid!!, currentUser.nickName
                     ,currentUser.token ?: "토큰캐시없음", receiverEmail, receiverNickname, receiverToken
                     , Timestamp.now())
-                val valid = homeViewModel.createChatRoom(chatRoomData, mActivity)
+                val valid:Deferred<Boolean> = homeViewModel.createChatRoom(chatRoomData, mActivity)
                 if (!(valid.await())){
                     mActivity.showAlertDialog("네트워크 연결을 확인할 수 없습니다!", *arrayOf("확인"))
                     return@launch
-                }
+                }else
+                    mActivity.showAlertDialog("채팅방이 개설되었습니다!", *arrayOf("확인"))
             }
+        }
+        binding.btnPolicy.setOnClickListener {
+            mActivity.changeFragment("WebViewTag")
         }
         binding.btnNotifi.setOnClickListener {
             // TODO("알림 목록 띄우기")

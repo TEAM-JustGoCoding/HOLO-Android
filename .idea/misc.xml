@@ -34,6 +34,7 @@
         <entry key="app/src/main/res/layout/fragment_profile.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_score.xml" value="0.13802083333333334" />
         <entry key="app/src/main/res/layout/fragment_usersetting.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/fragment_web_view.xml" value="0.20652173913043478" />
         <entry key="app/src/main/res/layout/fragment_withdrawal_dialog.xml" value="0.14235055724417425" />
         <entry key="app/src/main/res/layout/item_chat_left_recycler.xml" value="0.33" />
         <entry key="app/src/main/res/layout/item_chat_list.xml" value="0.33" />
