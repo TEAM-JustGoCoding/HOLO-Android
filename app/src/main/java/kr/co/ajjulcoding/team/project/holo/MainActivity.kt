@@ -118,15 +118,18 @@ class MainActivity : AppCompatActivity() {
         if (currentTag != frgTAG){
             currentTag = frgTAG
             if (AppTag.HOME_TAG == currentTag)
-                tran.replace(R.id.fragmentView, homeFragment)   // (스택에 있는)이전 프래그먼트 전부 제거
+                tran.replace(R.id.fragmentView, homeFragment)   // (스택에 있는)이전 프래그먼트 전부 제거 => TODO: 채팅방 생성시 다이얼로그 aysc 받아오는 걸로 고치기
             else if(currentTag == AppTag.SCORE_TAG) {
                 dialog = scoreFragment
                 dialog.show(supportFragmentManager, "CustomDialog")
             }
-            else if (currentTag == AppTag.GPS_TAG)
+            else if (currentTag == AppTag.GPS_TAG)  //  TODO: 삭제해보기
                 frgDic[currentTag]!!.let { tran.add(R.id.fragmentView, it) }
-            else {
-                frgDic[currentTag]!!.let { tran.replace(R.id.fragmentView, it) }
+            else if (currentTag == "WebViewTag") {
+                Log.d("웹뷰","들어옴")
+                tran.add(R.id.fragmentView, WebViewFragment())
+            }else {
+                frgDic[currentTag]!!.let { tran.replace(R.id.fragmentView, it) }    // add로 바꾸면 gps 적용시 강종
             }
             tran.commit()
         }
