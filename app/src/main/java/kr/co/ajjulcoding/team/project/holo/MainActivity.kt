@@ -125,9 +125,9 @@ class MainActivity : AppCompatActivity() {
             }
             else if (currentTag == AppTag.GPS_TAG)  //  TODO: 삭제해보기
                 frgDic[currentTag]!!.let { tran.add(R.id.fragmentView, it) }
-            else if (currentTag == "WebViewTag") {
+            else if (currentTag.contains(WebUrl.URL_LAN)) {
                 Log.d("웹뷰","들어옴")
-                tran.add(R.id.fragmentView, WebViewFragment())
+                tran.add(R.id.fragmentView, WebViewFragment(frgTAG))    // TODO: replace로 고쳐서 테스트해보기
             }else {
                 frgDic[currentTag]!!.let { tran.replace(R.id.fragmentView, it) }    // add로 바꾸면 gps 적용시 강종
             }

@@ -10,7 +10,7 @@ import android.view.ViewGroup
 import android.webkit.WebView
 import kr.co.ajjulcoding.team.project.holo.databinding.FragmentWebViewBinding
 
-class WebViewFragment : Fragment() {
+class WebViewFragment(val webUrl: String) : Fragment() {
     private lateinit var _binding: FragmentWebViewBinding
     private val binding get() = _binding
     private lateinit var _activity:MainActivity
@@ -31,7 +31,7 @@ class WebViewFragment : Fragment() {
             val webViewClient = webViewClient
             settings.javaScriptEnabled = true
         }
-        webView.loadUrl("https://github.com/YeeunLee8245/MyWriting-AndroidApp")
+        webView.loadUrl(webUrl)//("https://github.com/YeeunLee8245/MyWriting-AndroidApp")
         return binding.root
     }
 
