@@ -33,6 +33,10 @@ class UtilityBillFragment : DialogFragment() {
         val view = binding.root
         // 레이아웃 배경을 투명하게 해줌, 필수 아님
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        var day1 = 0
+        var day2 = 0
+        var day3 = 0
+        var day4 = 0
 
         val spin1 = binding.RoomSpinner
         val spin2 = binding.ElectSpinner
@@ -61,10 +65,12 @@ class UtilityBillFragment : DialogFragment() {
                 spin1.setEnabled(true)
                 binding.RoomSpinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
                     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                        mActivity.addAlarm(position)
+//                        mActivity.addAlarm(position)
+                        day1 = position
                     }
                     override fun onNothingSelected(parent: AdapterView<*>?) {
-                        mActivity.addAlarm(1)  //클릭이벤트 없으면 default로 매달 1일
+//                        mActivity.addAlarm(1)  //클릭이벤트 없으면 default로 매달 1일
+                        day1 = 1
                     }
                 }
             }
@@ -77,10 +83,12 @@ class UtilityBillFragment : DialogFragment() {
                 spin2.setEnabled(true)
                 binding.ElectSpinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
                     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                        mActivity.addAlarm(position)
+//                        mActivity.addAlarm(position)
+                        day2 = position
                     }
                     override fun onNothingSelected(parent: AdapterView<*>?) {
-                        mActivity.addAlarm(1)  //클릭이벤트 없으면 default로 매달 1일
+//                        mActivity.addAlarm(1)  //클릭이벤트 없으면 default로 매달 1일
+                        day2 = 1
                     }
                 }
             }
@@ -93,10 +101,12 @@ class UtilityBillFragment : DialogFragment() {
                 spin3.setEnabled(true)
                 binding.WaterSpinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
                     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                        mActivity.addAlarm(position)
+//                        mActivity.addAlarm(position)
+                        day3 = position
                     }
                     override fun onNothingSelected(parent: AdapterView<*>?) {
-                        mActivity.addAlarm(1)  //클릭이벤트 없으면 default로 매달 1일
+//                        mActivity.addAlarm(1)  //클릭이벤트 없으면 default로 매달 1일
+                        day3 = 1
                     }
                 }
             }
@@ -109,16 +119,22 @@ class UtilityBillFragment : DialogFragment() {
                 spin4.setEnabled(true)
                 binding.FireSpinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
                     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                        mActivity.addAlarm(position)
+//                        mActivity.addAlarm(position)
+                        day4 = position
                     }
                     override fun onNothingSelected(parent: AdapterView<*>?) {
-                        mActivity.addAlarm(1)  //클릭이벤트 없으면 default로 매달 1일
+//                        mActivity.addAlarm(1)  //클릭이벤트 없으면 default로 매달 1일
+                        day4 = 1
                     }
                 }
             }
         }
 
         binding.dialBtnSet.setOnClickListener {
+            if(day1 != 0) mActivity.addAlarm(day1)
+            if(day2 != 0) mActivity.addAlarm(day2)
+            if(day3 != 0) mActivity.addAlarm(day3)
+            if(day4 != 0) mActivity.addAlarm(day4)
             dismiss()
         }
         binding.dialBtnExit.setOnClickListener {

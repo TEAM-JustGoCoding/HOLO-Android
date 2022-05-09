@@ -134,7 +134,7 @@ class ProfileFragment(var currentUser:HoloUser) : Fragment() {
         binding.btnBack.setOnClickListener {
             mActivity.changeFragment(AppTag.SETTING_TAG)
         }
-        binding.profilephoto.setOnClickListener {
+        binding.buttonPhotoedit.setOnClickListener {
             imgLauncher.launch("image/*")
         }
         binding.btnFinish.setOnClickListener {
