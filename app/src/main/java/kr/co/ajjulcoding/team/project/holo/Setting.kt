@@ -53,6 +53,7 @@ class AppTag {
         const val CHATLIST_TAG = "chatListTAG"
         const val CHATROOM_TAG = "chatRoomTAG"
         const val POSTSCORE_TAG = "postScoreTAG"
+        const val NOTIFICATION_TAG = "notificationTAG"
 
         const val SETTING_TAG = "settingTAG"
         const val WITHDRAWALDIALOG_TAG = "withdrawaldialogTAG"
