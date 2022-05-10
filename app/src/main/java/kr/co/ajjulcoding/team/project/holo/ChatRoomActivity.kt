@@ -92,6 +92,10 @@ class ChatRoomActivity() : AppCompatActivity() {
             }
 
         }
+        binding.ratingBar.setOnRatingBarChangeListener { ratingBar, rating, fromUser ->
+            if (rating < 0.5f)
+                binding.ratingBar.rating = 0.5f
+        }
     }
 
     private fun setViewData(){
