@@ -1,5 +1,6 @@
 package kr.co.ajjulcoding.team.project.holo
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
@@ -7,10 +8,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.JavascriptInterface
 import android.webkit.WebView
+import android.widget.Toast
 import kr.co.ajjulcoding.team.project.holo.databinding.FragmentWebViewBinding
 
-class WebViewFragment(val webUrl: String) : Fragment() {
+class WebViewFragment(private val webUrl: String) : Fragment() {
     private lateinit var _binding: FragmentWebViewBinding
     private val binding get() = _binding
     private lateinit var _activity:MainActivity
@@ -49,7 +52,12 @@ class WebViewFragment(val webUrl: String) : Fragment() {
             }
             return@setOnKeyListener true
         }
-
+    }
+    class WebAppInterface(private val mContext: Context) {
+        @JavascriptInterface
+        fun showToast(toast: String){
+            Toast.makeText(mContext, toast, Toast.LENGTH_SHORT).show()
+        }
     }
 
 
