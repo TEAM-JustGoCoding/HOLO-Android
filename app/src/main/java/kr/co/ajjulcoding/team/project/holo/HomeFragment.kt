@@ -83,7 +83,7 @@ class HomeFragment(val currentUser:HoloUser) : Fragment() {
         }
 
         binding.btnNotifi.setOnClickListener {
-            // TODO("알림 목록 띄우기")
+            mActivity.changeFragment(AppTag.NOTIFICATION_TAG)
         }
     }
 

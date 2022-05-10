@@ -27,19 +27,17 @@ class ScoreFragment(var currentUser:HoloUser) : DialogFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentScoreBinding.inflate(inflater, container, false)
-        binding.scoreText.setText(currentUser.score)
+
+        CoroutineScope(Dispatchers.Main).launch {
+            val repository = Repository()
+            val result = repository.updateUserScore(currentUser.uid!!)
+            binding.scoreText.setText(result)
+        }
+
         val view = binding.root
         // 레이아웃 배경을 투명하게 해줌, 필수 아님
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-        binding.updateBtn.setOnClickListener {
-            CoroutineScope(Dispatchers.Main).launch {
-                val repository = Repository()
-                val result = repository.updateUserScore(currentUser.uid!!)
-                binding.scoreText.setText(result)
-            }
-
-        }
         binding.dialBtn.setOnClickListener {
             dismiss()
             mActivity.changeFragment(AppTag.SETTING_TAG)

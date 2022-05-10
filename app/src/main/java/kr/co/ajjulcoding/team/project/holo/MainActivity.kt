@@ -40,6 +40,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var userSettingFragment:UsersettingFragment
     private val withdrawalDialogFragment = WithdrawalDialogFragment()
     private val utilityBillFragment = UtilityBillFragment()
+    private val notificationFragment = NotificationFragment()
     private lateinit var scoreFragment:ScoreFragment
     private lateinit var chatListFragment:ChatListFragment
     private lateinit var mUserInfo:HoloUser
@@ -64,7 +65,7 @@ class MainActivity : AppCompatActivity() {
             AppTag.WITHDRAWALDIALOG_TAG to withdrawalDialogFragment,
             AppTag.UTILITYBILLDIALOG_TAG to utilityBillFragment,
             AppTag.SCORE_TAG to scoreFragment, AppTag.ACCOUNT_TAG to accountFragment,
-            AppTag.CHATLIST_TAG to chatListFragment)
+            AppTag.CHATLIST_TAG to chatListFragment, AppTag.NOTIFICATION_TAG to notificationFragment)
 
         val code = intent.getStringExtra("first")
         if (code == "first") {
