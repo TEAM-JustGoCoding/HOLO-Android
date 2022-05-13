@@ -207,7 +207,7 @@ class MainActivity : AppCompatActivity() {
                     RequestOptions()
                         .skipMemoryCache(true)
                         .diskCacheStrategy(DiskCacheStrategy.NONE)
-                }.into(findViewById(R.id.circleImageView))
+                }.into(findViewById(R.id.profilePhoto))
                 //Toast.makeText(this, "프로필 이미지 변경 완료!",Toast.LENGTH_SHORT).show()
                 userSettingFragment.setUserProfile(imgUri.toString())
                 sharedPref = this.getSharedPreferences(AppTag.USER_INFO,0)  // 캐시 저장
