@@ -16,8 +16,10 @@
         <entry key="..\:/Users/svh/AndroidStudioProjects/Holo-AndroidApp/app/src/main/res/layout/fragment_notification.xml" value="0.19270833333333334" />
         <entry key="..\:/Users/svh/AndroidStudioProjects/Holo-AndroidApp/app/src/main/res/layout/fragment_profile.xml" value="0.27793974732750243" />
         <entry key="..\:/Users/svh/AndroidStudioProjects/Holo-AndroidApp/app/src/main/res/layout/fragment_score.xml" value="0.10461956521739131" />
+        <entry key="..\:/Users/svh/AndroidStudioProjects/Holo-AndroidApp/app/src/main/res/layout/fragment_utility_bill.xml" value="0.10416666666666667" />
         <entry key="..\:/Users/svh/AndroidStudioProjects/Holo-AndroidApp/app/src/main/res/layout/notification_recyclerview.xml" value="0.20729166666666668" />
         <entry key="..\:/Users/svh/AndroidStudioProjects/Holo-AndroidApp/app/src/main/res/layout/round_button.xml" value="0.14895833333333333" />
+        <entry key="..\:/Users/svh/AndroidStudioProjects/Holo-AndroidApp/app/src/main/res/layout/utilitybill_list_item.xml" value="0.264" />
         <entry key="app/src/main/res/drawable/ic_baseline_notification.xml" value="0.1715" />
         <entry key="app/src/main/res/drawable/icon_gps_fixed.xml" value="0.2895" />
         <entry key="app/src/main/res/drawable/round_btn_home.xml" value="0.198" />
