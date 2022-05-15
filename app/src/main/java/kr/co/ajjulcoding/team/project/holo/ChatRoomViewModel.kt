@@ -26,8 +26,18 @@ class ChatRoomViewModel: ViewModel() {
         _chatBubbleLi.value = ArrayList<ChatBubble>()
     }
 
-    fun setChatBubble(userData:HoloUser, chatData:SimpleChatRoom, content: String) = viewModelScope.launch {
-        repository.setChatBubble(userData, chatData, content, _sendError)
+    fun setChatBubble(userData:HoloUser, chatData:SimpleChatRoom, content: String) = viewModelScope.async {
+        val vaild = repository.setChatBubble(userData, chatData, content, _sendError)
+        return@async vaild
+    }
+
+    fun getUserNicknameAndToken(email: String) = viewModelScope.async{
+        val nameToken:Pair<String,String> = repository.getUserNicknameAndToken(email)
+        return@async nameToken
+    }
+
+    fun sendPushAlarm(notifiBody: NotificationBody) = viewModelScope.launch{
+        repository.sendPushAlarm(notifiBody)
     }
 
     fun getChatBubbleLi(title:String, randomDouble:Double) = viewModelScope.launch{
@@ -51,9 +61,10 @@ class ChatRoomViewModel: ViewModel() {
             Log.d("채팅방 삭제 결과", result.toString())
             return@async result == true
     }
-//    override fun onCleared() {
-//        super.onCleared()
-//        listenerRgst?.remove()
-//        listenerRgst = null
-//    }
+
+    override fun onCleared() {
+        super.onCleared()
+        listenerRgst?.remove()
+        listenerRgst = null
+    }
 }
