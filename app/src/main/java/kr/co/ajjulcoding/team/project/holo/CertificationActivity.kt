@@ -29,7 +29,6 @@ class CertificationActivity : AppCompatActivity() {
             // 번호인증 혹은 기타 다른 인증(구글로그인, 이메일로그인 등) 끝난 상태
             override fun onVerificationCompleted(credential: PhoneAuthCredential) {
                 Log.d("이미 다른/과거에 인증 완료", "onVerificationCompleted:$credential")
-                makeToast("이미 인증한 번호입니다.")
             }
 
             // 번호인증 실패 상태
@@ -74,6 +73,7 @@ class CertificationActivity : AppCompatActivity() {
                 val editPhoneNum = binding.editPhoneNum
                 val inputPhoneNum:String = "+82"+editPhoneNum.text.toString().substring(1)
                 Log.d("인증 폰번호 확인", inputPhoneNum)
+                makeToast("인증 메시지 전송 중..\n")
                 sendSMS(inputPhoneNum)
             }
         }

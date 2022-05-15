@@ -27,9 +27,6 @@ import java.util.*
 import kotlin.collections.HashMap
 
 class MainActivity : AppCompatActivity() {
-    companion object{
-        const val HOME_TAG = "HomeFragment"
-    }
     private lateinit var sharedPref: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
     private lateinit var _binding:ActivityMainBinding
@@ -42,22 +39,24 @@ class MainActivity : AppCompatActivity() {
     private val utilityBillFragment = UtilityBillFragment()
     private val notificationFragment = NotificationFragment()
     private lateinit var scoreFragment:ScoreFragment
-    private lateinit var chatListFragment:ChatListFragment
+    private lateinit var chatListFragment:Fragment
     private lateinit var mUserInfo:HoloUser
     private val gpsFragment = GpsFragment()
-    private var currentTag:String = HOME_TAG
+    private var currentTag:String = AppTag.HOME_TAG
     private lateinit var frgDic:HashMap<String, Fragment>
     private lateinit var dialog: DialogFragment
     private var waitTime = 0L // 백버튼 2번 시간 간격
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         mUserInfo = intent.getParcelableExtra<HoloUser>(AppTag.USER_INFO)!!
+        supportFragmentManager.fragmentFactory = ChatListFragmentFactory(mUserInfo)
+        super.onCreate(savedInstanceState)
         profileFragment = ProfileFragment(mUserInfo)
         userSettingFragment = UsersettingFragment((mUserInfo))
         scoreFragment = ScoreFragment(mUserInfo)
         accountFragment = AccountFragment(mUserInfo)
-        chatListFragment = ChatListFragment(mUserInfo)
+        chatListFragment = supportFragmentManager.fragmentFactory.instantiate(
+            classLoader,ChatListFragment::class.java.name)
 
         showHomeFragment(mUserInfo)
         frgDic = hashMapOf<String, Fragment>(AppTag.PROFILE_TAG to profileFragment,
@@ -203,11 +202,19 @@ class MainActivity : AppCompatActivity() {
         FBstorageRef.child("profile_img/"+fileName).downloadUrl
             .addOnSuccessListener { imgUri ->
                 Log.d("저장한 프로필 url", imgUri.toString())
-                Glide.with(this).load(imgUri).apply {
-                    RequestOptions()
-                        .skipMemoryCache(true)
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                }.into(findViewById(R.id.profilePhoto))
+                if(currentTag == AppTag.HOME_TAG) {
+                    Glide.with(this).load(imgUri).apply {
+                        RequestOptions()
+                            .skipMemoryCache(true)
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    }.into(findViewById(R.id.circleImageView))
+                }else if (currentTag == AppTag.SETTING_TAG){
+                    Glide.with(this).load(imgUri).apply {
+                        RequestOptions()
+                            .skipMemoryCache(true)
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    }.into(findViewById(R.id.profilePhoto))
+                }
                 //Toast.makeText(this, "프로필 이미지 변경 완료!",Toast.LENGTH_SHORT).show()
                 userSettingFragment.setUserProfile(imgUri.toString())
                 sharedPref = this.getSharedPreferences(AppTag.USER_INFO,0)  // 캐시 저장

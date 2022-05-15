@@ -23,7 +23,9 @@ class SettingInApp {
     companion object{
         val mAuth:FirebaseAuth = FirebaseAuth.getInstance()
         val db = Firebase.firestore
-
+        val SERVER_KEY = "AAAAPD-TwEc:APA91bG-D5WLN4mEJwAOoKhljjL92NIJcLfvGHuaUwH5gb4hh7X-saYh7pF-nTuTldRhd-U-5NIVOMHwrQeuQFbth-5uMASaX5ETGHCZ98UuzrHRrOYA-51rp1NjcwT1ao0w-6qoQKAI"
+        val CONTENT_TYPE = "application/json"   //  데이터 json 타입으로 헤더에 넣음
+        val FCM_BASE_URL = "https://fcm.googleapis.com"
         fun uniqueActivity(intent:Intent){
             intent.action = Intent.ACTION_MAIN
             intent.addCategory(Intent.CATEGORY_LAUNCHER)

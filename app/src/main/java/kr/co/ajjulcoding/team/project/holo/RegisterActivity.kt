@@ -27,11 +27,11 @@ class RegisterActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // TODO("나중에 삭제")
-        binding.editName.setText("이예은3")
-        binding.editEmail.setText("lyy1234@gmail.com")
-        binding.editNickname.setText("옌3")
-        binding.editPassword.setText("lyy828282")
-        binding.editPasswordCheck.setText("lyy828282")
+//        binding.editName.setText("이예은3")
+//        binding.editEmail.setText("lyy1234@gmail.com")
+//        binding.editNickname.setText("옌3")
+//        binding.editPassword.setText("lyy828282")
+//        binding.editPasswordCheck.setText("lyy828282")
 
         binding.editNickname.addTextChangedListener(nickNameListener)
         binding.btnOverlapCheck.setOnClickListener {
