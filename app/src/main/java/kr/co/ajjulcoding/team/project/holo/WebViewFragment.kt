@@ -68,15 +68,19 @@ class WebViewFragment(private val webUrl: String, private val userInfo: HoloUser
         }
     }
 
-    private fun sendCmtAlarm(type: String, toEmail: String, msg: String, content: String){  // TODO: 예은 님이 댓글/답글을 남겼습니다., (내용)
+    private fun sendCmtAlarm(type: String, toEmail: String, content: String){  // TODO: 예은 님이 댓글/답글을 남겼습니다., (내용)
         // TODO: 이메일로 상대방 토큰 받아오기
         CoroutineScope(Dispatchers.IO).launch {
             val deferred: Deferred<Pair<String, String>> = webViewModel.getUserNicknameAndToken(toEmail)
             val defResult: Pair<String, String> = deferred.await()
+            var msg: String = userInfo.nickName
             if (type == COMMENT_TAG)
-                msg = "${}"
+                msg = "$msg 님이 댓글을 남겼습니다"
+            else if (type == SUBCOMMENT_TAG)
+                msg = "$msg 님이 답글을 남겼습니다"
             val data = CmtNotificationBody.CmtNotificationData(msg, content)
             val body = CmtNotificationBody(defResult.second, data)
+            webViewModel.sendCmtPushAlarm(body)
         }
     }
 }

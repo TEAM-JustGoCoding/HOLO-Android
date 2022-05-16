@@ -155,7 +155,7 @@ class ChatRoomActivity() : AppCompatActivity() {
             val defNameToken: Deferred<Pair<String,String>> = chatRoomViewModel.getUserNicknameAndToken(toEmail)
             val rstNameToken = defNameToken.await()
             val data = ChatNotificationBody.ChatNotificationData(
-                "${userInfo.nickName} 님으로부터 채팅이 도착했습니다.", content, chatRoomData.randomDouble!!
+                "${userInfo.nickName} 님으로부터 채팅이 도착했습니다", content, chatRoomData.randomDouble!!
             )
             val body = ChatNotificationBody(rstNameToken.second, data)
             Log.d("바디바디", body.toString())
