@@ -1,30 +1,16 @@
 package kr.co.ajjulcoding.team.project.holo
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import android.widget.*
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.RecyclerView
 
 
-//class UtilityBillAdapter(private val items: MutableList<UtilityBillItem>): BaseAdapter() {
-//    override fun getCount(): Int = items.size
-//    override fun getItem(position: Int): UtilityBillItem = items[position]
-//
-//    override fun getItemId(position: Int): Long = position.toLong()
-//    override fun getView(position: Int, view: View?, parent: ViewGroup?): View {
-//        var convertView = view
-//        if (convertView == null) convertView = LayoutInflater.from(parent?.context).inflate(R.layout.utilitybill_list_item, parent, false)
-//
-//        val item: UtilityBillItem = items[position]
-//        convertView.content.text = item.content
-//
-//        return convertView
-//    }
-//}
-
-class UtilityBillAdapter(items: ArrayList<UtilityBillItem>) : RecyclerView.Adapter<UtilityBillAdapter.ViewHolder>() {
-    private var mUitilityBillList: ArrayList<UtilityBillItem>? = items
+class UtilityBillAdapter(val onItemClick: OnItemClick) : RecyclerView.Adapter<UtilityBillAdapter.ViewHolder>() {
+    private var mUitilityBillList: ArrayList<UtilityBillItem>? = null
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view: View =
             LayoutInflater.from(parent.context).inflate(R.layout.utilitybill_list_item, parent, false)
@@ -44,14 +30,56 @@ class UtilityBillAdapter(items: ArrayList<UtilityBillItem>) : RecyclerView.Adapt
         return mUitilityBillList!!.size
     }
 
+    fun getItemTerm(position: Int?): Int? {
+        return mUitilityBillList!!.get(position!!).getTerm()
+    }
+
+    fun getItemDay(position: Int?): Int? {
+        return mUitilityBillList!!.get(position!!).getDay()
+    }
+
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val delBtn: Button
         var content: TextView
+        var term = 0
+        var day = 0
+        var termSpin: Spinner
+        var dateSpin: Spinner
         fun onBind(item: UtilityBillItem) {
             content.setText(item.getContent())
+            termSpin.adapter = ArrayAdapter.createFromResource(itemView.getContext(), R.array.term_array, android.R.layout.simple_spinner_item)
+            dateSpin.adapter = ArrayAdapter.createFromResource(itemView.getContext(), R.array.date_array, android.R.layout.simple_spinner_item)
+            termSpin.setEnabled(true)
+            dateSpin.setEnabled(true)
+            termSpin.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
+                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                    item.setTerm(position)
+                    term = position
+                }
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                    term = 1
+                }
+            }
+            dateSpin.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
+                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                    item.setDay(position)
+                    day = position
+                }
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                    day = 1
+                }
+            }
+            delBtn.setOnClickListener {
+                onItemClick.onClikDelete(position)
+                Log.d("공과금 프래그먼트 position", position.toString())
+            }
         }
 
         init {
-            content = itemView.findViewById<View>(R.id.content) as TextView
+            content = itemView.findViewById(R.id.content) as TextView
+            termSpin = itemView.findViewById(R.id.TermSpinner) as Spinner
+            dateSpin = itemView.findViewById(R.id.DateSpinner) as Spinner
+            delBtn = itemView.findViewById(R.id.BtnDelete) as Button
         }
     }
 }

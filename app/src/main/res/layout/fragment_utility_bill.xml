@@ -43,57 +43,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/dialText" />
 
-        <ListView
+        <androidx.recyclerview.widget.RecyclerView
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             android:id="@+id/listView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/dialTextExplain"/>
 
-        <LinearLayout
-            android:id="@+id/buttonList"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="30dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/dialTextExplain">
-
-            <Button
-                android:id="@+id/BtnAppend"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/sky_dark"
-                android:text="추가"
-                android:textColor="@color/white"
-                android:fontFamily="@font/light"/>
-
-            <Button
-                android:id="@+id/BtnModify"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/sky_dark"
-                android:text="수정"
-                android:textColor="@color/white"
-                android:fontFamily="@font/light"/>
-
-            <Button
-                android:id="@+id/BtnDelete"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/sky_dark"
-                android:text="삭제"
-                android:textColor="@color/white"
-                android:fontFamily="@font/light"/>
-
-        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -103,7 +62,16 @@
             android:layout_marginTop="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/buttonList">
+            app:layout_constraintTop_toBottomOf="@+id/listView">
+
+            <Button
+                android:id="@+id/BtnAppend"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/sky_dark"
+                android:text="추가"
+                android:textColor="@color/white"
+                android:fontFamily="@font/light"/>
 
             <Button
                 android:id="@+id/dialBtnSet"
@@ -117,13 +85,11 @@
                 android:id="@+id/dialBtnExit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="40dp"
                 android:backgroundTint="@color/sky_dark"
                 android:text="다음에"
                 android:textColor="@color/white"
                 android:fontFamily="@font/light"/>
         </LinearLayout>
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
