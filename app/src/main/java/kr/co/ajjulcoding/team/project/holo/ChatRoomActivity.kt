@@ -20,10 +20,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.Timestamp
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kr.co.ajjulcoding.team.project.holo.databinding.ActivityChatRoomBinding
 import java.text.SimpleDateFormat
 import java.util.*
@@ -133,8 +130,29 @@ class ChatRoomActivity() : AppCompatActivity() {
 
     private fun sendMSG(){
         val content = binding.editChat.text.toString()
-        chatRoomViewModel.setChatBubble(userInfo, chatRoomData, content)
+        CoroutineScope(Dispatchers.Main).launch {
+            val defVaild: Deferred<Boolean> = chatRoomViewModel.setChatBubble(userInfo, chatRoomData, content)
+            val resultVaild = defVaild.await()
+            if (resultVaild == false)
+                return@launch
+            sendAlarm(content)
+        }
+
         binding.editChat.setText("")
+    }
+
+    private fun sendAlarm(content: String){
+        var toEmail: String = chatRoomData.remail
+        if (toEmail == userInfo.uid)
+            toEmail = chatRoomData.semail
+        CoroutineScope(Dispatchers.Main).launch {
+            val defNameToken: Deferred<Pair<String,String>> = chatRoomViewModel.getUserNicknameAndToken(toEmail)
+            val rstNameToken = defNameToken.await()
+            val data = NotificationBody.NotificationData("${userInfo.nickName} 님으로부터 채팅이 도착했습니다.", content)
+            val body = NotificationBody(rstNameToken.second, data)
+            Log.d("바디바디", body.toString())
+            chatRoomViewModel.sendPushAlarm(body)
+        }
     }
 
     private fun showPostScoreDialog(numStar: Float, direction: String){
@@ -145,7 +163,10 @@ class ChatRoomActivity() : AppCompatActivity() {
         }
         dialog!!.setPostOnBtnClicked(object : PostScoreDialogFragment.PostOnBtnClickListener{
             override fun PostOnBtnClicked(vaild: Boolean) {
-                val deferred:Deferred<Boolean> = chatRoomViewModel.postScore(userInfo.uid, direction,
+                var toEmail:String = chatRoomData.remail
+                if (chatRoomData.remail == userInfo.uid)
+                    toEmail = chatRoomData.semail
+                val deferred:Deferred<Boolean> = chatRoomViewModel.postScore(toEmail, direction,
                     numStar, chatRoomData.title, chatRoomData.randomDouble!!)   // 별점 전송
                 CoroutineScope(Dispatchers.Main).launch {
                     val resultDeferred:Boolean = deferred.await()

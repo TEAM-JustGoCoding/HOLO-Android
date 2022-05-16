@@ -13,8 +13,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class HoloSplashActivity : AppCompatActivity() {
-    private val selectMain = "MainActivity"
-    private val selectLogin = "LoginActivity"
     private var userInfo: HoloUser? = null
     private var waitTime:Double = 1.5
     private lateinit var sharedPref:SharedPreferences
@@ -32,12 +30,9 @@ class HoloSplashActivity : AppCompatActivity() {
         CoroutineScope(Dispatchers.Main).launch {
             if (SettingInApp.mAuth.currentUser != null) {
                 val repository = Repository() // 토큰 변경 여부 검사
-                Log.d("사용자 정보 캐시 확인1", "1")
                 val token = repository.setToken(SettingInApp.mAuth.currentUser!!.email!!)
-                Log.d("사용자 정보 캐시 확인2", token.toString())
                 userInfo = getUserCache(token)
-                Log.d("사용자 정보 캐시 확인3", userInfo.toString())
-                editor.putString("token", token).apply()
+                token?.let { editor.putString("token", it).apply() }
                 waitTime = 1.0
                 delaySec(waitTime, userInfo!!)   // 1.5 or 1.0 초 지연
             }else{

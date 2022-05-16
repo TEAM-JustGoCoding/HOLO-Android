@@ -42,13 +42,14 @@ class MainActivity : AppCompatActivity() {
     private val utilityBillFragment = UtilityBillFragment()
     private val notificationFragment = NotificationFragment()
     private lateinit var scoreFragment:ScoreFragment
-    private lateinit var chatListFragment:ChatListFragment
+    private lateinit var chatListFragment:Fragment
     private lateinit var mUserInfo:HoloUser
     private val gpsFragment = GpsFragment()
     private var currentTag:String = AppTag.HOME_TAG
     private lateinit var frgDic:HashMap<String, Fragment>
     private lateinit var dialog: DialogFragment
     private var waitTime = 0L // 백버튼 2번 시간 간격
+    private lateinit var imgLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         mUserInfo = intent.getParcelableExtra<HoloUser>(AppTag.USER_INFO)!!
@@ -58,7 +59,6 @@ class MainActivity : AppCompatActivity() {
         userSettingFragment = UsersettingFragment((mUserInfo))
         scoreFragment = ScoreFragment(mUserInfo)
         accountFragment = AccountFragment(mUserInfo)
-        chatListFragment = ChatListFragment(mUserInfo)
         chatListFragment = supportFragmentManager.fragmentFactory.instantiate(
             classLoader,ChatListFragment::class.java.name)
         imgLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
@@ -234,6 +234,7 @@ class MainActivity : AppCompatActivity() {
             }
 
     }
+    
     private fun saveCache(){
         val userInfo = intent.getParcelableExtra<HoloUser>(AppTag.USER_INFO) as HoloUser
         sharedPref = this.getSharedPreferences(AppTag.USER_INFO,0)
