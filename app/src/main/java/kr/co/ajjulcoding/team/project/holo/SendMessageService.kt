@@ -22,9 +22,13 @@ class SendMessageService: FirebaseMessagingService() {
         super.onMessageReceived(remoteMessage)
 
         Log.d("푸시 알림 받음", remoteMessage.toString())
-        val currentNum: Double? = ChatRoomActivity.randomNum
-        when (currentNum){
-            remoteMessage.data["randomNum"]?.toDouble() -> return
+        val randomNum:Double? = remoteMessage.data["randomNum"]?.toDouble() // TODO: 댓글/답글 데이터 들어오면 어떻게 되는지 찍어보기 -> null 반환?
+        randomNum?.let {
+            val currentNum: Double? = ChatRoomActivity.randomNum
+            when (currentNum){
+                remoteMessage.data["randomNum"]?.toDouble() -> return
+                else -> {}
+            }
         }
 
         val title = "Holo"
