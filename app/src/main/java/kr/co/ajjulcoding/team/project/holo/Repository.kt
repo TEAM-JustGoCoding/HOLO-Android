@@ -147,10 +147,17 @@ class Repository {
         }
     }
 
-    suspend fun sendChatPushAlarm(notifiBody: NotificationBody){
-        val debug = RetrofitInstance.api.sendNotification(notifiBody)
-        Log.d("알림 오류 확인", debug.toString())
+    suspend fun sendChatPushAlarm(notifiBody: ChatNotificationBody){
+        val debug = RetrofitInstance.api.sendChatNotification(notifiBody)
+        Log.d("채팅 알림 오류 확인", debug.toString())
     }
+
+    suspend fun sendCmtPushAlarm(notifiBody: CmtNotificationBody){  // 댓글/답글 공용
+        val debug = RetrofitInstance.api.sendCmtNotification(notifiBody)
+        Log.d("채팅 알림 오류 확인", debug.toString())
+    }
+
+
 
     suspend fun getUserNicknameAndToken(email:String):Pair<String,String>{
         val client = OkHttpClient()

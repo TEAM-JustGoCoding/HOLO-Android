@@ -2,6 +2,7 @@ package kr.co.ajjulcoding.team.project.holo
 
 import android.Manifest
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
@@ -11,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
@@ -31,6 +33,7 @@ class ProfileFragment(var currentUser:HoloUser) : Fragment() {
     private val mActivity get() = _activity
     private var selectedUri:Uri? = null
     private var twiceValid = false
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -119,23 +122,15 @@ class ProfileFragment(var currentUser:HoloUser) : Fragment() {
         }
     }
 
-    private var imgLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-        uri?.let { // 사진 정상적으로 가져옴
-            selectedUri = uri
-            binding.profilephoto.setImageBitmap(null)   // glide로 설정한 이미지 제거
-            binding.profilephoto.setImageURI(null)
-            binding.profilephoto.setImageURI(selectedUri)
-            Log.d("사진 가져오기", "$uri")
-        }
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.btnBack.setOnClickListener {
             mActivity.changeFragment(AppTag.SETTING_TAG)
         }
         binding.buttonPhotoedit.setOnClickListener {
-            imgLauncher.launch("image/*")
+            val intent = Intent(Intent.ACTION_PICK)
+            intent.type = "image/*"
+            mActivity.getImgCallback().launch(intent)
         }
         binding.btnFinish.setOnClickListener {
             selectedUri?.let {
@@ -161,4 +156,14 @@ class ProfileFragment(var currentUser:HoloUser) : Fragment() {
             Log.d("프로필 이미지 변경 오류", it.toString())
         }
     }
+
+    fun setProfileImg(uri: Uri){
+        selectedUri = uri
+        binding.profilephoto.setImageBitmap(null)   // glide로 설정한 이미지 제거
+        binding.profilephoto.setImageURI(null)
+        binding.profilephoto.setImageURI(selectedUri)
+        Log.d("사진 가져오기", "$uri")
+    }
+
+
 }

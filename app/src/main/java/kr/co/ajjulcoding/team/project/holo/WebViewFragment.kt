@@ -11,10 +11,12 @@ import android.view.ViewGroup
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
 import kr.co.ajjulcoding.team.project.holo.databinding.FragmentWebViewBinding
 
 class WebViewFragment(private val webUrl: String) : Fragment() {
     private lateinit var _binding: FragmentWebViewBinding
+    private lateinit var webViewModel: WebViewModel
     private val binding get() = _binding
     private lateinit var _activity:MainActivity
     private val mActivity get() = _activity
@@ -29,6 +31,7 @@ class WebViewFragment(private val webUrl: String) : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentWebViewBinding.inflate(inflater, container, false)
+        webViewModel = ViewModelProvider(this).get(WebViewModel::class.java)
         val webView:WebView = binding.webView
         webView.apply {
             val webViewClient = webViewClient
@@ -60,5 +63,11 @@ class WebViewFragment(private val webUrl: String) : Fragment() {
         }
     }
 
+    private fun sendCmtAlarm(email: String, msg: String, content: String){  // TODO: 예은 님이 댓글/답글을 남겼습니다., (내용)
+        // TODO: 이메일로 상대방 토큰 받아오기
+        //val diff
+//        val data = CmtNotificationBody.CmtNotificationData(msg, content)
+//        val body = CmtNotificationBody()
 
+    }
 }

@@ -12,6 +12,9 @@ import android.os.Bundle
 import android.os.Environment
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
@@ -46,6 +49,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var frgDic:HashMap<String, Fragment>
     private lateinit var dialog: DialogFragment
     private var waitTime = 0L // 백버튼 2번 시간 간격
+    private lateinit var imgLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         mUserInfo = intent.getParcelableExtra<HoloUser>(AppTag.USER_INFO)!!
@@ -57,6 +61,13 @@ class MainActivity : AppCompatActivity() {
         accountFragment = AccountFragment(mUserInfo)
         chatListFragment = supportFragmentManager.fragmentFactory.instantiate(
             classLoader,ChatListFragment::class.java.name)
+        imgLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            val uri: Uri? = result.data?.data
+            Log.d("사진 가져오기0", "${uri}")
+            uri?.let { // 사진 정상적으로 가져옴
+                profileFragment.setProfileImg(it)
+            }
+        }
 
         showHomeFragment(mUserInfo)
         frgDic = hashMapOf<String, Fragment>(AppTag.PROFILE_TAG to profileFragment,
@@ -255,6 +266,8 @@ class MainActivity : AppCompatActivity() {
             })
             .create().show()
     }
+
+    fun getImgCallback() = imgLauncher
 
     fun addAlarm(day: Int) {
         val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager

@@ -154,10 +154,10 @@ class ChatRoomActivity() : AppCompatActivity() {
         CoroutineScope(Dispatchers.Main).launch {
             val defNameToken: Deferred<Pair<String,String>> = chatRoomViewModel.getUserNicknameAndToken(toEmail)
             val rstNameToken = defNameToken.await()
-            val data = NotificationBody.NotificationData(
+            val data = ChatNotificationBody.ChatNotificationData(
                 "${userInfo.nickName} 님으로부터 채팅이 도착했습니다.", content, chatRoomData.randomDouble!!
             )
-            val body = NotificationBody(rstNameToken.second, data)
+            val body = ChatNotificationBody(rstNameToken.second, data)
             Log.d("바디바디", body.toString())
             chatRoomViewModel.sendChatPushAlarm(body)
         }
