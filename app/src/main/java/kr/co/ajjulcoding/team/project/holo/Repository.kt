@@ -147,18 +147,25 @@ class Repository {
         }
     }
 
-    suspend fun sendPushAlarm(notifiBody: NotificationBody){
-        val debug = RetrofitInstance.api.sendNotification(notifiBody)
-        Log.d("알림 오류 확인", debug.toString())
+    suspend fun sendChatPushAlarm(notifiBody: ChatNotificationBody){
+        val debug = RetrofitInstance.api.sendChatNotification(notifiBody)
+        Log.d("채팅 알림 오류 확인", debug.toString())
     }
+
+    suspend fun sendCmtPushAlarm(notifiBody: CmtNotificationBody){  // 댓글/답글 공용
+        val debug = RetrofitInstance.api.sendCmtNotification(notifiBody)
+        Log.d("채팅 알림 오류 확인", debug.toString())
+    }
+
+
 
     suspend fun getUserNicknameAndToken(email:String):Pair<String,String>{
         val client = OkHttpClient()
         val mySearchUrl = (PhpUrl.DOTHOME+PhpUrl.URL_GET_TOKEN).toHttpUrlOrNull()!!.newBuilder()
         mySearchUrl.addQueryParameter("uid",email)
         val request = Request.Builder().url(mySearchUrl.build().toString()).build()
-        var nickName:String? = null
-        var token:String? = null
+        var nickName:String = ""
+        var token:String = ""
 
         CoroutineScope(Dispatchers.IO).async {
             try {
@@ -175,7 +182,7 @@ class Repository {
             }
         }.await()
         Log.d("데베 토큰 변수 전달", "성공: ${token}")
-        return Pair(nickName!!,token!!)
+        return Pair(nickName,token)
     }
 
     suspend fun createChatRoom(chatRoomData:ChatRoom, _chatRoom:MutableLiveData<ChatRoom>):Boolean{

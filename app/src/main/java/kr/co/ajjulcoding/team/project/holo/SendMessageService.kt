@@ -22,6 +22,11 @@ class SendMessageService: FirebaseMessagingService() {
         super.onMessageReceived(remoteMessage)
 
         Log.d("푸시 알림 받음", remoteMessage.toString())
+        val currentNum: Double? = ChatRoomActivity.randomNum
+        when (currentNum){
+            remoteMessage.data["randomNum"]?.toDouble() -> return
+        }
+
         val title = "Holo"
         val msg = remoteMessage.data["msg"]!! // ex. 댓글이 달렸습니다.
         val content = remoteMessage.data["content"]!! // ex. 8000원 정도 주문할 예정입니다.

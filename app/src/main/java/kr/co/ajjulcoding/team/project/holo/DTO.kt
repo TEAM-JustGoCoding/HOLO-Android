@@ -43,14 +43,23 @@ data class SimpleChatRoom(val title:String="", val participant:ArrayList<String>
 data class ChatBubble(val nickname:String? = null, val content:String = "", val currentTime:Timestamp? = null):Parcelable
 
 
-data class NotificationBody(val to: String, val data: NotificationData){
-    data class NotificationData(val msg: String, val content: String)
+data class ChatNotificationBody(val to: String, val data: ChatNotificationData){
+    data class ChatNotificationData(val msg: String, val content: String, val randomNum: Double)
+}
+
+data class CmtNotificationBody(val to: String, val data: CmtNotificationData){  // 댓글/답글 공용
+    data class CmtNotificationData(val msg: String, val content: String)
 }
 
 interface FcmInterface{ // 푸시 메시지를 서버로 보냄
     @POST("fcm/send")
-    suspend fun sendNotification(   // 서버 통신은 비동기 처리
-        @Body notification: NotificationBody
+    suspend fun sendChatNotification(   // 서버 통신은 비동기 처리
+        @Body notification: ChatNotificationBody
+    ) : retrofit2.Response<ResponseBody>
+
+    @POST("fcm/send")
+    suspend fun sendCmtNotification(   // 서버 통신은 비동기 처리
+        @Body notification: CmtNotificationBody
     ) : retrofit2.Response<ResponseBody>
 }
 
