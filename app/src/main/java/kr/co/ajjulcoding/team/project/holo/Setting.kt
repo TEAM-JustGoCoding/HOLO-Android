@@ -82,7 +82,7 @@ class PhpUrl {
 
 class WebUrl {
     companion object{
-        const val URL_LAN: String = "http://192.168.1.172:3000/"
+        const val URL_LAN: String = "http://192.168.1.172:3000/"///"http://192.168.1.172:3000/"
         const val URL_POLICY:String = "infoboard"
         const val URL_OTT: String = "dealboard"
         const val URL_FAQ: String = "faqboard"

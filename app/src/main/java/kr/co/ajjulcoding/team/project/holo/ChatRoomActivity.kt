@@ -40,6 +40,7 @@ class ChatRoomActivity() : AppCompatActivity() {
         userInfo = intent.getParcelableExtra<HoloUser>(AppTag.USER_INFO)!!
         userEmail = userInfo.uid
         chatRoomData = intent.getParcelableExtra<SimpleChatRoom>(AppTag.CHATROOM_TAG)!!
+        randomNum = chatRoomData.randomDouble
         _binding = ActivityChatRoomBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setViewData()
@@ -95,6 +96,11 @@ class ChatRoomActivity() : AppCompatActivity() {
         }
     }
 
+    override fun onPause() {
+        randomNum = null
+        super.onPause()
+    }
+
     private fun setViewData(){
         if (chatRoomData.semail != userEmail){  // 사용자는 remail
             binding.txtNickName.setText(chatRoomData.snickName)
@@ -148,10 +154,12 @@ class ChatRoomActivity() : AppCompatActivity() {
         CoroutineScope(Dispatchers.Main).launch {
             val defNameToken: Deferred<Pair<String,String>> = chatRoomViewModel.getUserNicknameAndToken(toEmail)
             val rstNameToken = defNameToken.await()
-            val data = NotificationBody.NotificationData("${userInfo.nickName} 님으로부터 채팅이 도착했습니다.", content)
+            val data = NotificationBody.NotificationData(
+                "${userInfo.nickName} 님으로부터 채팅이 도착했습니다.", content, chatRoomData.randomDouble!!
+            )
             val body = NotificationBody(rstNameToken.second, data)
             Log.d("바디바디", body.toString())
-            chatRoomViewModel.sendPushAlarm(body)
+            chatRoomViewModel.sendChatPushAlarm(body)
         }
     }
 
@@ -192,6 +200,7 @@ class ChatRoomActivity() : AppCompatActivity() {
     }
 
     companion object{
+        var randomNum: Double? = null
         const val LEFT_BUBBLE = 1
         const val RIGHT_BUBBLE = 2
         val chatBubbleDiffUtil = object : DiffUtil.ItemCallback<ChatBubble>(){

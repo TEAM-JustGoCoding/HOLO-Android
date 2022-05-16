@@ -44,7 +44,7 @@ data class ChatBubble(val nickname:String? = null, val content:String = "", val 
 
 
 data class NotificationBody(val to: String, val data: NotificationData){
-    data class NotificationData(val msg: String, val content: String)
+    data class NotificationData(val msg: String, val content: String, val randomNum: Double)
 }
 
 interface FcmInterface{ // 푸시 메시지를 서버로 보냄

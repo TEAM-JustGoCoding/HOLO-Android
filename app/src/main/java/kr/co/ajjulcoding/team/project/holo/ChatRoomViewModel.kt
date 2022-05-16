@@ -36,8 +36,8 @@ class ChatRoomViewModel: ViewModel() {
         return@async nameToken
     }
 
-    fun sendPushAlarm(notifiBody: NotificationBody) = viewModelScope.launch{
-        repository.sendPushAlarm(notifiBody)
+    fun sendChatPushAlarm(notifiBody: NotificationBody) = viewModelScope.launch{
+        repository.sendChatPushAlarm(notifiBody)
     }
 
     fun getChatBubbleLi(title:String, randomDouble:Double) = viewModelScope.launch{

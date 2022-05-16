@@ -147,7 +147,7 @@ class Repository {
         }
     }
 
-    suspend fun sendPushAlarm(notifiBody: NotificationBody){
+    suspend fun sendChatPushAlarm(notifiBody: NotificationBody){
         val debug = RetrofitInstance.api.sendNotification(notifiBody)
         Log.d("알림 오류 확인", debug.toString())
     }
