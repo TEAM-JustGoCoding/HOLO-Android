@@ -43,211 +43,35 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/dialText" />
 
-        <LinearLayout
-            android:id="@+id/LinearRoom"
+        <androidx.recyclerview.widget.RecyclerView
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:id="@+id/listView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/dialTextExplain">
+            app:layout_constraintTop_toBottomOf="@+id/dialTextExplain"/>
 
-            <CheckBox
-                android:id="@+id/cboxAgreeRoom"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:focusedByDefault="false"
-                android:text="월세"
-                android:textSize="18dp"
-                android:textColor="@color/light_gray"
-                android:fontFamily="@font/bold"/>
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/light"
-                android:text="매달"
-                android:textColor="@color/sky_dark"
-                android:textSize="16dp"/>
-
-            <Spinner
-                android:id="@+id/RoomSpinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:spinnerMode="dropdown"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/light"
-                android:text="일"
-                android:textColor="@color/sky_dark"
-                android:textSize="16dp"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/LinearElect"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/LinearRoom">
-
-            <CheckBox
-                android:id="@+id/cboxAgreeElect"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:focusedByDefault="false"
-                android:text="전기세"
-                android:textSize="18dp"
-                android:textColor="@color/light_gray"
-                android:fontFamily="@font/bold"/>
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/light"
-                android:text="매달"
-                android:textColor="@color/sky_dark"
-                android:textSize="16dp"/>
-
-            <Spinner
-                android:id="@+id/ElectSpinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:spinnerMode="dropdown"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/light"
-                android:text="일"
-                android:textColor="@color/sky_dark"
-                android:textSize="16dp"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/LinearWater"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/LinearElect">
-
-            <CheckBox
-                android:id="@+id/cboxAgreeWater"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:focusedByDefault="false"
-                android:text="수도세"
-                android:textSize="18dp"
-                android:textColor="@color/light_gray"
-                android:fontFamily="@font/bold"/>
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/light"
-                android:text="매달"
-                android:textColor="@color/sky_dark"
-                android:textSize="16dp"/>
-
-            <Spinner
-                android:id="@+id/WaterSpinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:spinnerMode="dropdown"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/light"
-                android:text="일"
-                android:textColor="@color/sky_dark"
-                android:textSize="16dp"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/LinearFire"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/LinearWater">
-
-            <CheckBox
-                android:id="@+id/cboxAgreeFire"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:focusedByDefault="false"
-                android:text="가스비"
-                android:textSize="18dp"
-                android:textColor="@color/light_gray"
-                android:fontFamily="@font/bold"/>
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/light"
-                android:text="매달"
-                android:textColor="@color/sky_dark"
-                android:textSize="16dp"/>
-
-            <Spinner
-                android:id="@+id/FireSpinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:spinnerMode="dropdown"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/light"
-                android:text="일"
-                android:textColor="@color/sky_dark"
-                android:textSize="16dp"/>
-        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/LinearFire">
+            app:layout_constraintTop_toBottomOf="@+id/listView">
+
+            <Button
+                android:id="@+id/BtnAppend"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/sky_dark"
+                android:text="추가"
+                android:textColor="@color/white"
+                android:fontFamily="@font/light"/>
 
             <Button
                 android:id="@+id/dialBtnSet"
@@ -261,13 +85,11 @@
                 android:id="@+id/dialBtnExit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="40dp"
                 android:backgroundTint="@color/sky_dark"
                 android:text="다음에"
                 android:textColor="@color/white"
                 android:fontFamily="@font/light"/>
         </LinearLayout>
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

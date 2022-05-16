@@ -234,7 +234,7 @@ class MainActivity : AppCompatActivity() {
             }
 
     }
-
+    
     private fun saveCache(){
         val userInfo = intent.getParcelableExtra<HoloUser>(AppTag.USER_INFO) as HoloUser
         sharedPref = this.getSharedPreferences(AppTag.USER_INFO,0)
@@ -266,10 +266,10 @@ class MainActivity : AppCompatActivity() {
             })
             .create().show()
     }
-
+    
     fun getImgCallback() = imgLauncher
 
-    fun addAlarm(day: Int) {
+    fun addAlarm(term: Int, day: Int) {
         val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
 
         val intent = Intent(this, Alarm::class.java)
@@ -280,14 +280,50 @@ class MainActivity : AppCompatActivity() {
 
         val toastMessage = if (true) {
             val cal = Calendar.getInstance()
+            val month = (cal.get(Calendar.MONTH))
             val year = (cal.get(Calendar.YEAR))
 
             for (i in year until year+10) {
-                for (j in 0 until 12) {
-                    setDateFormat(alarmManager, year, j, day, pendingIntent)
+                if (term==0 || term==1) {
+                    for (j in 0 until 12) {
+                        setDateFormat(alarmManager, year, j, day, pendingIntent)
+                    }
+                }
+                else if(term==2) {
+                    if (month == 0 || month%2 == 0) {
+                        for (j in 0 until 12 step(2)) {
+                            setDateFormat(alarmManager, year, j, day, pendingIntent)
+                        }
+                    }
+                    else {
+                        for (j in 1 until 12 step(2)) {
+                            setDateFormat(alarmManager, year, j, day, pendingIntent)
+                        }
+                    }
+                }
+                else {
+                    if (month == 0 || month%4 == 0) {
+                        for (j in 0 until 12 step(4)) {
+                            setDateFormat(alarmManager, year, j, day, pendingIntent)
+                        }
+                    }
+                    else if (month%4 == 1) {
+                        for (j in 1 until 12 step(4)) {
+                            setDateFormat(alarmManager, year, j, day, pendingIntent)
+                        }
+                    }
+                    else if (month%4 == 2) {
+                        for (j in 2 until 12 step(4)) {
+                            setDateFormat(alarmManager, year, j, day, pendingIntent)
+                        }
+                    }
+                    else {
+                        for (j in 2 until 12 step(4)) {
+                            setDateFormat(alarmManager, year, j, day, pendingIntent)
+                        }
+                    }
                 }
             }
-
             "알림이 설정되었습니다."
         } else {
             alarmManager.cancel(pendingIntent)
@@ -309,7 +345,7 @@ class MainActivity : AppCompatActivity() {
         val calendar: Calendar = Calendar.getInstance().apply { // 1
             timeInMillis = System.currentTimeMillis()
             set(Calendar.YEAR, year)
-            set(Calendar.MONTH, month-1)
+            set(Calendar.MONTH, month)
             set(Calendar.DAY_OF_MONTH, day)
             set(Calendar.HOUR_OF_DAY, 9)
             set(Calendar.MINUTE, 0)
