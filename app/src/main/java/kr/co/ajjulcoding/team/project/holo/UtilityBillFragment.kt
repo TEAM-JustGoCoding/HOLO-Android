@@ -5,21 +5,23 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.icu.util.GregorianCalendar
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import androidx.fragment.app.DialogFragment
+import androidx.recyclerview.widget.RecyclerView
 import kr.co.ajjulcoding.team.project.holo.databinding.FragmentUtilityBillBinding
 
 
-class UtilityBillFragment : DialogFragment() {
+class UtilityBillFragment : DialogFragment(), OnItemClick {
     private lateinit var _activity:MainActivity
     private val mActivity get() = _activity
     private var _binding: FragmentUtilityBillBinding? = null
     private val binding get() = _binding!!
-
+    private var mlistView: RecyclerView? = null
+    private var mUtilityBillAdapter: UtilityBillAdapter? = null
+    private var mUtilityBillItems: ArrayList<UtilityBillItem>? = null
     private var mCalender: GregorianCalendar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,123 +30,67 @@ class UtilityBillFragment : DialogFragment() {
         mCalender = GregorianCalendar()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         _binding = FragmentUtilityBillBinding.inflate(inflater, container, false)
-        val view = binding.root
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        Log.d("공과금 프래그먼트", "onViewCreated")
+
+        mlistView = requireView().findViewById(R.id.listView) as RecyclerView?
+
+        mUtilityBillAdapter = UtilityBillAdapter(this)
+
+        mlistView!!.adapter = mUtilityBillAdapter
+
+        mUtilityBillItems = ArrayList()
+
         // 레이아웃 배경을 투명하게 해줌, 필수 아님
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        var day1 = 0
-        var day2 = 0
-        var day3 = 0
-        var day4 = 0
 
-        val spin1 = binding.RoomSpinner
-        val spin2 = binding.ElectSpinner
-        val spin3 = binding.WaterSpinner
-        val spin4 = binding.FireSpinner
-        spin1.adapter = ArrayAdapter.createFromResource(requireContext(), R.array.date_array, android.R.layout.simple_spinner_item)
-        spin2.adapter = ArrayAdapter.createFromResource(requireContext(), R.array.date_array, android.R.layout.simple_spinner_item)
-        spin3.adapter = ArrayAdapter.createFromResource(requireContext(), R.array.date_array, android.R.layout.simple_spinner_item)
-        spin4.adapter = ArrayAdapter.createFromResource(requireContext(), R.array.date_array, android.R.layout.simple_spinner_item)
+        val appendbtn = binding.BtnAppend
 
-        spin1.setEnabled(false)
-        spin2.setEnabled(false)
-        spin3.setEnabled(false)
-        spin4.setEnabled(false)
+        appendbtn.setOnClickListener() {
+            mUtilityBillItems!!.add(UtilityBillItem("  ", 0, 0))
+            mUtilityBillAdapter!!.notifyDataSetChanged()
+        }
 
-        val cbox1 = binding.cboxAgreeRoom
-        val cbox2 = binding.cboxAgreeElect
-        val cbox3 = binding.cboxAgreeWater
-        val cbox4 = binding.cboxAgreeFire
+        mUtilityBillItems!!.add(UtilityBillItem("월세", 0, 0))
+        mUtilityBillItems!!.add(UtilityBillItem("전기세", 0, 0))
+        mUtilityBillItems!!.add(UtilityBillItem("수도세", 0, 0))
+        mUtilityBillItems!!.add(UtilityBillItem("가스비", 0, 0))
 
-        cbox1.setOnClickListener {
-            if (cbox1.isChecked == false){
-                spin1.setEnabled(false)
-            }
-            else {
-                spin1.setEnabled(true)
-                binding.RoomSpinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
-                    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-//                        mActivity.addAlarm(position)
-                        day1 = position
-                    }
-                    override fun onNothingSelected(parent: AdapterView<*>?) {
-//                        mActivity.addAlarm(1)  //클릭이벤트 없으면 default로 매달 1일
-                        day1 = 1
-                    }
-                }
-            }
-        }
-        cbox2.setOnClickListener {
-            if (cbox2.isChecked == false){
-                spin2.setEnabled(false)
-            }
-            else {
-                spin2.setEnabled(true)
-                binding.ElectSpinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
-                    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-//                        mActivity.addAlarm(position)
-                        day2 = position
-                    }
-                    override fun onNothingSelected(parent: AdapterView<*>?) {
-//                        mActivity.addAlarm(1)  //클릭이벤트 없으면 default로 매달 1일
-                        day2 = 1
-                    }
-                }
-            }
-        }
-        cbox3.setOnClickListener {
-            if (cbox3.isChecked == false){
-                spin3.setEnabled(false)
-            }
-            else {
-                spin3.setEnabled(true)
-                binding.WaterSpinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
-                    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-//                        mActivity.addAlarm(position)
-                        day3 = position
-                    }
-                    override fun onNothingSelected(parent: AdapterView<*>?) {
-//                        mActivity.addAlarm(1)  //클릭이벤트 없으면 default로 매달 1일
-                        day3 = 1
-                    }
-                }
-            }
-        }
-        cbox4.setOnClickListener {
-            if (cbox4.isChecked == false){
-                spin4.setEnabled(false)
-            }
-            else {
-                spin4.setEnabled(true)
-                binding.FireSpinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
-                    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-//                        mActivity.addAlarm(position)
-                        day4 = position
-                    }
-                    override fun onNothingSelected(parent: AdapterView<*>?) {
-//                        mActivity.addAlarm(1)  //클릭이벤트 없으면 default로 매달 1일
-                        day4 = 1
-                    }
-                }
-            }
-        }
+        mUtilityBillAdapter!!.setNotificationList(mUtilityBillItems)
 
         binding.dialBtnSet.setOnClickListener {
-            if(day1 != 0) mActivity.addAlarm(day1)
-            if(day2 != 0) mActivity.addAlarm(day2)
-            if(day3 != 0) mActivity.addAlarm(day3)
-            if(day4 != 0) mActivity.addAlarm(day4)
+            for(i in 0 until mUtilityBillAdapter!!.getItemCount()) {
+                val term = mUtilityBillAdapter!!.getItemTerm(i)
+                val day = mUtilityBillAdapter!!.getItemDay(i)
+                enroll(term, day)
+            }
             dismiss()
         }
         binding.dialBtnExit.setOnClickListener {
             dismiss()   // 대화상자를 닫는 함수
         }
-        return view
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    fun enroll(term: Int?, day: Int?) {
+        mActivity.addAlarm(term!!, day!!)
+    }
+
+    override fun onClikDelete(position: Int?) {
+        mUtilityBillItems!!.removeAt(position!!)
+        mUtilityBillAdapter!!.setNotificationList(mUtilityBillItems)
     }
 }
