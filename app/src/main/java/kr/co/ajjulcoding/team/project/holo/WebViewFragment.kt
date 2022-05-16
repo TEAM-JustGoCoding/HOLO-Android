@@ -12,9 +12,14 @@ import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import kotlinx.coroutines.*
 import kr.co.ajjulcoding.team.project.holo.databinding.FragmentWebViewBinding
 
-class WebViewFragment(private val webUrl: String) : Fragment() {
+class WebViewFragment(private val webUrl: String, private val userInfo: HoloUser) : Fragment() {
+    companion object{
+        const val COMMENT_TAG = "comment"
+        const val SUBCOMMENT_TAG = "subComment"
+    }
     private lateinit var _binding: FragmentWebViewBinding
     private lateinit var webViewModel: WebViewModel
     private val binding get() = _binding
@@ -63,11 +68,15 @@ class WebViewFragment(private val webUrl: String) : Fragment() {
         }
     }
 
-    private fun sendCmtAlarm(email: String, msg: String, content: String){  // TODO: 예은 님이 댓글/답글을 남겼습니다., (내용)
+    private fun sendCmtAlarm(type: String, toEmail: String, msg: String, content: String){  // TODO: 예은 님이 댓글/답글을 남겼습니다., (내용)
         // TODO: 이메일로 상대방 토큰 받아오기
-        //val diff
-//        val data = CmtNotificationBody.CmtNotificationData(msg, content)
-//        val body = CmtNotificationBody()
-
+        CoroutineScope(Dispatchers.IO).launch {
+            val deferred: Deferred<Pair<String, String>> = webViewModel.getUserNicknameAndToken(toEmail)
+            val defResult: Pair<String, String> = deferred.await()
+            if (type == COMMENT_TAG)
+                msg = "${}"
+            val data = CmtNotificationBody.CmtNotificationData(msg, content)
+            val body = CmtNotificationBody(defResult.second, data)
+        }
     }
 }
