@@ -60,7 +60,7 @@ class UsersettingFragment(val currentUser:HoloUser) : Fragment() {
         }
         binding.textUtilityBill.setOnClickListener {
             mActivity.supportFragmentManager?.let{fragmentManager ->
-                val dialog:UtilityBillFragment = UtilityBillFragment()
+                val dialog:UtilityBillFragment = UtilityBillFragment(currentUser)
                 if (null == fragmentManager.findFragmentByTag(AppTag.UTILITYBILLDIALOG_TAG)) {
                     dialog.show(fragmentManager, AppTag.UTILITYBILLDIALOG_TAG)
                 }

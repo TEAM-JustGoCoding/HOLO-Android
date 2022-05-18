@@ -20,7 +20,7 @@ import com.google.gson.Gson
 import kr.co.ajjulcoding.team.project.holo.databinding.FragmentUtilityBillBinding
 
 
-class UtilityBillFragment : DialogFragment(), OnItemClick {
+class UtilityBillFragment(var currentUser:HoloUser) : DialogFragment(), OnItemClick {
     private lateinit var _activity:MainActivity
     private val mActivity get() = _activity
     private var _binding: FragmentUtilityBillBinding? = null
@@ -46,14 +46,16 @@ class UtilityBillFragment : DialogFragment(), OnItemClick {
     }
 
     private fun initList(){
-        mUtilityBillItems = mActivity.getUtilityJSON()
-
+        mUtilityBillItems = currentUser.utilitylist
+        
         if (mUtilityBillItems!!.size == 0) {
             mUtilityBillItems!!.add(UtilityBillItem("월세", 0, 1))
             mUtilityBillItems!!.add(UtilityBillItem("전기세", 0, 1))
             mUtilityBillItems!!.add(UtilityBillItem("수도세", 0, 1))
             mUtilityBillItems!!.add(UtilityBillItem("가스비", 0, 1))
+            mActivity.storeUtilityCache(mUtilityBillItems!!)
         }
+        mUtilityBillItems = mActivity.getUtilityJSON()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

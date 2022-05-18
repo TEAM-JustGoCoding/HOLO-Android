@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var accountFragment:AccountFragment
     private lateinit var userSettingFragment:UsersettingFragment
     private val withdrawalDialogFragment = WithdrawalDialogFragment()
-    private val utilityBillFragment = UtilityBillFragment()
+    private lateinit var utilityBillFragment:UtilityBillFragment
     private val notificationFragment = NotificationFragment()
     private lateinit var scoreFragment:ScoreFragment
     private lateinit var chatListFragment:Fragment
@@ -64,6 +64,7 @@ class MainActivity : AppCompatActivity() {
         userSettingFragment = UsersettingFragment((mUserInfo))
         scoreFragment = ScoreFragment(mUserInfo)
         accountFragment = AccountFragment(mUserInfo)
+        utilityBillFragment = UtilityBillFragment(mUserInfo)
         chatListFragment = supportFragmentManager.fragmentFactory.instantiate(
             classLoader,ChatListFragment::class.java.name)
         imgLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
@@ -84,7 +85,7 @@ class MainActivity : AppCompatActivity() {
 
         val code = intent.getStringExtra("first")
         if (code == "first") {
-            dialog = UtilityBillFragment()
+            dialog = UtilityBillFragment(mUserInfo)
             dialog.show(supportFragmentManager, "CustomDialog")
         }
 
@@ -314,40 +315,40 @@ class MainActivity : AppCompatActivity() {
             for (i in year until year+10) {
                 if (term==0) {
                     for (j in 0 until 12) {
-                        setDateFormat(alarmManager, year, j, day, pendingIntent)
+                        setDateFormat(alarmManager, i, j, day, pendingIntent)
                     }
                 }
                 else if(term==1) {
                     if (month == 0 || month%2 == 0) {
                         for (j in 0 until 12 step(2)) {
-                            setDateFormat(alarmManager, year, j, day, pendingIntent)
+                            setDateFormat(alarmManager, i, j, day, pendingIntent)
                         }
                     }
                     else {
                         for (j in 1 until 12 step(2)) {
-                            setDateFormat(alarmManager, year, j, day, pendingIntent)
+                            setDateFormat(alarmManager, i, j, day, pendingIntent)
                         }
                     }
                 }
                 else {
                     if (month == 0 || month%4 == 0) {
                         for (j in 0 until 12 step(4)) {
-                            setDateFormat(alarmManager, year, j, day, pendingIntent)
+                            setDateFormat(alarmManager, i, j, day, pendingIntent)
                         }
                     }
                     else if (month%4 == 1) {
                         for (j in 1 until 12 step(4)) {
-                            setDateFormat(alarmManager, year, j, day, pendingIntent)
+                            setDateFormat(alarmManager, i, j, day, pendingIntent)
                         }
                     }
                     else if (month%4 == 2) {
                         for (j in 2 until 12 step(4)) {
-                            setDateFormat(alarmManager, year, j, day, pendingIntent)
+                            setDateFormat(alarmManager, i, j, day, pendingIntent)
                         }
                     }
                     else {
                         for (j in 2 until 12 step(4)) {
-                            setDateFormat(alarmManager, year, j, day, pendingIntent)
+                            setDateFormat(alarmManager, i, j, day, pendingIntent)
                         }
                     }
                 }
@@ -378,6 +379,7 @@ class MainActivity : AppCompatActivity() {
             set(Calendar.HOUR_OF_DAY, 9)
             set(Calendar.MINUTE, 0)
             set(Calendar.SECOND, 0)
+            Log.d("설정 알람", year.toString()+"년"+month.toString()+"월"+day.toString())
         }
 
         alarmManager.set(
