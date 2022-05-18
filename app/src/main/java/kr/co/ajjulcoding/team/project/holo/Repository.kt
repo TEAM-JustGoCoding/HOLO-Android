@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.*
 import com.google.firebase.messaging.FirebaseMessaging
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
 import okhttp3.*
@@ -52,9 +53,16 @@ class Repository {
         val url = PhpUrl.DOTHOME+PhpUrl.URL_DELETE_USER
         val body: RequestBody = FormBody.Builder().add("uid", email).build() as RequestBody
         val request = Request.Builder().url(url).post(body).build()
+        val FBstorage = FirebaseStorage.getInstance()
+        val FBstorageRef = FBstorage.reference
 
         CoroutineScope(Dispatchers.IO).async {
             val deleteRef = SettingInApp.mAuth.currentUser!!.delete()
+        }.await()
+        CoroutineScope(Dispatchers.IO).async {
+            Log.d("삭제할 프로필 파일", "profile_img/profile_${email.replace(".","")}.jpg")
+            FBstorageRef.child("profile_img/profile_${email.replace(".","")}.jpg")
+                .delete()
         }.await()
         CoroutineScope(Dispatchers.IO).async {  // 메인스레드에서 네트워크 접근 금지 되어있어서 코루틴 사용
             try {
