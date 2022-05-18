@@ -10,11 +10,14 @@
     <color name="light_gray">#767272</color>
     <color name="white_gray">#CDCDCD</color>
     <color name="sky_dirty">#9DC3E6</color>
+    <color name="sky_dark_dirty">#819DB5</color>
     <color name="sky_dark">#1D4999</color>
+    <color name="night">#1F3154</color>
     <color name="home_sell">#8F98ED</color>
     <color name="home_watch">#F4FBC9</color>
     <color name="home_sight">#DDCAFA</color>
     <color name="home_curiosity">#C7ECFD</color>
     <color name="home_policy">#C9D3FB</color>
     <color name="chat_star">#F8CE00</color>
+    <color name="ripple">#959594</color>
 </resources>
