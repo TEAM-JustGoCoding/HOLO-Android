@@ -2,6 +2,7 @@ package kr.co.ajjulcoding.team.project.holo
 
 import android.app.AlertDialog
 import android.content.DialogInterface
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -68,6 +69,10 @@ class UsersettingFragment(val currentUser:HoloUser) : Fragment() {
         binding.textAccount.setOnClickListener {
             mActivity.changeFragment(AppTag.ACCOUNT_TAG)
         }
+        binding.switchBell.isChecked = currentUser.msgVaild
+        binding.switchBell.setOnCheckedChangeListener { _, isChecked ->
+            setMsgValid(isChecked)
+        }
         binding.textLogout.setOnClickListener {
             AlertDialog.Builder(mActivity)
                 .setTitle("로그아웃 하시겠습니까?")
@@ -123,5 +128,12 @@ class UsersettingFragment(val currentUser:HoloUser) : Fragment() {
 
     fun setUserAccount(account:String){
         currentUser.account = account
+    }
+
+    fun setMsgValid(valid: Boolean){
+        currentUser.msgVaild = valid
+        var sharedPref: SharedPreferences = mActivity.getSharedPreferences(AppTag.USER_INFO, 0)
+        var editor: SharedPreferences.Editor = sharedPref.edit()
+        editor.putBoolean("msgValid", valid).apply()
     }
 }
