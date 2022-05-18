@@ -7,27 +7,30 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
+import android.preference.PreferenceManager
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.UploadTask
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.*
 import kr.co.ajjulcoding.team.project.holo.databinding.ActivityMainBinding
 import java.io.File
-import java.time.LocalDate
+import java.lang.reflect.Type
 import java.util.*
-import kotlin.collections.HashMap
+import kotlin.collections.ArrayList
+
 
 class MainActivity : AppCompatActivity() {
     private lateinit var sharedPref: SharedPreferences
@@ -50,6 +53,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var dialog: DialogFragment
     private var waitTime = 0L // 백버튼 2번 시간 간격
     private lateinit var imgLauncher: ActivityResultLauncher<Intent>
+    private lateinit var utilitylist:ArrayList<UtilityBillItem>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         mUserInfo = intent.getParcelableExtra<HoloUser>(AppTag.USER_INFO)!!
@@ -234,6 +238,28 @@ class MainActivity : AppCompatActivity() {
             }
 
     }
+
+    fun storeUtilityCache(mUtilityBillItems: ArrayList<UtilityBillItem>) {
+        utilitylist=mUtilityBillItems
+        Log.d("메인액티비티 공과금 list count", utilitylist.size.toString())
+        sharedPref = this.getSharedPreferences(AppTag.USER_INFO,0)
+        editor = sharedPref.edit()
+        val gson = Gson()
+        val json = gson.toJson(utilitylist)
+        editor.putString("utilitylist", json)
+        Log.d("메인액티비티 공과금 json", json)
+        editor.apply()
+    }
+
+    fun getUtilityJSON(): ArrayList<UtilityBillItem> {
+        val type: Type = object : TypeToken<ArrayList<UtilityBillItem?>?>() {}.getType()
+        sharedPref = this.getSharedPreferences(AppTag.USER_INFO,0)
+        val gson = Gson()
+        val json = sharedPref.getString("utilitylist", "")
+        utilitylist = gson.fromJson(json, type)
+
+        return utilitylist
+    }
     
     private fun saveCache(){
         val userInfo = intent.getParcelableExtra<HoloUser>(AppTag.USER_INFO) as HoloUser
@@ -284,12 +310,12 @@ class MainActivity : AppCompatActivity() {
             val year = (cal.get(Calendar.YEAR))
 
             for (i in year until year+10) {
-                if (term==0 || term==1) {
+                if (term==0) {
                     for (j in 0 until 12) {
                         setDateFormat(alarmManager, year, j, day, pendingIntent)
                     }
                 }
-                else if(term==2) {
+                else if(term==1) {
                     if (month == 0 || month%2 == 0) {
                         for (j in 0 until 12 step(2)) {
                             setDateFormat(alarmManager, year, j, day, pendingIntent)
