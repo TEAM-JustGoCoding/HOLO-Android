@@ -39,16 +39,6 @@
                 android:background="@android:color/transparent"
                 android:layout_marginBottom="20dp"/>
 
-            <!--        <android.support.design.widget.FloatingActionButton-->
-            <!--            android:id="@+id/fab"-->
-            <!--            android:layout_width="22dp"-->
-            <!--            android:layout_height="wrap_content"-->
-            <!--            android:clickable="true"-->
-            <!--            android:src="@drawable/fab_profile"-->
-            <!--            app:fabSize="normal"-->
-            <!--            app:layout_anchor="@id/profilephoto"-->
-            <!--            app:layout_anchorGravity="right|end" />-->
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -137,16 +127,49 @@
                 android:fontFamily="@font/light"
                 android:layout_marginBottom="20dp"/>
 
-            <TextView
-                android:id="@+id/textAlarm"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="30dp"
-                android:text="알림"
-                android:textSize="20dp"
-                android:textColor="@color/black"
-                android:fontFamily="@font/light"
-                android:layout_marginBottom="20dp"/>
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/textAlarm"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="30dp"
+                    android:text="알림"
+                    android:textSize="20dp"
+                    android:textColor="@color/black"
+                    android:fontFamily="@font/light"
+                    android:layout_marginBottom="20dp"
+                    android:layout_gravity="left"/>
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/marginSmallView"
+                    android:textColor="@color/sky_dark"
+                    android:text="OFF"/>
+                <Switch
+                    android:id="@+id/switchBell"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:scrollbarSize="40dp"
+                    android:switchMinWidth="70dp"
+                    android:checked="true"
+                    android:showText="false"
+                    android:thumbTint="@color/sky_dark"
+                    tools:ignore="UseSwitchCompatOrMaterialXml" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/marginSmallView"
+                    android:textSize="@dimen/marginSmallView"
+                    android:textColor="@color/sky_dark"
+                    android:text="ON"/>
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/textLogout"

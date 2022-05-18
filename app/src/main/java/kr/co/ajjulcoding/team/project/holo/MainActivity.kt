@@ -53,6 +53,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         mUserInfo = intent.getParcelableExtra<HoloUser>(AppTag.USER_INFO)!!
+        Log.d("유저 데이터 정보", mUserInfo.toString())
         supportFragmentManager.fragmentFactory = ChatListFragmentFactory(mUserInfo)
         super.onCreate(savedInstanceState)
         profileFragment = ProfileFragment(mUserInfo)
@@ -244,6 +245,7 @@ class MainActivity : AppCompatActivity() {
         editor.putString("nickName",userInfo.nickName).apply()
         editor.putString("score", userInfo.score).apply()
         editor.putString("token", userInfo.token).apply()
+        editor.putBoolean("msgValid", userInfo.msgVaild).apply()
     }
 
     private fun showHomeFragment(userInfo:HoloUser){

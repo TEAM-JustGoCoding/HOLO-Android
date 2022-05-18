@@ -5,6 +5,7 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.media.Ringtone
 import android.media.RingtoneManager
 import android.os.Build
@@ -22,6 +23,11 @@ class SendMessageService: FirebaseMessagingService() {
         super.onMessageReceived(remoteMessage)
 
         Log.d("푸시 알림 받음", remoteMessage.toString())
+        val sharedPref: SharedPreferences = this.getSharedPreferences(AppTag.USER_INFO, 0)
+        val msgVaild: Boolean = sharedPref.getBoolean("msgValid", true)
+        Log.d("서비스단 푸시 알림 수신", msgVaild.toString())
+        if (msgVaild == false)
+            return
         val randomNum:Double? = remoteMessage.data["randomNum"]?.toDouble() // TODO: 댓글/답글 데이터 들어오면 어떻게 되는지 찍어보기 -> null 반환?
         randomNum?.let {
             val currentNum: Double? = ChatRoomActivity.randomNum
@@ -39,7 +45,6 @@ class SendMessageService: FirebaseMessagingService() {
             sendNotificationInP(title, msg, content)
         else
             sendNotfication(title, remoteMessage.notification?.body!!)
-        // TODO: 알림 비활성시 데베에서 token 삭제하기
     }
 
     @RequiresApi(Build.VERSION_CODES.P)
