@@ -69,6 +69,7 @@ class HoloSplashActivity : AppCompatActivity() {
             ,sharedPref.getString("profile", null)
             ,sharedPref.getString("account", null)
             ,sharedPref.getString("token", null)
+            ,sharedPref.getBoolean("msgValid", true)
         )
         result.token = token ?: sharedPref.getString("token", null) // 인터넷 연결 없으면 토큰 캐시 정보 불러오기
         Log.d("사용자 정보 캐시 확인", result.toString())
