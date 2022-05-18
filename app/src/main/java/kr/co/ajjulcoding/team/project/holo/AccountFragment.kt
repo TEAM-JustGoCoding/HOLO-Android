@@ -53,7 +53,7 @@ class AccountFragment(var currentUser:HoloUser) : Fragment() {
         }
         binding.btnEnroll.setOnClickListener {
             Toast.makeText(mActivity, "계좌번호가 등록되었습니다", Toast.LENGTH_SHORT).show()
-            (requireActivity() as MainActivity).setAccount(binding.editAccount.toString())
+            (requireActivity() as MainActivity).setAccount(binding.editAccount.text.toString())
             (requireActivity() as MainActivity).changeFragment(AppTag.SETTING_TAG)
         }
     }
