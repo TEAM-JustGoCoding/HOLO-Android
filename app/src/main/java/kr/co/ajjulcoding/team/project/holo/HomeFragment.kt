@@ -64,7 +64,13 @@ class HomeFragment(val currentUser:HoloUser) : Fragment() {
 //            }
 //        }
         binding.btnSell.setOnClickListener {
-            mActivity.changeFragment(WebUrl.URL_LAN+WebUrl.URL_DEAL)
+            if (currentUser.location == null) {
+                mActivity.showAlertDialog("프로필 > 내 동네 설정을 통해 나의 위치를 설정해주세요!", *arrayOf("확인"))
+                return@setOnClickListener
+            }
+            currentUser.location?.let {
+                mActivity.changeFragment(WebUrl.URL_LAN+WebUrl.URL_DEAL)
+            }
         }
         binding.btnWatch.setOnClickListener {
             mActivity.changeFragment(WebUrl.URL_LAN+WebUrl.URL_OTT)
