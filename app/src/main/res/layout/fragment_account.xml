@@ -73,7 +73,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@drawable/round_btn_start"
+                android:background="@drawable/round_10_edit"
                 android:backgroundTint="@color/white">
 
                 <EditText
@@ -97,7 +97,6 @@
                 android:layout_width="50dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="right"
-                android:backgroundTint="@color/sky_dark"
                 android:background="@drawable/round_btn_start"
                 android:fontFamily="@font/light"
                 android:text="복사"
@@ -117,7 +116,6 @@
             android:id="@+id/btnEnroll"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:backgroundTint="@color/sky_dark"
             android:background="@drawable/round_btn_start"
             android:textColor="@color/white"
             android:fontFamily="@font/light"

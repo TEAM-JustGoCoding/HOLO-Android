@@ -159,7 +159,7 @@
             android:id="@+id/btnConfirm"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:background="@color/sky_dark"
+            android:background="@drawable/rect_btn_skydark"
             android:fontFamily="@font/light"
             android:text="다음"
             android:textColor="@color/white"

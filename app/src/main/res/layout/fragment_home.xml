@@ -44,7 +44,7 @@
                         app:layout_constraintTop_toTopOf="@+id/contraintParent"
                         app:layout_constraintRight_toRightOf="@+id/contraintParent"
                         app:layout_constraintLeft_toLeftOf="@+id/contraintParent"
-                        tools:layout_editor_absoluteX="@dimen/marginSmallView">
+                        app:layout_constraintHorizontal_bias="0">
 
                         <de.hdodenhof.circleimageview.CircleImageView
                             android:id="@+id/circleImageView"
@@ -85,7 +85,7 @@
                             android:textSize="15dp"
                             android:textColor="@color/white"
                             android:textAlignment="center"
-                            android:text="위치 등록"
+                            android:text="위치 미등록"
                             app:layout_constraintLeft_toRightOf="@+id/textProfileName"
                             app:layout_constraintBottom_toBottomOf="@id/textProfileName"
                             app:layout_constraintTop_toTopOf="@+id/textProfileName"/>
