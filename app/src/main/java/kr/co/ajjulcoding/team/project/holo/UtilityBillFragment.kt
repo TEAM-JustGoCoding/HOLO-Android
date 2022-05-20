@@ -29,6 +29,9 @@ class UtilityBillFragment(var currentUser:HoloUser) : DialogFragment(), OnItemCl
     private var mUtilityBillAdapter: UtilityBillAdapter? = null
     private var mUtilityBillItems: ArrayList<UtilityBillItem>? = ArrayList()
     private var mCalender: GregorianCalendar? = null
+    private var preTerms: ArrayList<Int>? = null
+    private var preDates: ArrayList<Int>? = null
+    private var flag: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +52,7 @@ class UtilityBillFragment(var currentUser:HoloUser) : DialogFragment(), OnItemCl
         mUtilityBillItems = currentUser.utilitylist
         
         if (mUtilityBillItems==null) {
+            flag = 1
             mUtilityBillItems=ArrayList()
             mUtilityBillItems!!.add(UtilityBillItem("월세", 0, 1))
             mUtilityBillItems!!.add(UtilityBillItem("전기세", 0, 1))
@@ -57,6 +61,7 @@ class UtilityBillFragment(var currentUser:HoloUser) : DialogFragment(), OnItemCl
             mActivity.storeUtilityCache(mUtilityBillItems!!)
         }
         mUtilityBillItems = mActivity.getUtilityJSON()
+        preValue()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -84,10 +89,20 @@ class UtilityBillFragment(var currentUser:HoloUser) : DialogFragment(), OnItemCl
         }
 
         binding.dialBtnSet.setOnClickListener {
-            for(i in 0 until mUtilityBillAdapter!!.getItemCount()) {
-                val term = mUtilityBillAdapter!!.getItemTerm(i)
-                val day = mUtilityBillAdapter!!.getItemDay(i)
-                enroll(term, day)
+            if (flag == 0) {
+                for(i in 0 until mUtilityBillAdapter!!.getItemCount()) {
+                    val term = mUtilityBillAdapter!!.getItemTerm(i)
+                    val day = mUtilityBillAdapter!!.getItemDay(i)
+                    if (preTerms!![i] != term || preDates!![i] != day) {
+                        delete(i, preTerms!![i], preDates!![i])
+                    }
+                    else if (preTerms!![i] == term && preDates!![i] == day) {
+                        continue
+                    }
+                    else {
+                        enroll(i, term, day)
+                    }
+                }
             }
             mActivity.storeUtilityCache(mUtilityBillItems!!)
             dismiss()
@@ -102,8 +117,23 @@ class UtilityBillFragment(var currentUser:HoloUser) : DialogFragment(), OnItemCl
         _binding = null
     }
 
-    fun enroll(term: Int?, day: Int?) {
-        mActivity.addAlarm(term!!, day!!)
+    fun enroll(position: Int?, term: Int?, day: Int?) {
+        mActivity.addAlarm(position!!, term!!, day!!)
+    }
+
+    fun delete(position: Int?, term: Int?, day: Int?) {
+        mActivity.delAlarm(position!!, term!!, day!!)
+    }
+
+    fun preValue() {
+        preTerms = ArrayList()
+        preDates = ArrayList()
+        for(i in 0 until mUtilityBillAdapter!!.getItemCount()) {
+            val term = mUtilityBillAdapter!!.getItemTerm(i)
+            val day = mUtilityBillAdapter!!.getItemDay(i)
+            preTerms!!.add(term!!)
+            preDates!!.add(day!!)
+        }
     }
 
     override fun onClikDelete(position: Int?) {

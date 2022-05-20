@@ -298,12 +298,14 @@ class MainActivity : AppCompatActivity() {
     
     fun getImgCallback() = imgLauncher
 
-    fun addAlarm(term: Int, day: Int) {
+    fun addAlarm(position: Int, term: Int, day: Int) {
         val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+        val code = (position.toString()+term.toString()+day.toString()).toInt()
 
         val intent = Intent(this, Alarm::class.java)
+        intent.putExtra("requestCode", code.toString())
         val pendingIntent = PendingIntent.getBroadcast(
-            this, Alarm.NOTIFICATION_ID, intent,
+            this, code, intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
@@ -387,5 +389,17 @@ class MainActivity : AppCompatActivity() {
             calendar.timeInMillis,
             pendingIntent
         )
+    }
+
+    fun delAlarm(position: Int, term: Int, day: Int) {
+        val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+        val code = (position.toString()+term.toString()+day.toString()).toInt()
+        val pendingIntent = PendingIntent.getBroadcast(
+            this, code, intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        if(pendingIntent!=null) {
+            alarmManager.cancel(pendingIntent)
+        }
     }
 }
