@@ -172,10 +172,10 @@ class GpsFragment : Fragment(), OnMapReadyCallback {
         Log.d("변경 위치", "동작")
         convertAddress()
         val marker = LatLng(latitude, longitude)
-        gMap!!.uiSettings.isMapToolbarEnabled = false
-        gMap!!.addMarker(MarkerOptions().position(marker).title("내 위치"))
-        gMap!!.moveCamera(CameraUpdateFactory.newLatLng(marker))
-        gMap!!.moveCamera(CameraUpdateFactory.zoomTo(15f))
+        gMap?.uiSettings?.isMapToolbarEnabled = false
+        gMap?.addMarker(MarkerOptions().position(marker).title("내 위치"))
+        gMap?.moveCamera(CameraUpdateFactory.newLatLng(marker))
+        gMap?.moveCamera(CameraUpdateFactory.zoomTo(15f))
     }
 
     // Default 위치 설정

@@ -140,8 +140,6 @@ class MainActivity : AppCompatActivity() {
                 dialog = scoreFragment
                 dialog.show(supportFragmentManager, "CustomDialog")
             }
-            else if (currentTag == AppTag.GPS_TAG)  //  TODO: 삭제해보기
-                frgDic[currentTag]!!.let { tran.add(R.id.fragmentView, it) }
             else if (currentTag.contains(WebUrl.URL_LAN)) {
                 Log.d("웹뷰","들어옴")
                 tran.add(R.id.fragmentView, WebViewFragment(frgTAG, mUserInfo))    // TODO: replace로 고쳐서 테스트해보기
