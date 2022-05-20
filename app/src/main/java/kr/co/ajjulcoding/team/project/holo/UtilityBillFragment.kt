@@ -48,7 +48,8 @@ class UtilityBillFragment(var currentUser:HoloUser) : DialogFragment(), OnItemCl
     private fun initList(){
         mUtilityBillItems = currentUser.utilitylist
         
-        if (mUtilityBillItems!!.size == 0) {
+        if (mUtilityBillItems==null) {
+            mUtilityBillItems=ArrayList()
             mUtilityBillItems!!.add(UtilityBillItem("월세", 0, 1))
             mUtilityBillItems!!.add(UtilityBillItem("전기세", 0, 1))
             mUtilityBillItems!!.add(UtilityBillItem("수도세", 0, 1))
