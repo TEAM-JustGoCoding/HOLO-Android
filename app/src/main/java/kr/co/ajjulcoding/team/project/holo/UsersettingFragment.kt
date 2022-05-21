@@ -76,7 +76,6 @@ class UsersettingFragment(val currentUser:HoloUser) : Fragment() {
         binding.textLogout.setOnClickListener {
             AlertDialog.Builder(mActivity)
                 .setTitle("로그아웃 하시겠습니까?")
-                .setCancelable(false)
                 .setItems(arrayOf("예","아니오"), object : DialogInterface.OnClickListener{
                     override fun onClick(dialog: DialogInterface?, idx: Int) {
                         dialog!!.dismiss()

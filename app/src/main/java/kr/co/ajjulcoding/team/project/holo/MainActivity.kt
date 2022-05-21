@@ -118,15 +118,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        if (currentTag == AppTag.PROFILE_TAG ||
-            currentTag == AppTag.GPS_TAG) {
+        if (currentTag == AppTag.PROFILE_TAG || currentTag == AppTag.GPS_TAG ||
+            currentTag == AppTag.ACCOUNT_TAG) {
             changeFragment(AppTag.SETTING_TAG)
-        }else if (System.currentTimeMillis() - waitTime >= 1500){    // 1.5초
+        }else if (currentTag == AppTag.NOTIFICATION_TAG || currentTag.contains(WebUrl.URL_LAN))
+            changeFragment(AppTag.HOME_TAG)
+        else if (System.currentTimeMillis() - waitTime >= 1500){    // 1.5초
             waitTime = System.currentTimeMillis()
             Toast.makeText(this,"뒤로가기 버튼을 한번 더 누르면 종료됩니다.",Toast.LENGTH_SHORT).show()
         }else
             super.onBackPressed()
-        // TODO("뒤로 가기 버튼 2번 연속 눌러야 종료 추가")
+
     }
 
     fun changeFragment(frgTAG: String){
@@ -218,7 +220,7 @@ class MainActivity : AppCompatActivity() {
             .addOnSuccessListener { imgUri ->
                 Log.d("저장한 프로필 url", imgUri.toString())
                 if(currentTag == AppTag.HOME_TAG) {
-                    Glide.with(this).load(imgUri).apply {
+                    Glide.with(this).load(imgUri).apply { // TODO: 보일러 코드 고치기
                         RequestOptions()
                             .skipMemoryCache(true)
                             .diskCacheStrategy(DiskCacheStrategy.NONE)
@@ -285,7 +287,6 @@ class MainActivity : AppCompatActivity() {
     fun showAlertDialog(msg:String, vararg option:String){
         AlertDialog.Builder(this)
             .setTitle(msg)
-            .setCancelable(false)
             .setItems(option, object : DialogInterface.OnClickListener{
                 override fun onClick(dialog: DialogInterface, idx: Int) {
                     dialog.dismiss()
