@@ -44,34 +44,34 @@ class HomeFragment(val currentUser:HoloUser) : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d("데이터 확인", currentUser.toString())
-//        binding.btnSell.setOnClickListener {
-//            CoroutineScope(Dispatchers.Main).launch {
-//                Log.d("채팅방 열기 버튼 클릭", "들어옴")
-//                val receiverEmail = "lyy1111@gmail.com"
-//                val rNicknameAndToken = homeViewModel.getUserNicknameAndToken(receiverEmail)
-//                val receiverNickname = rNicknameAndToken.await().first
-//                val receiverToken = rNicknameAndToken.await().second
-//                val chatRoomData = ChatRoom("힐스테이트 커피시켜 먹으실 분", arrayListOf(currentUser.uid, receiverEmail)
-//                    , currentUser.uid!!, currentUser.nickName
-//                    ,currentUser.token ?: "토큰캐시없음", receiverEmail, receiverNickname, receiverToken
-//                    , Timestamp.now())
-//                val valid:Deferred<Boolean> = homeViewModel.createChatRoom(chatRoomData, mActivity)
-//                if (!(valid.await())){
-//                    mActivity.showAlertDialog("네트워크 연결을 확인할 수 없습니다!", *arrayOf("확인"))
-//                    return@launch
-//                }else
-//                    mActivity.showAlertDialog("채팅방이 개설되었습니다!", *arrayOf("확인"))
-//            }
-//        }
         binding.btnSell.setOnClickListener {
-            if (currentUser.location == null) {
-                mActivity.showAlertDialog("프로필 > 내 동네 설정을 통해 나의 위치를 설정해주세요!", *arrayOf("확인"))
-                return@setOnClickListener
-            }
-            currentUser.location?.let {
-                mActivity.changeFragment(WebUrl.URL_LAN+WebUrl.URL_DEAL)
+            CoroutineScope(Dispatchers.Main).launch {
+                Log.d("채팅방 열기 버튼 클릭", "들어옴")
+                val receiverEmail = "skqhddl7@gmail.com"
+                val rNicknameAndToken = homeViewModel.getUserNicknameAndToken(receiverEmail)
+                val receiverNickname = rNicknameAndToken.await().first
+                val receiverToken = rNicknameAndToken.await().second
+                val chatRoomData = ChatRoom("오늘밤에 서브웨이 같이 드실 분!", arrayListOf(currentUser.uid, receiverEmail)
+                    , currentUser.uid!!, currentUser.nickName
+                    ,currentUser.token ?: "토큰캐시없음", receiverEmail, receiverNickname, receiverToken
+                    , Timestamp.now())
+                val valid:Deferred<Boolean> = homeViewModel.createChatRoom(chatRoomData, mActivity)
+                if (!(valid.await())){
+                    mActivity.showAlertDialog("네트워크 연결을 확인할 수 없습니다!", *arrayOf("확인"))
+                    return@launch
+                }else
+                    mActivity.showAlertDialog("채팅방이 개설되었습니다!", *arrayOf("확인"))
             }
         }
+//        binding.btnSell.setOnClickListener {
+//            if (currentUser.location == null) {
+//                mActivity.showAlertDialog("프로필 > 내 동네 설정을 통해 나의 위치를 설정해주세요!", *arrayOf("확인"))
+//                return@setOnClickListener
+//            }
+//            currentUser.location?.let {
+//                mActivity.changeFragment(WebUrl.URL_LAN+WebUrl.URL_DEAL)
+//            }
+//        }
         binding.btnWatch.setOnClickListener {
             mActivity.changeFragment(WebUrl.URL_LAN+WebUrl.URL_OTT)
         }

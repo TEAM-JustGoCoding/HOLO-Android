@@ -134,10 +134,10 @@ class MainActivity : AppCompatActivity() {
     fun changeFragment(frgTAG: String){
         val tran = supportFragmentManager.beginTransaction()
 
-        if (currentTag != frgTAG){
+        if (currentTag != frgTAG){  // TODO: 채팅방 리스트 빼고 다 add로 고쳐보기
             currentTag = frgTAG
             if (AppTag.HOME_TAG == currentTag)
-                tran.replace(R.id.fragmentView, homeFragment)   // (스택에 있는)이전 프래그먼트 전부 제거 => TODO: 채팅방 생성시 다이얼로그 aysc 받아오는 걸로 고치기
+                tran.replace(R.id.fragmentView, homeFragment)   // (스택에 있는)이전 프래그먼트 전부 제거
             else if(currentTag == AppTag.SCORE_TAG) {
                 dialog = scoreFragment
                 dialog.show(supportFragmentManager, "CustomDialog")
