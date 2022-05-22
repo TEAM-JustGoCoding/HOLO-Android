@@ -62,6 +62,7 @@ class AppTag {
         const val UTILITYBILLDIALOG_TAG = "utilitybilldialogTAG"
         const val SCORE_TAG = "scoreTAG"
         const val ACCOUNT_TAG = "accountTAG"
+        const val BILLCACHE_TAG = "utilitybillcacheTAG"
         fun currentUserEmail() = SettingInApp.mAuth.currentUser?.email
     }
 }

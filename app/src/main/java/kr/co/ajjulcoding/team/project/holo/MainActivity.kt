@@ -242,13 +242,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun storeUtilityCache(mUtilityBillItems: ArrayList<UtilityBillItem>) {
+        mUserInfo.utilitylist = mUtilityBillItems
         utilitylist=mUtilityBillItems
         Log.d("메인액티비티 공과금 list count", utilitylist.size.toString())
         sharedPref = this.getSharedPreferences(AppTag.USER_INFO,0)
         editor = sharedPref.edit()
         val gson = Gson()
         val json = gson.toJson(utilitylist)
-        editor.putString("utilitylist", json)
+        editor.putString(AppTag.BILLCACHE_TAG, json)
         Log.d("메인액티비티 공과금 json", json)
         editor.apply()
     }
@@ -257,7 +258,7 @@ class MainActivity : AppCompatActivity() {
         val type: Type = object : TypeToken<ArrayList<UtilityBillItem?>?>() {}.getType()
         sharedPref = this.getSharedPreferences(AppTag.USER_INFO,0)
         val gson = Gson()
-        val json = sharedPref.getString("utilitylist", "")
+        val json = sharedPref.getString(AppTag.BILLCACHE_TAG, "")
         utilitylist = gson.fromJson(json, type)
 
         return utilitylist
@@ -307,6 +308,8 @@ class MainActivity : AppCompatActivity() {
             this, code, intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
+
+        Log.d("공과금 mainactivity", position.toString())
 
         val toastMessage = if (true) {
             val cal = Calendar.getInstance()
