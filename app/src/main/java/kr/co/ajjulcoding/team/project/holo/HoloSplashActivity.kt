@@ -72,7 +72,7 @@ class HoloSplashActivity : AppCompatActivity() {
             ,sharedPref.getString("account", null)
             ,sharedPref.getString("token", null)
             ,sharedPref.getBoolean("msgValid", true)
-            ,Gson().fromJson(sharedPref.getString("utilitylist", null), object : TypeToken<ArrayList<UtilityBillItem?>?>() {}.getType())
+            ,Gson().fromJson(sharedPref.getString(AppTag.BILLCACHE_TAG, null), object : TypeToken<ArrayList<UtilityBillItem?>?>() {}.getType())
         )
         result.token = token ?: sharedPref.getString("token", null) // 인터넷 연결 없으면 토큰 캐시 정보 불러오기
         Log.d("사용자 정보 캐시 확인", result.toString())

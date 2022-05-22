@@ -50,6 +50,9 @@ class UtilityBillFragment(var currentUser:HoloUser) : DialogFragment(), OnItemCl
 
     private fun initList(){
         mUtilityBillItems = currentUser.utilitylist
+        Log.d("공과금 initList", mUtilityBillItems.toString())
+
+        mUtilityBillAdapter = UtilityBillAdapter(this)
         
         if (mUtilityBillItems==null) {
             flag = 1
@@ -58,10 +61,10 @@ class UtilityBillFragment(var currentUser:HoloUser) : DialogFragment(), OnItemCl
             mUtilityBillItems!!.add(UtilityBillItem("전기세", 0, 1))
             mUtilityBillItems!!.add(UtilityBillItem("수도세", 0, 1))
             mUtilityBillItems!!.add(UtilityBillItem("가스비", 0, 1))
+            mUtilityBillAdapter!!.setNotificationList(mUtilityBillItems)
             mActivity.storeUtilityCache(mUtilityBillItems!!)
         }
         mUtilityBillItems = mActivity.getUtilityJSON()
-        preValue()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -70,7 +73,7 @@ class UtilityBillFragment(var currentUser:HoloUser) : DialogFragment(), OnItemCl
 
         mlistView = requireView().findViewById(R.id.listView) as RecyclerView?
 
-        mUtilityBillAdapter = UtilityBillAdapter(this)
+//        mUtilityBillAdapter = UtilityBillAdapter(this)
 
         mlistView!!.adapter = mUtilityBillAdapter
 
@@ -78,6 +81,8 @@ class UtilityBillFragment(var currentUser:HoloUser) : DialogFragment(), OnItemCl
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
         mUtilityBillAdapter!!.setNotificationList(mUtilityBillItems)
+
+        if (flag == 0) preValue()
 
         Log.d("공과금 list count", mUtilityBillAdapter!!.getItemCount().toString())
 
@@ -94,14 +99,24 @@ class UtilityBillFragment(var currentUser:HoloUser) : DialogFragment(), OnItemCl
                     val term = mUtilityBillAdapter!!.getItemTerm(i)
                     val day = mUtilityBillAdapter!!.getItemDay(i)
                     if (preTerms!![i] != term || preDates!![i] != day) {
+                        Log.d("공과금 enroll 수정", preDates!![i].toString())
                         delete(i, preTerms!![i], preDates!![i])
+                        enroll(i, term, day)
                     }
                     else if (preTerms!![i] == term && preDates!![i] == day) {
                         continue
                     }
                     else {
+                        Log.d("공과금 enroll 확인", i.toString())
                         enroll(i, term, day)
                     }
+                }
+            }
+            else {
+                for(i in 0 until mUtilityBillAdapter!!.getItemCount()) {
+                    val term = mUtilityBillAdapter!!.getItemTerm(i)
+                    val day = mUtilityBillAdapter!!.getItemDay(i)
+                    enroll(i, term, day)
                 }
             }
             mActivity.storeUtilityCache(mUtilityBillItems!!)
@@ -118,6 +133,7 @@ class UtilityBillFragment(var currentUser:HoloUser) : DialogFragment(), OnItemCl
     }
 
     fun enroll(position: Int?, term: Int?, day: Int?) {
+        Log.d("공과금 fragment", position.toString())
         mActivity.addAlarm(position!!, term!!, day!!)
     }
 
