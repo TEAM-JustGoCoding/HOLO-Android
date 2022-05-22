@@ -1,7 +1,10 @@
 package kr.co.ajjulcoding.team.project.holo
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -9,10 +12,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.storage.FirebaseStorage
 import kr.co.ajjulcoding.team.project.holo.databinding.FragmentChatListBinding
 import kr.co.ajjulcoding.team.project.holo.databinding.ItemChatListRecyclerBinding
@@ -47,6 +54,18 @@ class ChatListFragment(val userInfo:HoloUser) : Fragment() {
         }
     }
 
+    private fun checkNetwork(): Boolean{
+        val conManager = mActivity.getSystemService(ConnectivityManager::class.java)
+        val currentNet = conManager.activeNetwork ?: return false
+        val actNet = conManager.getNetworkCapabilities(currentNet) ?: return false
+
+        return when {
+            actNet.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+            actNet.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+            else -> false
+        }
+    }
+
     companion object{
         val chatRoomDiffUtil = object : DiffUtil.ItemCallback<ChatRoom>() {
             override fun areItemsTheSame(oldItem: ChatRoom, newItem: ChatRoom): Boolean {
@@ -78,6 +97,7 @@ class ChatListFragment(val userInfo:HoloUser) : Fragment() {
             return ViewHolder(view)
         }
 
+        @SuppressLint("CheckResult")
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             //Log.d("옵저버 데이터 확인1", asyncDiffer.currentList[position].toString())
             currentList!!.get(position).let { item ->
@@ -99,10 +119,34 @@ class ChatListFragment(val userInfo:HoloUser) : Fragment() {
                             textMSG.setText(it[it.size-1].content)
                         }
                     }
+
                     val mountainRef = FBstorageRef.child("profile_img/"+fileName)
-                    GlideApp.with(this@ChatListFragment).load(mountainRef)
-                        .thumbnail(0.1f)
-                        .into(imgProfile)
+                    if (!checkNetwork()){ // no wetwork
+                        Glide.with(this@ChatListFragment).load(mountainRef)
+                            .apply {
+                                thumbnail(0.1f)
+                                into(imgProfile)
+                            }
+                    }else{
+                        mountainRef.downloadUrl.addOnSuccessListener { url ->
+                            Log.d("url 확인", url.toString())
+                            Glide.with(this@ChatListFragment).load(url)
+                                .apply {
+                                    thumbnail(0.1f)
+                                    into(imgProfile)
+                                }
+                        }
+                            .addOnFailureListener {
+                                Log.d("url 실패", it.toString())
+                                Glide.with(this@ChatListFragment).load(mountainRef)
+                                    .apply {
+                                        thumbnail(0.1f)
+                                        into(imgProfile)
+                                    }
+                            }
+                        Glide.with(this@ChatListFragment).load(mountainRef)
+                    }
+
                     itemView.setOnClickListener {
                         val intentChatRoom = Intent(mActivity, ChatRoomActivity::class.java)
                         SettingInApp.uniqueActivity(intentChatRoom)
@@ -114,7 +158,6 @@ class ChatListFragment(val userInfo:HoloUser) : Fragment() {
                         startActivity(intentChatRoom)
                     }
                 }
-                // TODO: 터치하면 채팅방 액티배티 나오게 클릭 리스너 추가하기
             }
         }
 
