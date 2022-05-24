@@ -57,7 +57,6 @@ class MainActivity : AppCompatActivity() {
     private var waitTime = 0L // 백버튼 2번 시간 간격
     private lateinit var imgLauncher: ActivityResultLauncher<Intent>
     private lateinit var utilitylist:ArrayList<UtilityBillItem>
-    private var storageValid:Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         mUserInfo = intent.getParcelableExtra<HoloUser>(AppTag.USER_INFO)!!
@@ -409,7 +408,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private val requestPermissionLauncher = registerForActivityResult(
+    private val permissionLauncherForStorage = registerForActivityResult(  // 과거에 권한 차단했더라도 무조건 실행 됨
         ActivityResultContracts.RequestMultiplePermissions()
     ) { result: MutableMap<String, Boolean> ->
         Log.d("저장소 권한 없음3", "없음")
@@ -426,21 +425,18 @@ class MainActivity : AppCompatActivity() {
                     // 뒤로 가기로 거부했을 때
                     // request denied , request again
                     Log.d("저장소 권한", "onRequestPermissionsResult() _ 권한 허용 거부")
-                    changeFragment(AppTag.SETTING_TAG)
                     Toast.makeText(this, "저장소 접근 권한이 없어 해당 기능을 수행할 수 없습니다!", Toast.LENGTH_SHORT).show()
                 }
                 map["EXPLAINED"]?.let {
                     // 거부 버튼 눌렀을 때
                     // request denied ,send to settings
                     Log.d("저장소 권한", "한() _ 권한 허용 거부")
-                    changeFragment(AppTag.SETTING_TAG)
                     Toast.makeText(this, "저장소 접근 권한이 없어 해당 기능을 수행할 수 없습니다!", Toast.LENGTH_SHORT).show()
                 }
             }
             else -> { // All request are permitted
                 Log.d("저장소 권한", "onRequestPermissionsResult() _ 권한 허용")
                 changeFragment(AppTag.PROFILE_TAG)
-                storageValid = true
             }
         }
     }
@@ -457,10 +453,56 @@ class MainActivity : AppCompatActivity() {
                 changeFragment(AppTag.PROFILE_TAG)
                 true
             } else {// 권한이 없으므로 권한 요청 알림 보내기
-                requestPermissionLauncher.launch(arrayOf(
+                permissionLauncherForStorage.launch(arrayOf(
                     Manifest.permission.READ_EXTERNAL_STORAGE,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE))
                 Log.d("저장소 권한 없음", "없음")
+                false
+            }
+        } else {
+            true
+        }
+    }
+
+    private val permissionLauncherForLocation = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { result: MutableMap<String, Boolean> ->
+        val deniedList: List<String> = result.filter {
+            !it.value
+        }.map { it.key }
+        when {
+            deniedList.isNotEmpty() -> {
+                val map = deniedList.groupBy { permission ->
+                    if (shouldShowRequestPermissionRationale(permission)) "DENIED" else "EXPLAINED"
+                }
+                map["DENIED"]?.let {
+                    // 뒤로 가기로 거부했을 때
+                    // request denied , request again
+                    Log.d("위치 권한", "onRequestPermissionsResult() _ 권한 허용 거부")
+                    Toast.makeText(this, "위치 권한이 없어 해당 기능을 수행할 수 없습니다!", Toast.LENGTH_SHORT).show()
+                }
+                map["EXPLAINED"]?.let {
+                    // 거부 버튼 눌렀을 때
+                    // request denied ,send to settings
+                    Log.d("위치 권한", "한() _ 권한 허용 거부")
+                    Toast.makeText(this, "위치 권한이 없어 해당 기능을 수행할 수 없습니다!", Toast.LENGTH_SHORT).show()
+                }
+            }
+            else -> { // All request are permitted
+                Log.d("위치 권한", "onRequestPermissionsResult() _ 권한 허용")
+                changeFragment(AppTag.GPS_TAG)
+            }
+        }
+    }
+
+    fun checkPermissionForLocation(context: Context): Boolean {
+        // Android 6.0 Marshmallow 이상에서는 위치 권한에 추가 런타임 권한이 필요
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (context.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                changeFragment(AppTag.GPS_TAG)
+                true
+            } else {// 권한이 없으므로 권한 요청 알림 보내기
+                permissionLauncherForLocation.launch(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION))
                 false
             }
         } else {
