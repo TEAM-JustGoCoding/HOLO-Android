@@ -45,7 +45,8 @@ class UsersettingFragment(val currentUser:HoloUser) : Fragment() {
             binding.textLocation.setText(it)
         }
         binding.profilePhoto.setOnClickListener {
-            mActivity.changeFragment(AppTag.PROFILE_TAG)
+            mActivity.checkPermissionForStorage(requireActivity())
+                //mActivity.changeFragment(AppTag.PROFILE_TAG)
         }
         binding.textScore.setOnClickListener {
             mActivity.supportFragmentManager?.let{fragmentManager ->
