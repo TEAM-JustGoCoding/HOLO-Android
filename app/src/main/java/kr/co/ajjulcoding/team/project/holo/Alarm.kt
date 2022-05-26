@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Build
+import android.os.Bundle
 import android.util.Log
 import androidx.core.app.NotificationCompat
 
@@ -15,7 +16,6 @@ import androidx.core.app.NotificationCompat
 class Alarm: BroadcastReceiver() {
     companion object {
         const val TAG = "AlarmReceiver"
-        const val NOTIFICATION_ID = 0
         const val PRIMARY_CHANNEL_ID = "primary_notification_channel"
     }
 
@@ -26,15 +26,17 @@ class Alarm: BroadcastReceiver() {
         notificationManager = context.getSystemService(
             Context.NOTIFICATION_SERVICE) as NotificationManager
 
+        val code = intent.getStringExtra("requestCode")
+
         createNotificationChannel()
-        deliverNotification(context)
+        deliverNotification(context, code!!.toInt())
     }
 
-    private fun deliverNotification(context: Context) {
+    private fun deliverNotification(context: Context, code: Int) {
         val contentIntent = Intent(context, MainActivity::class.java)
         val contentPendingIntent = PendingIntent.getActivity(
             context,
-            NOTIFICATION_ID,
+            code,
             contentIntent,
             PendingIntent.FLAG_UPDATE_CURRENT
         )
@@ -48,7 +50,7 @@ class Alarm: BroadcastReceiver() {
                 .setAutoCancel(true)
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
 
-        notificationManager.notify(NOTIFICATION_ID, builder.build())
+        notificationManager.notify(code, builder.build())
     }
 
     fun createNotificationChannel() {

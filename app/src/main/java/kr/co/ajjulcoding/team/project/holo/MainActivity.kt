@@ -1,35 +1,41 @@
 package kr.co.ajjulcoding.team.project.holo
 
+import android.Manifest
 import android.app.AlarmManager
 import android.app.AlertDialog
 import android.app.PendingIntent
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.UploadTask
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.*
 import kr.co.ajjulcoding.team.project.holo.databinding.ActivityMainBinding
 import java.io.File
-import java.time.LocalDate
+import java.lang.reflect.Type
 import java.util.*
-import kotlin.collections.HashMap
+import kotlin.collections.ArrayList
+
 
 class MainActivity : AppCompatActivity() {
-    companion object{
-        const val HOME_TAG = "HomeFragment"
-    }
     private lateinit var sharedPref: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
     private lateinit var _binding:ActivityMainBinding
@@ -39,24 +45,38 @@ class MainActivity : AppCompatActivity() {
     private lateinit var accountFragment:AccountFragment
     private lateinit var userSettingFragment:UsersettingFragment
     private val withdrawalDialogFragment = WithdrawalDialogFragment()
-    private val utilityBillFragment = UtilityBillFragment()
+    private lateinit var utilityBillFragment:UtilityBillFragment
+    private val notificationFragment = NotificationFragment()
     private lateinit var scoreFragment:ScoreFragment
-    private lateinit var chatListFragment:ChatListFragment
+    private lateinit var chatListFragment:Fragment
     private lateinit var mUserInfo:HoloUser
     private val gpsFragment = GpsFragment()
-    private var currentTag:String = HOME_TAG
+    private var currentTag:String = AppTag.HOME_TAG
     private lateinit var frgDic:HashMap<String, Fragment>
     private lateinit var dialog: DialogFragment
     private var waitTime = 0L // 백버튼 2번 시간 간격
+    private lateinit var imgLauncher: ActivityResultLauncher<Intent>
+    private lateinit var utilitylist:ArrayList<UtilityBillItem>
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         mUserInfo = intent.getParcelableExtra<HoloUser>(AppTag.USER_INFO)!!
+        Log.d("유저 데이터 정보", mUserInfo.toString())
+        supportFragmentManager.fragmentFactory = ChatListFragmentFactory(mUserInfo)
+        super.onCreate(savedInstanceState)
         profileFragment = ProfileFragment(mUserInfo)
         userSettingFragment = UsersettingFragment((mUserInfo))
         scoreFragment = ScoreFragment(mUserInfo)
         accountFragment = AccountFragment(mUserInfo)
-        chatListFragment = ChatListFragment(mUserInfo)
+        utilityBillFragment = UtilityBillFragment(mUserInfo)
+        chatListFragment = supportFragmentManager.fragmentFactory.instantiate(
+            classLoader,ChatListFragment::class.java.name)
+        imgLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            val uri: Uri? = result.data?.data
+            Log.d("사진 가져오기0", "${uri}")
+            uri?.let { // 사진 정상적으로 가져옴
+                profileFragment.setProfileImg(it)
+            }
+        }
 
         showHomeFragment(mUserInfo)
         frgDic = hashMapOf<String, Fragment>(AppTag.PROFILE_TAG to profileFragment,
@@ -64,11 +84,11 @@ class MainActivity : AppCompatActivity() {
             AppTag.WITHDRAWALDIALOG_TAG to withdrawalDialogFragment,
             AppTag.UTILITYBILLDIALOG_TAG to utilityBillFragment,
             AppTag.SCORE_TAG to scoreFragment, AppTag.ACCOUNT_TAG to accountFragment,
-            AppTag.CHATLIST_TAG to chatListFragment)
+            AppTag.CHATLIST_TAG to chatListFragment, AppTag.NOTIFICATION_TAG to notificationFragment)
 
         val code = intent.getStringExtra("first")
         if (code == "first") {
-            dialog = UtilityBillFragment()
+            dialog = UtilityBillFragment(mUserInfo)
             dialog.show(supportFragmentManager, "CustomDialog")
         }
 
@@ -101,30 +121,30 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        if (currentTag == AppTag.PROFILE_TAG ||
-            currentTag == AppTag.GPS_TAG) {
+        if (currentTag == AppTag.PROFILE_TAG || currentTag == AppTag.GPS_TAG ||
+            currentTag == AppTag.ACCOUNT_TAG) {
             changeFragment(AppTag.SETTING_TAG)
-        }else if (System.currentTimeMillis() - waitTime >= 1500){    // 1.5초
+        }else if (currentTag == AppTag.NOTIFICATION_TAG || currentTag.contains(WebUrl.URL_LAN))
+            changeFragment(AppTag.HOME_TAG)
+        else if (System.currentTimeMillis() - waitTime >= 1500){    // 1.5초
             waitTime = System.currentTimeMillis()
             Toast.makeText(this,"뒤로가기 버튼을 한번 더 누르면 종료됩니다.",Toast.LENGTH_SHORT).show()
         }else
             super.onBackPressed()
-        // TODO("뒤로 가기 버튼 2번 연속 눌러야 종료 추가")
+
     }
 
     fun changeFragment(frgTAG: String){
         val tran = supportFragmentManager.beginTransaction()
 
-        if (currentTag != frgTAG){
+        if (currentTag != frgTAG){  // TODO: 채팅방 리스트 빼고 다 add로 고쳐보기
             currentTag = frgTAG
             if (AppTag.HOME_TAG == currentTag)
-                tran.replace(R.id.fragmentView, homeFragment)   // (스택에 있는)이전 프래그먼트 전부 제거 => TODO: 채팅방 생성시 다이얼로그 aysc 받아오는 걸로 고치기
+                tran.replace(R.id.fragmentView, homeFragment)   // (스택에 있는)이전 프래그먼트 전부 제거
             else if(currentTag == AppTag.SCORE_TAG) {
                 dialog = scoreFragment
                 dialog.show(supportFragmentManager, "CustomDialog")
             }
-            else if (currentTag == AppTag.GPS_TAG)  //  TODO: 삭제해보기
-                frgDic[currentTag]!!.let { tran.add(R.id.fragmentView, it) }
             else if (currentTag.contains(WebUrl.URL_LAN)) {
                 Log.d("웹뷰","들어옴")
                 tran.add(R.id.fragmentView, WebViewFragment(mUserInfo, frgTAG))    // TODO: replace로 고쳐서 테스트해보기
@@ -202,11 +222,19 @@ class MainActivity : AppCompatActivity() {
         FBstorageRef.child("profile_img/"+fileName).downloadUrl
             .addOnSuccessListener { imgUri ->
                 Log.d("저장한 프로필 url", imgUri.toString())
-                Glide.with(this).load(imgUri).apply {
-                    RequestOptions()
-                        .skipMemoryCache(true)
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                }.into(findViewById(R.id.circleImageView))
+                if(currentTag == AppTag.HOME_TAG) {
+                    Glide.with(this).load(imgUri).apply { // TODO: 보일러 코드 고치기
+                        RequestOptions()
+                            .skipMemoryCache(true)
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    }.into(findViewById(R.id.circleImageView))
+                }else if (currentTag == AppTag.SETTING_TAG){
+                    Glide.with(this).load(imgUri).apply {
+                        RequestOptions()
+                            .skipMemoryCache(true)
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    }.into(findViewById(R.id.profilePhoto))
+                }
                 //Toast.makeText(this, "프로필 이미지 변경 완료!",Toast.LENGTH_SHORT).show()
                 userSettingFragment.setUserProfile(imgUri.toString())
                 sharedPref = this.getSharedPreferences(AppTag.USER_INFO,0)  // 캐시 저장
@@ -216,6 +244,29 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    fun storeUtilityCache(mUtilityBillItems: ArrayList<UtilityBillItem>) {
+        mUserInfo.utilitylist = mUtilityBillItems
+        utilitylist=mUtilityBillItems
+        Log.d("메인액티비티 공과금 list count", utilitylist.size.toString())
+        sharedPref = this.getSharedPreferences(AppTag.USER_INFO,0)
+        editor = sharedPref.edit()
+        val gson = Gson()
+        val json = gson.toJson(utilitylist)
+        editor.putString(AppTag.BILLCACHE_TAG, json)
+        Log.d("메인액티비티 공과금 json", json)
+        editor.apply()
+    }
+
+    fun getUtilityJSON(): ArrayList<UtilityBillItem> {
+        val type: Type = object : TypeToken<ArrayList<UtilityBillItem?>?>() {}.getType()
+        sharedPref = this.getSharedPreferences(AppTag.USER_INFO,0)
+        val gson = Gson()
+        val json = sharedPref.getString(AppTag.BILLCACHE_TAG, "")
+        utilitylist = gson.fromJson(json, type)
+
+        return utilitylist
+    }
+    
     private fun saveCache(){
         val userInfo = intent.getParcelableExtra<HoloUser>(AppTag.USER_INFO) as HoloUser
         sharedPref = this.getSharedPreferences(AppTag.USER_INFO,0)
@@ -225,6 +276,7 @@ class MainActivity : AppCompatActivity() {
         editor.putString("nickName",userInfo.nickName).apply()
         editor.putString("score", userInfo.score).apply()
         editor.putString("token", userInfo.token).apply()
+        editor.putBoolean("msgValid", userInfo.msgVaild).apply()
     }
 
     private fun showHomeFragment(userInfo:HoloUser){
@@ -239,7 +291,6 @@ class MainActivity : AppCompatActivity() {
     fun showAlertDialog(msg:String, vararg option:String){
         AlertDialog.Builder(this)
             .setTitle(msg)
-            .setCancelable(false)
             .setItems(option, object : DialogInterface.OnClickListener{
                 override fun onClick(dialog: DialogInterface, idx: Int) {
                     dialog.dismiss()
@@ -247,26 +298,68 @@ class MainActivity : AppCompatActivity() {
             })
             .create().show()
     }
+    
+    fun getImgCallback() = imgLauncher
 
-    fun addAlarm(day: Int) {
+    fun addAlarm(position: Int, term: Int, day: Int) {
         val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+        val code = (position.toString()+term.toString()+day.toString()).toInt()
 
         val intent = Intent(this, Alarm::class.java)
+        intent.putExtra("requestCode", code.toString())
         val pendingIntent = PendingIntent.getBroadcast(
-            this, Alarm.NOTIFICATION_ID, intent,
+            this, code, intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
+        Log.d("공과금 mainactivity", position.toString())
+
         val toastMessage = if (true) {
             val cal = Calendar.getInstance()
+            val month = (cal.get(Calendar.MONTH))
             val year = (cal.get(Calendar.YEAR))
 
             for (i in year until year+10) {
-                for (j in 0 until 12) {
-                    setDateFormat(alarmManager, year, j, day, pendingIntent)
+                if (term==0) {
+                    for (j in 0 until 12) {
+                        setDateFormat(alarmManager, i, j, day, pendingIntent)
+                    }
+                }
+                else if(term==1) {
+                    if (month == 0 || month%2 == 0) {
+                        for (j in 0 until 12 step(2)) {
+                            setDateFormat(alarmManager, i, j, day, pendingIntent)
+                        }
+                    }
+                    else {
+                        for (j in 1 until 12 step(2)) {
+                            setDateFormat(alarmManager, i, j, day, pendingIntent)
+                        }
+                    }
+                }
+                else {
+                    if (month == 0 || month%4 == 0) {
+                        for (j in 0 until 12 step(4)) {
+                            setDateFormat(alarmManager, i, j, day, pendingIntent)
+                        }
+                    }
+                    else if (month%4 == 1) {
+                        for (j in 1 until 12 step(4)) {
+                            setDateFormat(alarmManager, i, j, day, pendingIntent)
+                        }
+                    }
+                    else if (month%4 == 2) {
+                        for (j in 2 until 12 step(4)) {
+                            setDateFormat(alarmManager, i, j, day, pendingIntent)
+                        }
+                    }
+                    else {
+                        for (j in 2 until 12 step(4)) {
+                            setDateFormat(alarmManager, i, j, day, pendingIntent)
+                        }
+                    }
                 }
             }
-
             "알림이 설정되었습니다."
         } else {
             alarmManager.cancel(pendingIntent)
@@ -288,11 +381,12 @@ class MainActivity : AppCompatActivity() {
         val calendar: Calendar = Calendar.getInstance().apply { // 1
             timeInMillis = System.currentTimeMillis()
             set(Calendar.YEAR, year)
-            set(Calendar.MONTH, month-1)
+            set(Calendar.MONTH, month)
             set(Calendar.DAY_OF_MONTH, day)
             set(Calendar.HOUR_OF_DAY, 9)
             set(Calendar.MINUTE, 0)
             set(Calendar.SECOND, 0)
+            Log.d("설정 알람", year.toString()+"년"+month.toString()+"월"+day.toString())
         }
 
         alarmManager.set(
@@ -300,5 +394,119 @@ class MainActivity : AppCompatActivity() {
             calendar.timeInMillis,
             pendingIntent
         )
+    }
+
+    fun delAlarm(position: Int, term: Int, day: Int) {
+        val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+        val code = (position.toString()+term.toString()+day.toString()).toInt()
+        val pendingIntent = PendingIntent.getBroadcast(
+            this, code, intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        if(pendingIntent!=null) {
+            alarmManager.cancel(pendingIntent)
+        }
+    }
+
+    private val permissionLauncherForStorage = registerForActivityResult(  // 과거에 권한 차단했더라도 무조건 실행 됨
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { result: MutableMap<String, Boolean> ->
+        Log.d("저장소 권한 없음3", "없음")
+        val deniedList: List<String> = result.filter {
+            !it.value
+        }.map { it.key }
+        when {
+            deniedList.isNotEmpty() -> {
+                val map = deniedList.groupBy { permission ->
+                    if (shouldShowRequestPermissionRationale(permission)) "DENIED" else "EXPLAINED"
+                }
+                Log.d("저장소 권한 없음2", "없음${map}")
+                map["DENIED"]?.let {
+                    // 뒤로 가기로 거부했을 때
+                    // request denied , request again
+                    Log.d("저장소 권한", "onRequestPermissionsResult() _ 권한 허용 거부")
+                    Toast.makeText(this, "저장소 접근 권한이 없어 해당 기능을 수행할 수 없습니다!", Toast.LENGTH_SHORT).show()
+                }
+                map["EXPLAINED"]?.let {
+                    // 거부 버튼 눌렀을 때
+                    // request denied ,send to settings
+                    Log.d("저장소 권한", "한() _ 권한 허용 거부")
+                    Toast.makeText(this, "저장소 접근 권한이 없어 해당 기능을 수행할 수 없습니다!", Toast.LENGTH_SHORT).show()
+                }
+            }
+            else -> { // All request are permitted
+                Log.d("저장소 권한", "onRequestPermissionsResult() _ 권한 허용")
+                changeFragment(AppTag.PROFILE_TAG)
+            }
+        }
+    }
+
+    fun checkPermissionForStorage(context: Context): Boolean{
+        // Android 6.0 Marshmallow 이상에서는 위치 권한에 추가 런타임 권한이 필요
+        Log.d("저장소 권한 없음", "들어옴")
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (context.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) ==
+                PackageManager.PERMISSION_GRANTED
+                && context.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
+                PackageManager.PERMISSION_GRANTED) {
+                Log.d("저장소 권한 있음", "있음")
+                changeFragment(AppTag.PROFILE_TAG)
+                true
+            } else {// 권한이 없으므로 권한 요청 알림 보내기
+                permissionLauncherForStorage.launch(arrayOf(
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE))
+                Log.d("저장소 권한 없음", "없음")
+                false
+            }
+        } else {
+            true
+        }
+    }
+
+    private val permissionLauncherForLocation = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { result: MutableMap<String, Boolean> ->
+        val deniedList: List<String> = result.filter {
+            !it.value
+        }.map { it.key }
+        when {
+            deniedList.isNotEmpty() -> {
+                val map = deniedList.groupBy { permission ->
+                    if (shouldShowRequestPermissionRationale(permission)) "DENIED" else "EXPLAINED"
+                }
+                map["DENIED"]?.let {
+                    // 뒤로 가기로 거부했을 때
+                    // request denied , request again
+                    Log.d("위치 권한", "onRequestPermissionsResult() _ 권한 허용 거부")
+                    Toast.makeText(this, "위치 권한이 없어 해당 기능을 수행할 수 없습니다!", Toast.LENGTH_SHORT).show()
+                }
+                map["EXPLAINED"]?.let {
+                    // 거부 버튼 눌렀을 때
+                    // request denied ,send to settings
+                    Log.d("위치 권한", "한() _ 권한 허용 거부")
+                    Toast.makeText(this, "위치 권한이 없어 해당 기능을 수행할 수 없습니다!", Toast.LENGTH_SHORT).show()
+                }
+            }
+            else -> { // All request are permitted
+                Log.d("위치 권한", "onRequestPermissionsResult() _ 권한 허용")
+                changeFragment(AppTag.GPS_TAG)
+            }
+        }
+    }
+
+    fun checkPermissionForLocation(context: Context): Boolean {
+        // Android 6.0 Marshmallow 이상에서는 위치 권한에 추가 런타임 권한이 필요
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (context.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                changeFragment(AppTag.GPS_TAG)
+                true
+            } else {// 권한이 없으므로 권한 요청 알림 보내기
+                permissionLauncherForLocation.launch(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION))
+                false
+            }
+        } else {
+            true
+        }
     }
 }

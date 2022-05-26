@@ -49,12 +49,22 @@ class AccountFragment(var currentUser:HoloUser) : Fragment() {
             val clip = ClipData.newPlainText("label", inputAccount)
             clipboard.setPrimaryClip(clip)
 
-            Toast.makeText(mActivity, "계좌번호가 복사되었습니다", Toast.LENGTH_SHORT).show()
+            if(binding.editAccount.length()==0) {
+                Toast.makeText(mActivity, "계좌번호를 입력해주세요", Toast.LENGTH_SHORT).show()
+            }
+            else {
+                Toast.makeText(mActivity, "계좌번호가 복사되었습니다", Toast.LENGTH_SHORT).show()
+            }
         }
         binding.btnEnroll.setOnClickListener {
-            Toast.makeText(mActivity, "계좌번호가 등록되었습니다", Toast.LENGTH_SHORT).show()
-            (requireActivity() as MainActivity).setAccount(binding.editAccount.toString())
-            (requireActivity() as MainActivity).changeFragment(AppTag.SETTING_TAG)
+            if(binding.editAccount.length()==0) {
+                Toast.makeText(mActivity, "계좌번호를 입력해주세요", Toast.LENGTH_SHORT).show()
+            }
+            else {
+                Toast.makeText(mActivity, "계좌번호가 등록되었습니다", Toast.LENGTH_SHORT).show()
+                (requireActivity() as MainActivity).setAccount(binding.editAccount.text.toString())
+                (requireActivity() as MainActivity).changeFragment(AppTag.SETTING_TAG)
+            }
         }
     }
 }

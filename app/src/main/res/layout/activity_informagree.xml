@@ -66,6 +66,7 @@
                 android:layout_weight="1" />
 
             <TextView
+                android:id="@+id/contentAgree1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="보기"
@@ -96,6 +97,7 @@
                 android:layout_weight="1" />
 
             <TextView
+                android:id="@+id/contentAgree2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="보기"
@@ -126,6 +128,7 @@
                 android:layout_weight="1" />
 
             <TextView
+                android:id="@+id/contentAgree3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="보기"
@@ -159,7 +162,7 @@
             android:id="@+id/btnConfirm"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:background="@color/sky_dark"
+            android:background="@drawable/rect_btn_skydark"
             android:fontFamily="@font/light"
             android:text="다음"
             android:textColor="@color/white"

@@ -5,9 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.*
 import com.google.firebase.messaging.FirebaseMessaging
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
 import okhttp3.*
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.json.JSONObject
 import java.io.IOException
 import kotlin.math.log
@@ -19,14 +21,14 @@ class Repository {
 
 
         val client = OkHttpClient()
-        val mySearchUrl = HttpUrl.parse(PhpUrl.DOTHOME+PhpUrl.URL_SELECT_USER)!!.newBuilder()
+        val mySearchUrl = (PhpUrl.DOTHOME+PhpUrl.URL_SELECT_USER).toHttpUrlOrNull()!!.newBuilder()
         mySearchUrl.addQueryParameter("uid",email)
         val request = Request.Builder().url(mySearchUrl.build().toString()).build()
 
         CoroutineScope(Dispatchers.IO).async {
             try {
                 val response = client.newCall(request).execute()   // 동기로 실행
-                val str_response = response.body()!!.string()   // string()은 딱 한 번만 호출 가능
+                val str_response = response.body!!.string()   // string()은 딱 한 번만 호출 가능
                 Log.d("로그인 데이터 정보", "성공: ${str_response}")
                 val jsonobj = JSONObject(str_response)
                 Log.d("로그인 데이터 정보!!", jsonobj.getString("nick_name"))
@@ -51,14 +53,21 @@ class Repository {
         val url = PhpUrl.DOTHOME+PhpUrl.URL_DELETE_USER
         val body: RequestBody = FormBody.Builder().add("uid", email).build() as RequestBody
         val request = Request.Builder().url(url).post(body).build()
+        val FBstorage = FirebaseStorage.getInstance()
+        val FBstorageRef = FBstorage.reference
 
         CoroutineScope(Dispatchers.IO).async {
             val deleteRef = SettingInApp.mAuth.currentUser!!.delete()
         }.await()
+        CoroutineScope(Dispatchers.IO).async {
+            Log.d("삭제할 프로필 파일", "profile_img/profile_${email.replace(".","")}.jpg")
+            FBstorageRef.child("profile_img/profile_${email.replace(".","")}.jpg")
+                .delete()
+        }.await()
         CoroutineScope(Dispatchers.IO).async {  // 메인스레드에서 네트워크 접근 금지 되어있어서 코루틴 사용
             try {
                 val response = client.newCall(request).execute()   // 동기로 실행
-                val str_response = response.body()!!.string()   // string()은 딱 한 번만 호출 가능
+                val str_response = response.body!!.string()   // string()은 딱 한 번만 호출 가능
                 Log.d("탈퇴 데이터 정보", "성공: ${str_response}")
                 result = str_response.toBoolean()
             }catch (e:IOException){
@@ -80,7 +89,7 @@ class Repository {
         CoroutineScope(Dispatchers.IO).async {  // 메인스레드에서 네트워크 접근 금지 되어있어서 코루틴 사용
             try {
                 val response = client.newCall(request).execute()   // 동기로 실행
-                val str_response = response.body()!!.string()   // string()은 딱 한 번만 호출 가능
+                val str_response = response.body!!.string()   // string()은 딱 한 번만 호출 가능
                 Log.d("닉네임 데이터 정보", "성공: ${str_response}")
                 result = str_response.toBoolean()
             }catch (e:IOException){
@@ -104,7 +113,7 @@ class Repository {
         CoroutineScope(Dispatchers.IO).async {
             try {
                 val response = client.newCall(request).execute()   // 동기로 실행
-                val str_response = response.body()!!.string()   // string()은 딱 한 번만 호출 가능
+                val str_response = response.body!!.string()   // string()은 딱 한 번만 호출 가능
                 result = str_response.toBoolean()
             }catch (e:IOException){
                 Log.d("닉네임 중복 통신 정보", "통신 실패(인터넷 끊김 등): ${e}")
@@ -139,26 +148,37 @@ class Repository {
         CoroutineScope(Dispatchers.IO).async {
             try {
                 val response = client.newCall(request).execute()   // 동기로 실행
-                val str_response = response.body()!!.string()   // string()은 딱 한 번만 호출 가능
+                val str_response = response.body!!.string()   // string()은 딱 한 번만 호출 가능
             } catch (e: IOException) {
                 Log.d("토큰 데이터 전송!!", "통신 실패(인터넷 끊김 등): ${e}")
             }
         }
     }
 
+    suspend fun sendChatPushAlarm(notifiBody: ChatNotificationBody){
+        val debug = RetrofitInstance.api.sendChatNotification(notifiBody)
+        Log.d("채팅 알림 오류 확인", debug.toString())
+    }
+
+    suspend fun sendCmtPushAlarm(notifiBody: CmtNotificationBody){  // 댓글/답글 공용
+        val debug = RetrofitInstance.api.sendCmtNotification(notifiBody)
+        Log.d("채팅 알림 오류 확인", debug.toString())
+    }
+
+
+
     suspend fun getUserNicknameAndToken(email:String):Pair<String,String>{
         val client = OkHttpClient()
-        val mySearchUrl = HttpUrl.parse(PhpUrl.DOTHOME+PhpUrl.URL_GET_TOKEN)!!.newBuilder()
+        val mySearchUrl = (PhpUrl.DOTHOME+PhpUrl.URL_GET_TOKEN).toHttpUrlOrNull()!!.newBuilder()
         mySearchUrl.addQueryParameter("uid",email)
-        Log.d("이메일 받은 거 확인", email.toString())
         val request = Request.Builder().url(mySearchUrl.build().toString()).build()
-        var nickName:String? = null
-        var token:String? = null
+        var nickName:String = ""
+        var token:String = ""
 
         CoroutineScope(Dispatchers.IO).async {
             try {
                 val response = client.newCall(request).execute()   // 동기로 실행
-                val str_response = response.body()!!.string()   // string()은 딱 한 번만 호출 가능
+                val str_response = response.body!!.string()   // string()은 딱 한 번만 호출 가능
                 Log.d("데베 토큰 정보", "성공: ${str_response}")
                 val jsonobj = JSONObject(str_response)
                 nickName = jsonobj.getString("nick_name")
@@ -170,7 +190,7 @@ class Repository {
             }
         }.await()
         Log.d("데베 토큰 변수 전달", "성공: ${token}")
-        return Pair(nickName!!,token!!)
+        return Pair(nickName,token)
     }
 
     suspend fun createChatRoom(chatRoomData:ChatRoom, _chatRoom:MutableLiveData<ChatRoom>):Boolean{
@@ -235,19 +255,22 @@ class Repository {
     }
 
     suspend fun setChatBubble(userData:HoloUser, chatRoomData: SimpleChatRoom, content: String
-                              , _sendError:MutableLiveData<Exception>){
+                              , _sendError:MutableLiveData<Exception>): Boolean{
+        var vaild:Boolean = false
         coroutineScope {
             val dRef = SettingInApp.db.collection("chatRoom").document("${chatRoomData.title} ${chatRoomData.randomDouble}")
             SettingInApp.db.runTransaction { transition ->
                 val timestamp:Timestamp = Timestamp.now()
                 dRef.update("talkContent",FieldValue.arrayUnion(ChatBubble(userData.nickName, content, timestamp)))
                 dRef.update("latestTime", timestamp)
+            }.addOnSuccessListener {
+                vaild = true
             }.addOnFailureListener {
                 Log.d("채팅 트랜잭션 실패", it.toString())
                 _sendError.value = it
             }
         }.await()
-        return
+        return vaild
     }
 
     fun getChatBubbleLi(title:String, randomDouble:Double, _chatBubbleLi:MutableLiveData<ArrayList<ChatBubble>>)
@@ -293,7 +316,7 @@ class Repository {
 
     suspend fun checkValidStar(userEmail: String, chatTitle:String, chatRandom:Double): Pair<Boolean, String>{
         var vaild: Boolean = true
-        var direction: String = "rinputStar"
+        var direction: String = "rinputStar"    // 현 사용자 방향
         coroutineScope {
             SettingInApp.db.collection("chatRoom")
                 .document("${chatTitle} ${chatRandom}").get()
@@ -332,7 +355,7 @@ class Repository {
         CoroutineScope(Dispatchers.IO).async {
             try {
                 val response = client.newCall(request).execute()
-                val str_reponse = response.body()!!.string()
+                val str_reponse = response.body!!.string()
                 val documentRef:DocumentReference = SettingInApp.db.collection("chatRoom")
                     .document("${chatTitle} ${chatRandom}")
                 Log.d("별점 등록 데이터 전송", str_reponse)
@@ -369,14 +392,14 @@ class Repository {
         var result:String = ""
 
         val client = OkHttpClient()
-        val mySearchUrl = HttpUrl.parse(PhpUrl.DOTHOME+PhpUrl.URL_UPDATE_SCORE)!!.newBuilder()
+        val mySearchUrl = (PhpUrl.DOTHOME+PhpUrl.URL_UPDATE_SCORE).toHttpUrlOrNull()!!.newBuilder()
         mySearchUrl.addQueryParameter("uid",uid)
         val request = Request.Builder().url(mySearchUrl.build().toString()).build()
 
         CoroutineScope(Dispatchers.IO).async {
             try {
                 val response = client.newCall(request).execute()   // 동기로 실행
-                val str_response = response.body()!!.string()   // string()은 딱 한 번만 호출 가능
+                val str_response = response.body!!.string()   // string()은 딱 한 번만 호출 가능
                 Log.d("평점 데이터 정보", "성공: ${str_response}")
                 val jsonobj = JSONObject(str_response)
                 result = jsonobj.getString("score")

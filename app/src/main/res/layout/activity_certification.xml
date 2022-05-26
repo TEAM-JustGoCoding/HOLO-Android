@@ -58,7 +58,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="휴대전화 번호 입력" />
+            android:hint="휴대전화 번호 입력"
+            android:inputType="number"/>
 
         <View
             android:layout_width="40dp"
@@ -69,7 +70,6 @@
             android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
-            android:backgroundTint="@color/sky_dark"
             android:background="@drawable/round_btn_start"
             android:fontFamily="@font/light"
             android:text="인증 요청"
@@ -84,7 +84,8 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="40dp"
         android:layout_marginTop="15dp"
-        android:hint="인증 번호 입력"/>
+        android:hint="인증 번호 입력"
+        android:inputType="number"/>
 
     <TextView
         android:id="@+id/textTime"
@@ -107,7 +108,7 @@
             android:id="@+id/btnConfirm"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:background="@color/sky_dark"
+            android:background="@drawable/rect_btn_skydark"
             android:fontFamily="@font/light"
             android:text="인증 완료"
             android:textColor="@color/white"

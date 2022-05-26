@@ -52,10 +52,6 @@ class GpsFragment : Fragment(), OnMapReadyCallback {
         mLocationRequest =  LocationRequest.create().apply {
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         }
-
-        if (checkPermissionForLocation(requireActivity())){ // 위치 권한 확인
-            updateLocation()
-        }
     }
 
     override fun onCreateView(
@@ -65,6 +61,7 @@ class GpsFragment : Fragment(), OnMapReadyCallback {
         _binding = FragmentGpsBinding.inflate(inflater, container, false)
         binding.mapView.onCreate(savedInstanceState)
         binding.mapView.getMapAsync(this)
+        updateLocation()
         return binding.root
     }
 
@@ -91,54 +88,6 @@ class GpsFragment : Fragment(), OnMapReadyCallback {
                 Log.d("동네 이름", "$town")
                 (requireActivity() as MainActivity).setLocationToHome(town)
                 (requireActivity() as MainActivity).changeFragment(AppTag.SETTING_TAG)
-            }
-        }
-    }
-
-    private fun checkPermissionForLocation(context: Context): Boolean {
-        // Android 6.0 Marshmallow 이상에서는 위치 권한에 추가 런타임 권한이 필요
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (context.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                true
-            } else {// 권한이 없으므로 권한 요청 알림 보내기
-                requestPermissionLauncher.launch(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION))
-                false
-            }
-        } else {
-            true
-        }
-    }
-
-    private val requestPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()
-    ) { result: MutableMap<String, Boolean> ->
-        val deniedList: List<String> = result.filter {
-            !it.value
-        }.map { it.key }
-        when {
-        deniedList.isNotEmpty() -> {
-            val map = deniedList.groupBy { permission ->
-                if (shouldShowRequestPermissionRationale(permission)) "DENIED" else "EXPLAINED"
-            }
-            map["DENIED"]?.let {
-                // 뒤로 가기로 거부했을 때
-                // request denied , request again
-                Log.d("위치 권한", "onRequestPermissionsResult() _ 권한 허용 거부")
-                (requireActivity() as MainActivity).changeFragment(AppTag.SETTING_TAG)
-                Toast.makeText(requireActivity(), "위치 권한이 없어 해당 기능을 수행할 수 없습니다!", Toast.LENGTH_SHORT).show()
-            }
-            map["EXPLAINED"]?.let {
-                // 거부 버튼 눌렀을 때
-                // request denied ,send to settings
-                Log.d("위치 권한", "한() _ 권한 허용 거부")
-                (requireActivity() as MainActivity).changeFragment(AppTag.SETTING_TAG)
-                Toast.makeText(requireActivity(), "위치 권한이 없어 해당 기능을 수행할 수 없습니다!", Toast.LENGTH_SHORT).show()
-            }
-        }
-            else -> { // All request are permitted
-                Log.d("위치 권한", "onRequestPermissionsResult() _ 권한 허용")
-                updateLocation()
-                binding.mapView.getMapAsync(this)
             }
         }
     }
@@ -172,10 +121,10 @@ class GpsFragment : Fragment(), OnMapReadyCallback {
         Log.d("변경 위치", "동작")
         convertAddress()
         val marker = LatLng(latitude, longitude)
-        gMap!!.uiSettings.isMapToolbarEnabled = false
-        gMap!!.addMarker(MarkerOptions().position(marker).title("내 위치"))
-        gMap!!.moveCamera(CameraUpdateFactory.newLatLng(marker))
-        gMap!!.moveCamera(CameraUpdateFactory.zoomTo(15f))
+        gMap?.uiSettings?.isMapToolbarEnabled = false
+        gMap?.addMarker(MarkerOptions().position(marker).title("내 위치"))
+        gMap?.moveCamera(CameraUpdateFactory.newLatLng(marker))
+        gMap?.moveCamera(CameraUpdateFactory.zoomTo(15f))
     }
 
     // Default 위치 설정

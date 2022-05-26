@@ -17,13 +17,21 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
+import kotlinx.coroutines.*
 import kr.co.ajjulcoding.team.project.holo.databinding.FragmentWebViewBinding
 import org.json.JSONArray
 import org.json.JSONObject
 import java.net.URLEncoder
 
 class WebViewFragment(private val userInfo: HoloUser, private val webUrl: String) : Fragment() {
+    companion object{
+        const val COMMENT_TAG = "comment"
+        const val SUBCOMMENT_TAG = "subComment"
+    }
     private lateinit var _binding: FragmentWebViewBinding
+    private lateinit var webViewModel: WebViewModel
     private val binding get() = _binding
     private lateinit var _activity:MainActivity
     private val mActivity get() = _activity
@@ -39,6 +47,7 @@ class WebViewFragment(private val userInfo: HoloUser, private val webUrl: String
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentWebViewBinding.inflate(inflater, container, false)
+        webViewModel = ViewModelProvider(this).get(WebViewModel::class.java)
         val webView:WebView = binding.webView
         webView.apply {
             //val webViewClient = webViewClient
@@ -73,7 +82,6 @@ class WebViewFragment(private val userInfo: HoloUser, private val webUrl: String
             }
             return@setOnKeyListener true
         }
-
     }
 
     inner class WebAppInterface(private val mContext: Context){
@@ -110,5 +118,19 @@ class WebViewFragment(private val userInfo: HoloUser, private val webUrl: String
         }
     }
 
-
+    private fun sendCmtAlarm(type: String, toEmail: String, content: String){  // TODO: 예은 님이 댓글/답글을 남겼습니다., (내용)
+        // TODO: 이메일로 상대방 토큰 받아오기
+        CoroutineScope(Dispatchers.IO).launch {
+            val deferred: Deferred<Pair<String, String>> = webViewModel.getUserNicknameAndToken(toEmail)
+            val defResult: Pair<String, String> = deferred.await()
+            var msg: String = userInfo.nickName
+            if (type == COMMENT_TAG)
+                msg = "$msg 님이 댓글을 남겼습니다"
+            else if (type == SUBCOMMENT_TAG)
+                msg = "$msg 님이 답글을 남겼습니다"
+            val data = CmtNotificationBody.CmtNotificationData(msg, content)
+            val body = CmtNotificationBody(defResult.second, data)
+            webViewModel.sendCmtPushAlarm(body)
+        }
+    }
 }

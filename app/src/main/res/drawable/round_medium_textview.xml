@@ -1,13 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="@color/sky_dirty"/>
-    <stroke
-        android:color="@color/sky_dark"
-        android:width="2dp"/>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed = "false">
+        <shape xmlns:android="http://schemas.android.com/apk/res/android">
+            <solid android:color="@color/sky_dirty"/>
+            <stroke
+                android:color="@color/sky_dark"
+                android:width="2dp"/>
 
-    <corners
-        android:topLeftRadius="10dp"
-        android:topRightRadius="10dp"
-        android:bottomLeftRadius="10dp"
-        android:bottomRightRadius="10dp"/>
-</shape>
+            <corners
+                android:topLeftRadius="10dp"
+                android:topRightRadius="10dp"
+                android:bottomLeftRadius="10dp"
+                android:bottomRightRadius="10dp"/>
+        </shape>
+    </item>
+
+    <item android:state_pressed = "true">
+        <shape xmlns:android="http://schemas.android.com/apk/res/android">
+            <solid android:color="@color/sky_dark_dirty"/>
+            <stroke
+                android:color="@color/sky_dark"
+                android:width="2dp"/>
+
+            <corners
+                android:topLeftRadius="10dp"
+                android:topRightRadius="10dp"
+                android:bottomLeftRadius="10dp"
+                android:bottomRightRadius="10dp"/>
+        </shape>
+    </item>
+</selector>

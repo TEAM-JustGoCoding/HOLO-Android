@@ -2,6 +2,7 @@ package kr.co.ajjulcoding.team.project.holo
 
 import android.app.AlertDialog
 import android.content.DialogInterface
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -44,7 +45,7 @@ class UsersettingFragment(val currentUser:HoloUser) : Fragment() {
             binding.textLocation.setText(it)
         }
         binding.profilePhoto.setOnClickListener {
-            mActivity.changeFragment(AppTag.PROFILE_TAG)
+            mActivity.checkPermissionForStorage(requireActivity())
         }
         binding.textScore.setOnClickListener {
             mActivity.supportFragmentManager?.let{fragmentManager ->
@@ -55,11 +56,11 @@ class UsersettingFragment(val currentUser:HoloUser) : Fragment() {
             }
         }
         binding.textLocationSet.setOnClickListener {
-            mActivity.changeFragment(AppTag.GPS_TAG)
+            mActivity.checkPermissionForLocation(requireActivity())
         }
         binding.textUtilityBill.setOnClickListener {
             mActivity.supportFragmentManager?.let{fragmentManager ->
-                val dialog:UtilityBillFragment = UtilityBillFragment()
+                val dialog:UtilityBillFragment = UtilityBillFragment(currentUser)
                 if (null == fragmentManager.findFragmentByTag(AppTag.UTILITYBILLDIALOG_TAG)) {
                     dialog.show(fragmentManager, AppTag.UTILITYBILLDIALOG_TAG)
                 }
@@ -68,10 +69,13 @@ class UsersettingFragment(val currentUser:HoloUser) : Fragment() {
         binding.textAccount.setOnClickListener {
             mActivity.changeFragment(AppTag.ACCOUNT_TAG)
         }
+        binding.switchBell.isChecked = currentUser.msgVaild
+        binding.switchBell.setOnCheckedChangeListener { _, isChecked ->
+            setMsgValid(isChecked)
+        }
         binding.textLogout.setOnClickListener {
             AlertDialog.Builder(mActivity)
                 .setTitle("로그아웃 하시겠습니까?")
-                .setCancelable(false)
                 .setItems(arrayOf("예","아니오"), object : DialogInterface.OnClickListener{
                     override fun onClick(dialog: DialogInterface?, idx: Int) {
                         dialog!!.dismiss()
@@ -123,5 +127,12 @@ class UsersettingFragment(val currentUser:HoloUser) : Fragment() {
 
     fun setUserAccount(account:String){
         currentUser.account = account
+    }
+
+    fun setMsgValid(valid: Boolean){
+        currentUser.msgVaild = valid
+        var sharedPref: SharedPreferences = mActivity.getSharedPreferences(AppTag.USER_INFO, 0)
+        var editor: SharedPreferences.Editor = sharedPref.edit()
+        editor.putBoolean("msgValid", valid).apply()
     }
 }

@@ -8,13 +8,13 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class HoloSplashActivity : AppCompatActivity() {
-    private val selectMain = "MainActivity"
-    private val selectLogin = "LoginActivity"
     private var userInfo: HoloUser? = null
     private var waitTime:Double = 1.5
     private lateinit var sharedPref:SharedPreferences
@@ -32,12 +32,9 @@ class HoloSplashActivity : AppCompatActivity() {
         CoroutineScope(Dispatchers.Main).launch {
             if (SettingInApp.mAuth.currentUser != null) {
                 val repository = Repository() // 토큰 변경 여부 검사
-                Log.d("사용자 정보 캐시 확인1", "1")
                 val token = repository.setToken(SettingInApp.mAuth.currentUser!!.email!!)
-                Log.d("사용자 정보 캐시 확인2", token.toString())
                 userInfo = getUserCache(token)
-                Log.d("사용자 정보 캐시 확인3", userInfo.toString())
-                editor.putString("token", token).apply()
+                token?.let { editor.putString("token", it).apply() }
                 waitTime = 1.0
                 delaySec(waitTime, userInfo!!)   // 1.5 or 1.0 초 지연
             }else{
@@ -67,13 +64,15 @@ class HoloSplashActivity : AppCompatActivity() {
     private fun getUserCache(token:String?): HoloUser{
         val result = HoloUser(
             sharedPref.getString("uid","아이디 없음")!!
-            , sharedPref.getString("realName", "실명 없음")!!
+            ,sharedPref.getString("realName", "실명 없음")!!
             ,sharedPref.getString("nickName", "별명 없음")!!
             ,sharedPref.getString("score", "평점 없음")!!
             ,sharedPref.getString("location", null)
             ,sharedPref.getString("profile", null)
             ,sharedPref.getString("account", null)
             ,sharedPref.getString("token", null)
+            ,sharedPref.getBoolean("msgValid", true)
+            ,Gson().fromJson(sharedPref.getString(AppTag.BILLCACHE_TAG, null), object : TypeToken<ArrayList<UtilityBillItem?>?>() {}.getType())
         )
         result.token = token ?: sharedPref.getString("token", null) // 인터넷 연결 없으면 토큰 캐시 정보 불러오기
         Log.d("사용자 정보 캐시 확인", result.toString())

@@ -35,6 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
+            android:fontFamily="@font/light"
             android:maxLines="1"
             android:inputType="textEmailAddress"
             android:hint="E-MAIL" />
@@ -58,6 +59,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
+            android:fontFamily="@font/light"
             android:maxLines="1"
             android:inputType="textPassword"
             android:hint="PASSWORD" />
@@ -69,7 +71,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        android:backgroundTint="@color/sky_dark"
         android:background="@drawable/round_btn_start"
         android:text="로그인"
         android:textSize="16dp"
@@ -83,7 +84,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:backgroundTint="@color/sky_dark"
         android:background="@drawable/round_btn_start"
         android:text="회원가입"
         android:textSize="16dp"
