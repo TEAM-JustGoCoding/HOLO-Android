@@ -45,7 +45,7 @@ class UsersettingFragment(val currentUser:HoloUser) : Fragment() {
             binding.textLocation.setText(it)
         }
         binding.profilePhoto.setOnClickListener {
-            mActivity.changeFragment(AppTag.PROFILE_TAG)
+            mActivity.checkPermissionForStorage(requireActivity())
         }
         binding.textScore.setOnClickListener {
             mActivity.supportFragmentManager?.let{fragmentManager ->
@@ -56,7 +56,7 @@ class UsersettingFragment(val currentUser:HoloUser) : Fragment() {
             }
         }
         binding.textLocationSet.setOnClickListener {
-            mActivity.changeFragment(AppTag.GPS_TAG)
+            mActivity.checkPermissionForLocation(requireActivity())
         }
         binding.textUtilityBill.setOnClickListener {
             mActivity.supportFragmentManager?.let{fragmentManager ->
