@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 class WebViewModel: ViewModel() {
     private var _chatRoom = MutableLiveData<ChatRoom>()
@@ -18,6 +19,11 @@ class WebViewModel: ViewModel() {
     
     fun sendCmtPushAlarm(body: CmtNotificationBody) = viewModelScope.launch {
         repository.sendCmtPushAlarm(body)
+    }
+
+    suspend fun getId(email:String) = viewModelScope.async {
+        val id:Int? = repository.getId(email)
+        return@async id
     }
 
     suspend fun createChatRoom(data:ChatRoom, mActivity: MainActivity) = viewModelScope.async{

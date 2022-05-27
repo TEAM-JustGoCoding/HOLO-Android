@@ -108,7 +108,7 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <EditText
-                        android:id="@+id/editText"
+                        android:id="@+id/editSearch"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
                         android:padding="5dp"
@@ -130,7 +130,7 @@
                         android:padding="@dimen/paddingBigView"
                         android:background="@drawable/round_btn_home"
                         android:backgroundTint="@color/home_sell"
-                        app:layout_constraintTop_toBottomOf="@+id/editText"
+                        app:layout_constraintTop_toBottomOf="@+id/editSearch"
                         app:layout_constraintRight_toRightOf="@+id/contraintParent"
                         app:layout_constraintLeft_toLeftOf="@+id/contraintParent">
                         <TextView

@@ -62,6 +62,7 @@ class RegisterActivity : AppCompatActivity() {
                                 Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or
                                         Intent.FLAG_ACTIVITY_CLEAR_TOP //액티비티 스택제거
                             intentFiSplash.putExtra("userInfo", HoloUser(
+                                null,
                                 binding.editEmail.text.toString(),
                                 binding.editName.text.toString(),
                                 binding.editNickname.text.toString(),

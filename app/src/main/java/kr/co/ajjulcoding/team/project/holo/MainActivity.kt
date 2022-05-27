@@ -86,12 +86,6 @@ class MainActivity : AppCompatActivity() {
             AppTag.SCORE_TAG to scoreFragment, AppTag.ACCOUNT_TAG to accountFragment,
             AppTag.CHATLIST_TAG to chatListFragment, AppTag.NOTIFICATION_TAG to notificationFragment)
 
-        val code = intent.getStringExtra("first")
-        if (code == "first") {
-            dialog = UtilityBillFragment(mUserInfo)
-            dialog.show(supportFragmentManager, "CustomDialog")
-        }
-
         if (intent.getBooleanExtra(AppTag.LOGIN_TAG, false)) {
             CoroutineScope(Dispatchers.Main).launch {
                 setProfileImg("profile_" + mUserInfo.uid!!.replace(".", "") + ".jpg")
@@ -99,20 +93,22 @@ class MainActivity : AppCompatActivity() {
             saveCache()
         }else if (intent.getBooleanExtra(AppTag.REGISTER_TAG, false)){
             saveCache()
+            dialog = UtilityBillFragment(mUserInfo)
+            dialog.show(supportFragmentManager, "CustomDialog")
         }
 
         binding.navigationBar.setOnItemSelectedListener { item ->
-            Log.d("프래그먼트 변경 요청", currentTag.toString())
             when (item.itemId) {
                 R.id.menu_home -> {
                     changeFragment(AppTag.HOME_TAG)
                 }
                 R.id.menu_chatting -> {
-                    Log.d("프래그먼트 변경 요청", currentTag.toString())
                     changeFragment(AppTag.CHATLIST_TAG)
                 }
+                R.id.menu_like -> {
+                    changeFragment(WebUrl.URL_LAN+WebUrl.URL_LIKE)
+                }
                 R.id.menu_profile -> {
-                    Log.d("프래그먼트 변경 요청", currentTag.toString())
                     changeFragment(AppTag.SETTING_TAG)
                 }
             }
@@ -277,6 +273,10 @@ class MainActivity : AppCompatActivity() {
         editor.putString("score", userInfo.score).apply()
         editor.putString("token", userInfo.token).apply()
         editor.putBoolean("msgValid", userInfo.msgVaild).apply()
+//        CoroutineScope(Dispatchers.Main).launch {
+//            val repository = Repository()
+//            val userId:Int? = repository.getId(userInfo.uid)
+//        }
     }
 
     private fun showHomeFragment(userInfo:HoloUser){

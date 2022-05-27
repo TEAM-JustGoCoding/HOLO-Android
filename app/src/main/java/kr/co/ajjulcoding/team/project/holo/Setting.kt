@@ -75,6 +75,7 @@ class PhpUrl {
         const val URL_NICKNAME_DUPI:String = "nickNameDupli.php"
         const val URL_POST_TOKEN:String = "postToken.php"
         const val URL_POST_SCORE:String = "postScore.php"
+        const val URL_GET_ID:String = "getId.php"
         const val URL_GET_TOKEN:String = "getNicknameAndToken.php"
         const val URL_DELETE_USER:String = "withdrawal.php"
         const val URL_UPDATE_SCORE:String = "userScore.php"
@@ -90,6 +91,7 @@ class WebUrl {
         const val URL_DCM: String = "infoboard?select=document"
         const val URL_FAQ: String = "faqboard"
         const val URL_LIKE: String = "likeboard"
+        const val URL_SEARCH: String = ""
     }
 }
 
