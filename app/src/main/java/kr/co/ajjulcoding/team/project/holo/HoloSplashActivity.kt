@@ -62,8 +62,13 @@ class HoloSplashActivity : AppCompatActivity() {
 
     @SuppressLint("CommitPrefEdits")
     private fun getUserCache(token:String?): HoloUser{
+        var userId:Int? = sharedPref.getInt("id",-1)
+        if (userId == -1)
+            userId = null
+
         val result = HoloUser(
-            sharedPref.getString("uid","아이디 없음")!!
+            userId
+            ,sharedPref.getString("uid","아이디 없음")!!
             ,sharedPref.getString("realName", "실명 없음")!!
             ,sharedPref.getString("nickName", "별명 없음")!!
             ,sharedPref.getString("score", "평점 없음")!!

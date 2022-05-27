@@ -19,7 +19,7 @@ import java.io.IOException
 import java.io.Serializable
 
 @Parcelize
-data class HoloUser(val uid: String, val realName: String, val nickName: String, var score: String,
+data class HoloUser(var id:Int? = null, val uid: String, val realName: String, val nickName: String, var score: String,
                     var location:String? = null, var profileImg:String? = null, var account:String? = null,
                     var token:String? = null, var msgVaild:Boolean = true,
                     var utilitylist:ArrayList<UtilityBillItem>? = null):Parcelable

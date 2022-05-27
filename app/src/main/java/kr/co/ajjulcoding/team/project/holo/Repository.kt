@@ -18,8 +18,6 @@ class Repository {
 
     suspend fun getUserInfo(email:String): HoloUser?{
         var result:HoloUser? = null
-
-
         val client = OkHttpClient()
         val mySearchUrl = (PhpUrl.DOTHOME+PhpUrl.URL_SELECT_USER).toHttpUrlOrNull()!!.newBuilder()
         mySearchUrl.addQueryParameter("uid",email)
@@ -32,10 +30,37 @@ class Repository {
                 Log.d("로그인 데이터 정보", "성공: ${str_response}")
                 val jsonobj = JSONObject(str_response)
                 Log.d("로그인 데이터 정보!!", jsonobj.getString("nick_name"))
-                result = HoloUser(jsonobj.getString("uid"),
+                result = HoloUser(
+                    jsonobj.getInt("id"),
+                    jsonobj.getString("uid"),
                     jsonobj.getString("real_name"),
                     jsonobj.getString("nick_name"),
                     jsonobj.getString("score"))
+            }catch (e:IOException){
+                Log.d("로그인 데이터 정보", "통신 실패(인터넷 끊김 등): ${e}")
+            }
+        }.await()
+
+        Log.d("이메일", email.toString())
+
+        return result
+    }
+
+    suspend fun getId(email:String):Int?{
+        var result:Int? = null
+        val client = OkHttpClient()
+        val mySearchUrl = (PhpUrl.DOTHOME+PhpUrl.URL_SELECT_USER).toHttpUrlOrNull()!!.newBuilder()
+        mySearchUrl.addQueryParameter("uid",email)
+        val request = Request.Builder().url(mySearchUrl.build().toString()).build()
+
+        CoroutineScope(Dispatchers.IO).async {
+            try {
+                val response = client.newCall(request).execute()   // 동기로 실행
+                val str_response = response.body!!.string()   // string()은 딱 한 번만 호출 가능
+                Log.d("로그인 데이터 정보", "성공: ${str_response}")
+                val jsonobj = JSONObject(str_response)
+                Log.d("로그인 데이터 정보!!", jsonobj.getString("id"))
+                result = jsonobj.getInt("id")
             }catch (e:IOException){
                 Log.d("로그인 데이터 정보", "통신 실패(인터넷 끊김 등): ${e}")
             }

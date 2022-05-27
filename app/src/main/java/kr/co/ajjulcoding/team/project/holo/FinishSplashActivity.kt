@@ -21,10 +21,12 @@ class FinishSplashActivity : AppCompatActivity() {
 
         CoroutineScope(Dispatchers.Main).launch {
             val result = repository.insertRegister(userInfo)
-            if (result != true){
+            val resultId:Int? = repository.getId(userInfo.uid)
+            if (result != true && resultId == null){
                 Toast.makeText(this@FinishSplashActivity, "서버와 통신에 실패했습니다!", Toast.LENGTH_SHORT).show()
                 return@launch
             }
+            userInfo.id = resultId
             val token:String? = repository.setToken(userInfo.uid!!)
             Handler(Looper.myLooper()!!).postDelayed({
                 token?.let { userInfo.token = it }
