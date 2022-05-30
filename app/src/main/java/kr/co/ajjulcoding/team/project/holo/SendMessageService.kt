@@ -24,13 +24,13 @@ class SendMessageService: FirebaseMessagingService() {
 
         Log.d("푸시 알림 받음", remoteMessage.toString())
         val sharedPref: SharedPreferences = this.getSharedPreferences(AppTag.USER_INFO, 0)
-        val msgVaild: Boolean = sharedPref.getBoolean("msgValid", true)
+        val msgVaild: Boolean = sharedPref.getBoolean("msgValid", true)     // 알람 송수신 캐시 체크
         Log.d("서비스단 푸시 알림 수신", msgVaild.toString())
         if (msgVaild == false)
             return
         val randomNum:Double? = remoteMessage.data["randomNum"]?.toDouble() // TODO: 댓글/답글 데이터 들어오면 어떻게 되는지 찍어보기 -> null 반환?
         randomNum?.let {
-            val currentNum: Double? = ChatRoomActivity.randomNum
+            val currentNum: Double? = ChatRoomActivity.randomNum    // 현재 접속한 채팅방과 알림 온 방이 동일
             when (currentNum){
                 remoteMessage.data["randomNum"]?.toDouble() -> return
                 else -> {}
