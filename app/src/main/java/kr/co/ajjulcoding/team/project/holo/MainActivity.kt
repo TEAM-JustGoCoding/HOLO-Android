@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var userSettingFragment:UsersettingFragment
     private val withdrawalDialogFragment = WithdrawalDialogFragment()
     private lateinit var utilityBillFragment:UtilityBillFragment
-    private val notificationFragment = NotificationFragment()
+    private lateinit var notificationFragment:NotificationFragment
     private lateinit var scoreFragment:ScoreFragment
     private lateinit var chatListFragment:Fragment
     private lateinit var mUserInfo:HoloUser
@@ -57,6 +57,7 @@ class MainActivity : AppCompatActivity() {
     private var waitTime = 0L // 백버튼 2번 시간 간격
     private lateinit var imgLauncher: ActivityResultLauncher<Intent>
     private lateinit var utilitylist:ArrayList<UtilityBillItem>
+    private lateinit var notificationlist:ArrayList<NotificationItem>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         mUserInfo = intent.getParcelableExtra<HoloUser>(AppTag.USER_INFO)!!
@@ -68,6 +69,7 @@ class MainActivity : AppCompatActivity() {
         scoreFragment = ScoreFragment(mUserInfo)
         accountFragment = AccountFragment(mUserInfo)
         utilityBillFragment = UtilityBillFragment(mUserInfo)
+        notificationFragment = NotificationFragment(mUserInfo)
         chatListFragment = supportFragmentManager.fragmentFactory.instantiate(
             classLoader,ChatListFragment::class.java.name)
         imgLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
@@ -261,6 +263,29 @@ class MainActivity : AppCompatActivity() {
         utilitylist = gson.fromJson(json, type)
 
         return utilitylist
+    }
+
+    fun storeNotificationCache(mNotificationItems: ArrayList<NotificationItem>) {
+        mUserInfo.notificationlist = mNotificationItems
+        notificationlist=mNotificationItems
+        Log.d("메인액티비티 알림 list count", notificationlist.size.toString())
+        sharedPref = this.getSharedPreferences(AppTag.USER_INFO,0)
+        editor = sharedPref.edit()
+        val gson = Gson()
+        val json = gson.toJson(notificationlist)
+        editor.putString(AppTag.NOTIFICATIONCACHE_TAG, json)
+        Log.d("메인액티비티 알림 json", json)
+        editor.apply()
+    }
+
+    fun getNotificationJSON(): ArrayList<NotificationItem> {
+        val type: Type = object : TypeToken<ArrayList<NotificationItem?>?>() {}.getType()
+        sharedPref = this.getSharedPreferences(AppTag.USER_INFO,0)
+        val gson = Gson()
+        val json = sharedPref.getString(AppTag.NOTIFICATIONCACHE_TAG, "")
+        notificationlist = gson.fromJson(json, type)
+
+        return notificationlist
     }
     
     private fun saveCache(){

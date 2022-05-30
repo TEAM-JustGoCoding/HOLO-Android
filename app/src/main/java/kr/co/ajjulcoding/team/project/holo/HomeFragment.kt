@@ -28,6 +28,7 @@ class HomeFragment(val currentUser:HoloUser) : Fragment() {
     private lateinit var _binding:FragmentHomeBinding
     private val binding get() = _binding
     private val homeViewModel: HomeViewModel by viewModels<HomeViewModel>()
+    private var mNotificationItems: ArrayList<NotificationItem>? = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -111,6 +112,12 @@ class HomeFragment(val currentUser:HoloUser) : Fragment() {
             CoroutineScope(Dispatchers.Main).launch {
                 repository.sendCmtPushAlarm(body)
             }
+            //알림 구현 틀
+            mNotificationItems = currentUser.notificationlist
+            if (mNotificationItems==null)
+                mNotificationItems=ArrayList()
+            mNotificationItems!!.add(NotificationItem(msg, content))
+            mActivity.storeNotificationCache(mNotificationItems!!)
         }
     }
 
