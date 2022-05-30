@@ -1,8 +1,12 @@
 package kr.co.ajjulcoding.team.project.holo
 
-class NotificationItem(name: String?, message: String?) {
-    var name: String? = name
-    var message: String? = message
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
+class NotificationItem(var name: String?, var message: String?) : Parcelable {
+//    var name: String? = name
+//    var message: String? = message
 
     @JvmName("getMessage1")
     fun getMessage(): String? {

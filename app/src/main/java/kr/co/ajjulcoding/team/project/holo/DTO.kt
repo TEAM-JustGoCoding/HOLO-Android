@@ -22,7 +22,8 @@ import java.io.Serializable
 data class HoloUser(var id:Int? = null, val uid: String, val realName: String, val nickName: String, var score: String,
                     var location:String? = null, var profileImg:String? = null, var account:String? = null,
                     var token:String? = null, var msgVaild:Boolean = true,
-                    var utilitylist:ArrayList<UtilityBillItem>? = null):Parcelable
+                    var utilitylist:ArrayList<UtilityBillItem>? = null,
+                    var notificationlist:ArrayList<NotificationItem>? = null):Parcelable
 
 //채팅방 등록 TODO: 이것도 캐시로 저장해야할듯
 @Parcelize  // Serializable하려면 다른 객체에도 적용시켜야함. 따라서 Parcelable로 대체

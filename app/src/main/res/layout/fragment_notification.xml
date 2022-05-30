@@ -42,6 +42,7 @@
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             android:id="@+id/recyclerView"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
