@@ -61,8 +61,14 @@ class UtilityBillAdapter(val onItemClick: OnItemClick) : RecyclerView.Adapter<Ut
                     }
                 }
             })
-            termSpin.adapter = ArrayAdapter.createFromResource(itemView.getContext(), R.array.term_array, android.R.layout.simple_spinner_item)
-            dateSpin.adapter = ArrayAdapter.createFromResource(itemView.getContext(), R.array.date_array, android.R.layout.simple_spinner_item)
+//            termSpin.adapter = ArrayAdapter.createFromResource(itemView.getContext(), R.array.term_array, android.R.layout.simple_spinner_item)
+//            dateSpin.adapter = ArrayAdapter.createFromResource(itemView.getContext(), R.array.date_array, android.R.layout.simple_spinner_item)
+            val mTermArrayAdapter = ArrayAdapter.createFromResource(itemView.getContext(), R.array.term_array, R.layout.spinner_list)
+            mTermArrayAdapter.setDropDownViewResource(R.layout.spinner_list)
+            val mDateArrayAdapter = ArrayAdapter.createFromResource(itemView.getContext(), R.array.date_array, R.layout.spinner_list)
+            mDateArrayAdapter.setDropDownViewResource(R.layout.spinner_list)
+            termSpin.adapter = mTermArrayAdapter
+            dateSpin.adapter = mDateArrayAdapter
             termSpin.setEnabled(true)
             dateSpin.setEnabled(true)
             termSpin.setSelection(getItemTerm(position)!!)

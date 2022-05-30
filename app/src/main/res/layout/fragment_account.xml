@@ -81,6 +81,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_marginLeft="10dp"
+                    android:textSize="16dp"
                     android:background="@android:color/transparent"
                     android:hint="예시: 농협 xxxxxxxxxxx"
                     app:layout_constraintTop_toTopOf="parent"

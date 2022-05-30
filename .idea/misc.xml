@@ -10,17 +10,23 @@
         <entry key="..\:/Users/svh/AndroidStudioProjects/Holo-AndroidApp/app/src/main/res/layout/activity_holosplash.xml" value="0.14322916666666666" />
         <entry key="..\:/Users/svh/AndroidStudioProjects/Holo-AndroidApp/app/src/main/res/layout/activity_informagree.xml" value="0.264" />
         <entry key="..\:/Users/svh/AndroidStudioProjects/Holo-AndroidApp/app/src/main/res/layout/activity_login.xml" value="0.14322916666666666" />
+        <entry key="..\:/Users/svh/AndroidStudioProjects/Holo-AndroidApp/app/src/main/res/layout/activity_main.xml" value="0.10511651469098278" />
         <entry key="..\:/Users/svh/AndroidStudioProjects/Holo-AndroidApp/app/src/main/res/layout/activity_register.xml" value="0.14322916666666666" />
         <entry key="..\:/Users/svh/AndroidStudioProjects/Holo-AndroidApp/app/src/main/res/layout/dialog_fragment_post_score.xml" value="0.1859375" />
+        <entry key="..\:/Users/svh/AndroidStudioProjects/Holo-AndroidApp/app/src/main/res/layout/fragment_account.xml" value="0.10511651469098278" />
         <entry key="..\:/Users/svh/AndroidStudioProjects/Holo-AndroidApp/app/src/main/res/layout/fragment_gps.xml" value="0.1" />
         <entry key="..\:/Users/svh/AndroidStudioProjects/Holo-AndroidApp/app/src/main/res/layout/fragment_home.xml" value="0.10461956521739131" />
         <entry key="..\:/Users/svh/AndroidStudioProjects/Holo-AndroidApp/app/src/main/res/layout/fragment_notification.xml" value="0.19270833333333334" />
         <entry key="..\:/Users/svh/AndroidStudioProjects/Holo-AndroidApp/app/src/main/res/layout/fragment_profile.xml" value="0.27793974732750243" />
         <entry key="..\:/Users/svh/AndroidStudioProjects/Holo-AndroidApp/app/src/main/res/layout/fragment_score.xml" value="0.10461956521739131" />
+        <entry key="..\:/Users/svh/AndroidStudioProjects/Holo-AndroidApp/app/src/main/res/layout/fragment_usersetting.xml" value="0.10511651469098278" />
         <entry key="..\:/Users/svh/AndroidStudioProjects/Holo-AndroidApp/app/src/main/res/layout/fragment_utility_bill.xml" value="0.11764705882352941" />
+        <entry key="..\:/Users/svh/AndroidStudioProjects/Holo-AndroidApp/app/src/main/res/layout/fragment_withdrawal_dialog.xml" value="0.10511651469098278" />
         <entry key="..\:/Users/svh/AndroidStudioProjects/Holo-AndroidApp/app/src/main/res/layout/notification_recyclerview.xml" value="0.20729166666666668" />
         <entry key="..\:/Users/svh/AndroidStudioProjects/Holo-AndroidApp/app/src/main/res/layout/round_button.xml" value="0.14895833333333333" />
+        <entry key="..\:/Users/svh/AndroidStudioProjects/Holo-AndroidApp/app/src/main/res/layout/spinner_list.xml" value="0.14166666666666666" />
         <entry key="..\:/Users/svh/AndroidStudioProjects/Holo-AndroidApp/app/src/main/res/layout/utilitybill_list_item.xml" value="0.20350877192982456" />
+        <entry key="..\:/Users/svh/AndroidStudioProjects/Holo-AndroidApp/app/src/main/res/menu/item_navi.xml" value="0.125" />
         <entry key="app/src/main/res/drawable/ic_baseline_notification.xml" value="0.1715" />
         <entry key="app/src/main/res/drawable/icon_gps_fixed.xml" value="0.2895" />
         <entry key="app/src/main/res/drawable/rect_btn_skydark.xml" value="0.249" />

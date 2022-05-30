@@ -68,6 +68,7 @@
             android:layout_marginTop="30dp"
             android:background="@drawable/rect_btn_skydark"
             android:text="확인했습니다"
+            android:textSize="15dp"
             android:textColor="@color/white"
             android:fontFamily="@font/light"
             app:layout_constraintEnd_toEndOf="parent"
