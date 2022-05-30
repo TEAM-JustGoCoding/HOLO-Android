@@ -3,11 +3,14 @@ package kr.co.ajjulcoding.team.project.holo
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.SharedPreferences
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import com.google.firebase.Timestamp
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.CoroutineScope
@@ -31,6 +34,9 @@ class HoloSplashActivity : AppCompatActivity() {
         editor = sharedPref.edit()
         CoroutineScope(Dispatchers.Main).launch {
             if (SettingInApp.mAuth.currentUser != null) {
+                if (checkNetwork()){
+                    editor.putString("signature", System.currentTimeMillis().toString()).apply()
+                }
                 val repository = Repository() // 토큰 변경 여부 검사
                 val token = repository.setToken(SettingInApp.mAuth.currentUser!!.email!!)
                 userInfo = getUserCache(token)
@@ -83,5 +89,17 @@ class HoloSplashActivity : AppCompatActivity() {
         Log.d("사용자 정보 캐시 확인", result.toString())
 
         return result
+    }
+
+    private fun checkNetwork(): Boolean{
+        val conManager = getSystemService(ConnectivityManager::class.java)
+        val currentNet = conManager.activeNetwork ?: return false
+        val actNet = conManager.getNetworkCapabilities(currentNet) ?: return false
+
+        return when {
+            actNet.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+            actNet.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+            else -> false
+        }
     }
 }

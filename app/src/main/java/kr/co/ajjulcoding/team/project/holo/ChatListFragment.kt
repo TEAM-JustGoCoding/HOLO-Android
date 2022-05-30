@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.signature.ObjectKey
 import com.google.firebase.storage.FirebaseStorage
 import kr.co.ajjulcoding.team.project.holo.databinding.FragmentChatListBinding
 import kr.co.ajjulcoding.team.project.holo.databinding.ItemChatListRecyclerBinding
@@ -30,11 +31,14 @@ class ChatListFragment(val userInfo:HoloUser) : Fragment() {
     private lateinit var _binding: FragmentChatListBinding
     private val binding get() = _binding
     private val chatListViewModel: ChatListViewModel by viewModels<ChatListViewModel>()
+    private lateinit var signatureKey:String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _activity = requireActivity() as MainActivity
         chatListViewModel.getUserChatRoomLi(userInfo.uid)
+        val sharedPref = mActivity.getSharedPreferences(AppTag.USER_INFO,0)
+        signatureKey = sharedPref.getString("signature",System.currentTimeMillis().toString())!!
     }
 
     override fun onCreateView(
@@ -47,22 +51,9 @@ class ChatListFragment(val userInfo:HoloUser) : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        //val chatListAdapter:ChatListAdapter = ChatListAdapter(chatListViewModel.userChatRoomLi.value!!)
         binding.recyclerChatList.adapter = ChatListAdapter()
         chatListViewModel.userChatRoomLi.observe(viewLifecycleOwner){
             (binding.recyclerChatList.adapter as ChatListAdapter).replaceItems(it)
-        }
-    }
-
-    private fun checkNetwork(): Boolean{
-        val conManager = mActivity.getSystemService(ConnectivityManager::class.java)
-        val currentNet = conManager.activeNetwork ?: return false
-        val actNet = conManager.getNetworkCapabilities(currentNet) ?: return false
-
-        return when {
-            actNet.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
-            actNet.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
-            else -> false
         }
     }
 
@@ -121,31 +112,15 @@ class ChatListFragment(val userInfo:HoloUser) : Fragment() {
                     }
 
                     val mountainRef = FBstorageRef.child("profile_img/"+fileName)
-                    if (!checkNetwork()){ // no wetwork
-                        Glide.with(this@ChatListFragment).load(mountainRef)
-                            .apply {
-                                thumbnail(0.1f)
-                                into(imgProfile)
-                            }
-                    }else{
-                        mountainRef.downloadUrl.addOnSuccessListener { url ->
-                            Log.d("url 확인", url.toString())
-                            Glide.with(this@ChatListFragment).load(url)
-                                .apply {
-                                    thumbnail(0.1f)
-                                    into(imgProfile)
-                                }
-                        }
-                            .addOnFailureListener {
-                                Log.d("url 실패", it.toString())
-                                Glide.with(this@ChatListFragment).load(mountainRef)
-                                    .apply {
-                                        thumbnail(0.1f)
-                                        into(imgProfile)
-                                    }
-                            }
-                        Glide.with(this@ChatListFragment).load(mountainRef)
+                    val requestOptions = RequestOptions()
+                    requestOptions.apply {
+                        signature(ObjectKey(signatureKey))
                     }
+                    Glide.with(this@ChatListFragment).load(mountainRef)
+                        .apply {
+                            apply(requestOptions)
+                            into(imgProfile)
+                        }
 
                     itemView.setOnClickListener {
                         val intentChatRoom = Intent(mActivity, ChatRoomActivity::class.java)
