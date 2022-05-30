@@ -100,6 +100,18 @@ class HomeFragment(val currentUser:HoloUser) : Fragment() {
         binding.btnNotifi.setOnClickListener {
             mActivity.changeFragment(AppTag.NOTIFICATION_TAG)
         }
+
+        // TODO: 알림 테스트(자기 자신에게 알림 옴)
+        binding.textLocation.setOnClickListener {
+            val repository = Repository()
+            var msg = "규리 님이 댓글을 남겼습니다"
+            var content = "이 집 많이 매워요??"
+            val data = CmtNotificationBody.CmtNotificationData(msg, content)
+            val body = CmtNotificationBody(currentUser.token!!, data)
+            CoroutineScope(Dispatchers.Main).launch {
+                repository.sendCmtPushAlarm(body)
+            }
+        }
     }
 
     private fun setProfile(){
