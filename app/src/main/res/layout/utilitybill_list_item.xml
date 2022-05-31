@@ -15,15 +15,15 @@
 
 
         <EditText
-            android:layout_weight="1"
             android:id="@+id/content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="16dp"
+            android:layout_weight="1"
+            android:fontFamily="@font/bold"
+            android:hint="내역"
             android:maxLines="1"
             android:textColor="@color/light_gray"
-            android:fontFamily="@font/bold"
-            android:hint="내역"/>
+            android:textSize="20dp" />
 
         <Spinner
             android:id="@+id/TermSpinner"
@@ -52,6 +52,7 @@
             android:layout_marginLeft="10dp"
             android:backgroundTint="@color/sky_dark"
             android:text="삭제"
+            android:textSize="12dp"
             android:textColor="@color/white"
             android:fontFamily="@font/light"/>
     </LinearLayout>
