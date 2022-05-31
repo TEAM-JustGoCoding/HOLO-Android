@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources
+    xmlns:tools="http://schemas.android.com/tools">
 <!--    App-->
     <dimen name="hActionBar">70dp</dimen>
     <dimen name="marginBigView">40dp</dimen>
     <dimen name="textSizeBig">40dp</dimen>
     <dimen name="textSizeMedium">22dp</dimen>
     <dimen name="textSizeSmall">16dp</dimen>
+    <dimen name="design_bottom_navigation_text_size" tools:override="true">15dp</dimen>
+    <dimen name="design_bottom_navigation_active_text_size" tools:override="true">15dp</dimen>
 <!--    HomeFragment-->
     <dimen name="txtProfileName">22dp</dimen>
     <dimen name="txtProfileName_small">16dp</dimen>
