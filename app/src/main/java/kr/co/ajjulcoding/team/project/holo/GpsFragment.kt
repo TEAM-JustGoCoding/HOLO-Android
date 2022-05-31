@@ -2,7 +2,9 @@ package kr.co.ajjulcoding.team.project.holo
 
 import android.Manifest
 import android.content.Context
+import android.content.pm.ConfigurationInfo
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Typeface
 import android.location.Geocoder
@@ -30,6 +32,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import kr.co.ajjulcoding.team.project.holo.databinding.FragmentGpsBinding
 import java.io.IOException
+import java.util.*
 
 
 class GpsFragment : Fragment(), OnMapReadyCallback {
@@ -48,6 +51,12 @@ class GpsFragment : Fragment(), OnMapReadyCallback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val mActivity: MainActivity = requireActivity() as MainActivity
+        val config = Configuration(mActivity.resources.configuration)
+        config.setLocale(Locale("ko_KR"))
+        mActivity.resources.updateConfiguration(config, mActivity.resources.displayMetrics)
+
 
         mLocationRequest =  LocationRequest.create().apply {
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY

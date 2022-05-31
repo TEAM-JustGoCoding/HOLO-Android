@@ -42,7 +42,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity"
-            android:windowSoftInputMode="adjustPan"/>
+            android:windowSoftInputMode="adjustResize|adjustPan" />
         <receiver android:name=".Alarm"
             android:enabled="true"
             android:exported="false">
