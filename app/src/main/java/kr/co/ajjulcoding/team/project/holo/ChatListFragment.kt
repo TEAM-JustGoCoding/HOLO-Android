@@ -118,6 +118,7 @@ class ChatListFragment(val userInfo:HoloUser) : Fragment() {
                     }
                     Glide.with(this@ChatListFragment).load(mountainRef)
                         .apply {
+                            thumbnail(0.1f)
                             apply(requestOptions)
                             into(imgProfile)
                         }
