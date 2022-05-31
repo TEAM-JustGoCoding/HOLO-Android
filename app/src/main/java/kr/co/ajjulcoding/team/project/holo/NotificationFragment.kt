@@ -38,7 +38,12 @@ class NotificationFragment(var currentUser:HoloUser) : Fragment() {
         mNotificationItems = currentUser.notificationlist
         Log.d("알림 initList", mNotificationItems.toString())
 
-        mNotificationItems = mActivity.getNotificationJSON()
+        if (mNotificationItems == null){
+            mNotificationItems=ArrayList()
+        }
+        else {
+            mNotificationItems = mActivity.getNotificationJSON()
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
