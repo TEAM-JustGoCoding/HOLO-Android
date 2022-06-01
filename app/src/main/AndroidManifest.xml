@@ -21,19 +21,26 @@
         android:hardwareAccelerated="true">
         <activity
             android:name=".ChatRoomActivity"
+            android:screenOrientation="portrait"
             android:exported="true" >
         </activity>
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDAb8jyUK1UG7YN1b2ephGn8Gl7SBCLLmU" />
 
-        <activity android:name=".FinishSplashActivity" />
-        <activity android:name=".CertificationActivity" />
-        <activity android:name=".InformAgreeActivity" />
-        <activity android:name=".RegisterActivity" />
-        <activity android:name=".LoginActivity" />
+        <activity android:name=".FinishSplashActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".CertificationActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".InformAgreeActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".RegisterActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".LoginActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".HoloSplashActivity"
+            android:screenOrientation="portrait"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -42,7 +49,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity"
-            android:windowSoftInputMode="adjustResize|adjustPan" />
+            android:windowSoftInputMode="adjustResize|adjustPan"
+            android:screenOrientation="portrait"/>
         <receiver android:name=".Alarm"
             android:enabled="true"
             android:exported="false">
