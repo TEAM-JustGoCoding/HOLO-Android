@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var sharedPref: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
     private lateinit var _binding:ActivityMainBinding
-    private val binding get() = _binding
+    val binding get() = _binding
     private lateinit var homeFragment:HomeFragment
     private lateinit var profileFragment:ProfileFragment
     private lateinit var accountFragment:AccountFragment

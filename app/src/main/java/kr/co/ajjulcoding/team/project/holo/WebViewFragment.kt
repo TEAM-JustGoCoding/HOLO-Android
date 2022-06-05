@@ -3,11 +3,8 @@ package kr.co.ajjulcoding.team.project.holo
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import android.view.KeyEvent
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.webkit.*
 import androidx.fragment.app.viewModels
 import com.google.firebase.Timestamp
@@ -16,6 +13,9 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import android.widget.Toast
+import androidx.core.view.OnApplyWindowInsetsListener
+import androidx.core.view.ViewCompat
+import androidx.core.view.isInvisible
 import androidx.lifecycle.ViewModelProvider
 import kotlinx.coroutines.*
 import kr.co.ajjulcoding.team.project.holo.databinding.FragmentWebViewBinding
@@ -34,6 +34,7 @@ class WebViewFragment(private val userInfo: HoloUser, private val webUrl: String
     private lateinit var _activity:MainActivity
     private val mActivity get() = _activity
     private val webVieModel: WebViewModel by viewModels<WebViewModel>()
+    private var scrollX:Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,6 +47,8 @@ class WebViewFragment(private val userInfo: HoloUser, private val webUrl: String
     ): View? {
         _binding = FragmentWebViewBinding.inflate(inflater, container, false)
         webViewModel = ViewModelProvider(this).get(WebViewModel::class.java)
+        mActivity.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+        mActivity.binding.navigationBar.visibility = View.GONE  // TODO: 키보드 올라올 때만 없애기 => 웹으로 통신 보내는 거 확인
         CoroutineScope(Dispatchers.Main).launch {
             val resultDef:Deferred<Int?> = webViewModel.getId(userInfo.uid)
             val userId:Int? = resultDef.await()
@@ -102,6 +105,12 @@ class WebViewFragment(private val userInfo: HoloUser, private val webUrl: String
             }
             return@setOnKeyListener true
         }
+    }
+
+    override fun onDestroy() {
+        mActivity.binding.navigationBar.visibility = View.VISIBLE
+        mActivity.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
+        super.onDestroy()
     }
 
     inner class WebViewClientClass(): WebViewClient() {
