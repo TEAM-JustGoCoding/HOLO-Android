@@ -167,8 +167,9 @@ class WebViewFragment(private val userInfo: HoloUser, private val webUrl: String
                     if (!(valid.await())){
                         mActivity.showAlertDialog("네트워크 연결을 확인할 수 없습니다!", *arrayOf("확인"))
                         return@launch
-                    }else
-                        mActivity.showAlertDialog("채팅방이 개설되었습니다!", *arrayOf("확인"))
+                    }
+//                    else
+//                        mActivity.showAlertDialog("채팅방이 개설되었습니다!", *arrayOf("확인"))
 
                     // TODO: 알림 생성
                     val body = CmtNotificationBody(receiverToken, data)
@@ -203,7 +204,7 @@ class WebViewFragment(private val userInfo: HoloUser, private val webUrl: String
         }
 
         @JavascriptInterface
-        fun sendCmtAlarm(type: String, toEmail: String, content: String){  // TODO: 예은 님이 댓글/답글을 남겼습니다., (내용)
+        fun sendCmtAlarm(type: String, toEmail: String, content: String, url: String){  // TODO: 예은 님이 댓글/답글을 남겼습니다., (내용)
             // TODO: 이메일로 상대방 토큰 받아오기
             CoroutineScope(Dispatchers.IO).launch {
                 val deferred: Deferred<Pair<String, String>> = webViewModel.getUserNicknameAndToken(toEmail)
@@ -221,6 +222,9 @@ class WebViewFragment(private val userInfo: HoloUser, private val webUrl: String
                 }
                 val data = CmtNotificationBody.CmtNotificationData(msg, shortContent)
                 val body = CmtNotificationBody(defResult.second, data)
+                Log.d("댓글 이벤트2", data.toString())
+                Log.d("댓글 이벤트1", body.toString())
+                Log.d("댓글 이벤트0", url)
                 webViewModel.sendCmtPushAlarm(body)
             }
         }
