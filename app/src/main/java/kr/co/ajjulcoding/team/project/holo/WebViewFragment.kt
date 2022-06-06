@@ -1,6 +1,7 @@
 package kr.co.ajjulcoding.team.project.holo
 
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -13,6 +14,7 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.view.OnApplyWindowInsetsListener
 import androidx.core.view.ViewCompat
 import androidx.core.view.isInvisible
@@ -47,8 +49,20 @@ class WebViewFragment(private val userInfo: HoloUser, private val webUrl: String
     ): View? {
         _binding = FragmentWebViewBinding.inflate(inflater, container, false)
         webViewModel = ViewModelProvider(this).get(WebViewModel::class.java)
-        mActivity.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+        // TODO: 아래것들 테스트하고 세팅 함수로 묶어버리기
+        binding.root.setOnApplyWindowInsetsListener { _, windowInsets ->
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){ // android 30 부터
+                val imeHeight = windowInsets.getInsets(WindowInsets.Type.ime()).bottom
+                binding.root.setPadding(0,0,0, imeHeight)
+            }
+            windowInsets
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) // android 30 부터
+            mActivity.window.setDecorFitsSystemWindows(true)
+        else
+            mActivity.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
         mActivity.binding.navigationBar.visibility = View.GONE  // TODO: 키보드 올라올 때만 없애기 => 웹으로 통신 보내는 거 확인
+
         CoroutineScope(Dispatchers.Main).launch {
             val resultDef:Deferred<Int?> = webViewModel.getId(userInfo.uid)
             val userId:Int? = resultDef.await()
