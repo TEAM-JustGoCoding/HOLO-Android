@@ -64,7 +64,7 @@ class SendMessageService: FirebaseMessagingService() {
         val intentMove = Intent(this, HoloSplashActivity::class.java)
 
         if (type == CMT_TYPE){  // 댓글/답글 => 해당 웹페이지 & 채팅방 생성 => 채팅 리스트
-            intentMove.putExtra(CMT_TYPE, remoteMSG!!.data["url"])   // url: String
+            intentMove.putExtra(CMT_TYPE, remoteMSG!!.data["url"])   // url: String(url, CHAT_LIST_TYPE)
             SettingInApp.uniqueActivity(intentMove)
             pendingIntent = PendingIntent.getActivity(this, 0, intentMove,
                 PendingIntent.FLAG_IMMUTABLE)

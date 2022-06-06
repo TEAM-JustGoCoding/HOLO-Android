@@ -97,6 +97,12 @@ class MainActivity : AppCompatActivity() {
             startActivity(chatIntent)
             changeFragment(AppTag.CHATLIST_TAG)
         }
+        intent.getStringExtra(SendMessageService.CMT_TYPE)?.let {
+            if (it == SendMessageService.CHAT_LIST_TYPE)
+                changeFragment(AppTag.CHATLIST_TAG)
+            else
+                changeFragment(WebUrl.URL_LAN+it)
+        }
 
         if (intent.getBooleanExtra(AppTag.LOGIN_TAG, false)) {
             CoroutineScope(Dispatchers.Main).launch {
