@@ -83,9 +83,10 @@
                     android:layout_marginLeft="10dp"
                     android:textSize="16dp"
                     android:background="@android:color/transparent"
+                    android:maxLength="30"
+                    android:maxLines="1"
                     android:hint="예시: 농협 xxxxxxxxxxx"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:maxLines="1" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
