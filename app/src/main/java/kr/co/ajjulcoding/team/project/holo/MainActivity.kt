@@ -9,6 +9,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -115,6 +116,17 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             true
+        }
+    }
+
+    override fun attachBaseContext(newBase: Context?) {
+        val locale = Locale("ko_KR")
+        Locale.setDefault(locale)
+        val config: Configuration? = newBase?.resources?.configuration
+        config?.setLocale(locale)
+        config?.setLayoutDirection(locale)
+        config?.let {
+            super.attachBaseContext(newBase?.createConfigurationContext(it))
         }
     }
 

@@ -213,7 +213,13 @@ class WebViewFragment(private val userInfo: HoloUser, private val webUrl: String
                     msg = "$msg 님이 댓글을 남겼습니다"
                 else if (type == SUBCOMMENT_TAG)
                     msg = "$msg 님이 답글을 남겼습니다"
-                val data = CmtNotificationBody.CmtNotificationData(msg, content)
+                var shortContent = ""
+                if (content.length > 20) {
+                    shortContent = content.substring(0 until 20) + "..."
+                }else {
+                    shortContent = content
+                }
+                val data = CmtNotificationBody.CmtNotificationData(msg, shortContent)
                 val body = CmtNotificationBody(defResult.second, data)
                 webViewModel.sendCmtPushAlarm(body)
             }
