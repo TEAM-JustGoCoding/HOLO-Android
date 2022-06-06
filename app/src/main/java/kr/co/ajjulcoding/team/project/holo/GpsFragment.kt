@@ -53,10 +53,16 @@ class GpsFragment : Fragment(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
 
         val mActivity: MainActivity = requireActivity() as MainActivity
-        val config = Configuration(mActivity.resources.configuration)
-        config.setLocale(Locale("ko_KR"))
-        mActivity.resources.updateConfiguration(config, mActivity.resources.displayMetrics)
 
+//        val locale = Locale("ko_KR")
+//        Locale.setDefault(locale)
+//        val config = Configuration()
+//        config.setLocale(locale)
+//        config.setLayoutDirection(locale)
+//        mActivity.createConfigurationContext(config)
+//        mActivity.resources.up
+//        mActivity.baseContext.resources.updateConfiguration(config,
+//        mActivity.baseContext.resources.displayMetrics)
 
         mLocationRequest =  LocationRequest.create().apply {
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY

@@ -56,6 +56,12 @@ class HoloSplashActivity : AppCompatActivity() {
                 SettingInApp.uniqueActivity(intentMain)
                 Log.d("로그인 당시 토큰",userCache!!.token.toString())
                 intentMain.putExtra(AppTag.USER_INFO, userCache)
+                intent.getParcelableExtra<SimpleChatRoom>(SendMessageService.CHAT_TYPE)?.let {
+                    intentMain.putExtra(SendMessageService.CHAT_TYPE, it)
+                }
+                intent.getStringExtra(SendMessageService.CMT_TYPE)?.let {
+                    intentMain.putExtra(SendMessageService.CMT_TYPE, it)
+                }
                 startActivity(intentMain)
             }else{
                 val intentLogin = Intent(this, LoginActivity::class.java)

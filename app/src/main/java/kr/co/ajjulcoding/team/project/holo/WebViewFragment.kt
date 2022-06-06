@@ -1,6 +1,7 @@
 package kr.co.ajjulcoding.team.project.holo
 
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -13,6 +14,7 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.view.OnApplyWindowInsetsListener
 import androidx.core.view.ViewCompat
 import androidx.core.view.isInvisible
@@ -47,8 +49,20 @@ class WebViewFragment(private val userInfo: HoloUser, private val webUrl: String
     ): View? {
         _binding = FragmentWebViewBinding.inflate(inflater, container, false)
         webViewModel = ViewModelProvider(this).get(WebViewModel::class.java)
-        mActivity.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+        // TODO: 아래것들 테스트하고 세팅 함수로 묶어버리기
+        binding.root.setOnApplyWindowInsetsListener { _, windowInsets ->
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){ // android 30 부터
+                val imeHeight = windowInsets.getInsets(WindowInsets.Type.ime()).bottom
+                binding.root.setPadding(0,0,0, imeHeight)
+            }
+            windowInsets
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) // android 30 부터
+            mActivity.window.setDecorFitsSystemWindows(true)
+        else
+            mActivity.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
         mActivity.binding.navigationBar.visibility = View.GONE  // TODO: 키보드 올라올 때만 없애기 => 웹으로 통신 보내는 거 확인
+
         CoroutineScope(Dispatchers.Main).launch {
             val resultDef:Deferred<Int?> = webViewModel.getId(userInfo.uid)
             val userId:Int? = resultDef.await()
@@ -151,7 +165,7 @@ class WebViewFragment(private val userInfo: HoloUser, private val webUrl: String
                 val hostNicknameAndToken = webVieModel.getUserNicknameAndToken(hostEmail)
                 val hostNickname = hostNicknameAndToken.await().first
                 val hostToken = hostNicknameAndToken.await().second
-                val data = CmtNotificationBody.CmtNotificationData("채팅방이 생성됐습니다!", "거래에 대한 이야기를 나눠보세요!")
+                val data = CmtNotificationBody.CmtNotificationData("채팅방이 생성됐습니다!", "거래에 대한 이야기를 나눠보세요!",SendMessageService.CHAT_LIST_TYPE)
 
                 for (k in emailKeys){
                     Log.d("참가자 이메일:",k)
@@ -167,43 +181,21 @@ class WebViewFragment(private val userInfo: HoloUser, private val webUrl: String
                     if (!(valid.await())){
                         mActivity.showAlertDialog("네트워크 연결을 확인할 수 없습니다!", *arrayOf("확인"))
                         return@launch
-                    }else
-                        mActivity.showAlertDialog("채팅방이 개설되었습니다!", *arrayOf("확인"))
+                    }
+//                    else
+//                        mActivity.showAlertDialog("채팅방이 개설되었습니다!", *arrayOf("확인"))
 
-                    // TODO: 알림 생성
+                    // 알림 생성
                     val body = CmtNotificationBody(receiverToken, data)
                     webViewModel.sendCmtPushAlarm(body)
                 }
-//                for (i in 0 until emailJsonArr.length()){
-//                    val jsonObject = emailJsonArr.getJSONObject(i)
-//                    val receiverEmail = jsonObject.getString("email")
-//                    Log.d("채팅 json 배열 변환: ", receiverEmail)
-//
-//                    val rNicknameAndToken: Deferred<Pair<String,String>> = webVieModel.getUserNicknameAndToken(receiverEmail)
-//                    val receiverNickname = rNicknameAndToken.await().first
-//                    val receiverToken = rNicknameAndToken.await().second
-//                    val chatRoomData = ChatRoom("힐스테이트 커피시켜 먹으실 분", arrayListOf(hostEmail, receiverEmail)
-//                        , hostEmail, hostNickname ,hostToken, receiverEmail, receiverNickname, receiverToken
-//                        , Timestamp.now())
-//                    val valid: Deferred<Boolean> = webVieModel.createChatRoom(chatRoomData, mActivity)
-//
-//                    if (!(valid.await())){
-//                        mActivity.showAlertDialog("네트워크 연결을 확인할 수 없습니다!", *arrayOf("확인"))
-//                        return@launch
-//                    }else
-//                        mActivity.showAlertDialog("채팅방이 개설되었습니다!", *arrayOf("확인"))
-//
-//                    // TODO: 알림 생성
-//                    val body = CmtNotificationBody(receiverToken, data)
-//                    webViewModel.sendCmtPushAlarm(body)
-//                }
                 val body = CmtNotificationBody(hostToken, data)
                 webViewModel.sendCmtPushAlarm(body)
             }
         }
 
         @JavascriptInterface
-        fun sendCmtAlarm(type: String, toEmail: String, content: String){  // TODO: 예은 님이 댓글/답글을 남겼습니다., (내용)
+        fun sendCmtAlarm(type: String, toEmail: String, content: String, url: String){  // TODO: 예은 님이 댓글/답글을 남겼습니다., (내용)
             // TODO: 이메일로 상대방 토큰 받아오기
             CoroutineScope(Dispatchers.IO).launch {
                 val deferred: Deferred<Pair<String, String>> = webViewModel.getUserNicknameAndToken(toEmail)
@@ -213,8 +205,17 @@ class WebViewFragment(private val userInfo: HoloUser, private val webUrl: String
                     msg = "$msg 님이 댓글을 남겼습니다"
                 else if (type == SUBCOMMENT_TAG)
                     msg = "$msg 님이 답글을 남겼습니다"
-                val data = CmtNotificationBody.CmtNotificationData(msg, content)
+                var shortContent = ""
+                if (content.length > 20) {
+                    shortContent = content.substring(0 until 20) + "..."
+                }else {
+                    shortContent = content
+                }
+                val data = CmtNotificationBody.CmtNotificationData(msg, shortContent, url)
                 val body = CmtNotificationBody(defResult.second, data)
+                Log.d("댓글 이벤트2", data.toString())
+                Log.d("댓글 이벤트1", body.toString())
+                Log.d("댓글 이벤트0", url)
                 webViewModel.sendCmtPushAlarm(body)
             }
         }

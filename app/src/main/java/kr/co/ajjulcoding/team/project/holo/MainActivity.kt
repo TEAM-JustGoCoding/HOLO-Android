@@ -9,6 +9,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -88,6 +89,21 @@ class MainActivity : AppCompatActivity() {
             AppTag.SCORE_TAG to scoreFragment, AppTag.ACCOUNT_TAG to accountFragment,
             AppTag.CHATLIST_TAG to chatListFragment, AppTag.NOTIFICATION_TAG to notificationFragment)
 
+        intent.getParcelableExtra<SimpleChatRoom>(SendMessageService.CHAT_TYPE)?.let {
+            val chatIntent: Intent = Intent(this, ChatRoomActivity::class.java)
+            SettingInApp.uniqueActivity(chatIntent)
+            chatIntent.putExtra(AppTag.USER_INFO, mUserInfo)
+            chatIntent.putExtra(AppTag.CHATROOM_TAG, it)
+            startActivity(chatIntent)
+            changeFragment(AppTag.CHATLIST_TAG)
+        }
+        intent.getStringExtra(SendMessageService.CMT_TYPE)?.let {
+            if (it == SendMessageService.CHAT_LIST_TYPE)
+                changeFragment(AppTag.CHATLIST_TAG)
+            else
+                changeFragment(WebUrl.URL_LAN+it)
+        }
+
         if (intent.getBooleanExtra(AppTag.LOGIN_TAG, false)) {
             CoroutineScope(Dispatchers.Main).launch {
                 setProfileImg("profile_" + mUserInfo.uid!!.replace(".", "") + ".jpg")
@@ -115,6 +131,17 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             true
+        }
+    }
+
+    override fun attachBaseContext(newBase: Context?) {
+        val locale = Locale("ko_KR")
+        Locale.setDefault(locale)
+        val config: Configuration? = newBase?.resources?.configuration
+        config?.setLocale(locale)
+        config?.setLayoutDirection(locale)
+        config?.let {
+            super.attachBaseContext(newBase?.createConfigurationContext(it))
         }
     }
 

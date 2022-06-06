@@ -36,6 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:fontFamily="@font/light"
+            android:maxLength="30"
             android:maxLines="1"
             android:inputType="textEmailAddress"
             android:hint="E-MAIL" />
@@ -60,6 +61,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:fontFamily="@font/light"
+            android:maxLength="30"
             android:maxLines="1"
             android:inputType="textPassword"
             android:hint="PASSWORD" />

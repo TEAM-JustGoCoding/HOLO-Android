@@ -107,7 +107,7 @@ class HomeFragment(val currentUser:HoloUser) : Fragment() {
             val repository = Repository()
             var msg = "규리 님이 댓글을 남겼습니다"
             var content = "이 집 많이 매워요??"
-            val data = CmtNotificationBody.CmtNotificationData(msg, content)
+            val data = CmtNotificationBody.CmtNotificationData(msg, content,"테스트 url")
             val body = CmtNotificationBody(currentUser.token!!, data)
             CoroutineScope(Dispatchers.Main).launch {
                 repository.sendCmtPushAlarm(body)

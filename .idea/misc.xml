@@ -64,6 +64,7 @@
         <entry key="app/src/main/res/layout/item_chat_list.xml" value="0.33" />
         <entry key="app/src/main/res/layout/item_chat_list_recycler.xml" value="0.33" />
         <entry key="app/src/main/res/layout/item_chat_right_recycler.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/utilitybill_list_item.xml" value="0.22291666666666668" />
         <entry key="app/src/main/res/menu/item_navi.xml" value="0.1" />
       </map>
     </option>

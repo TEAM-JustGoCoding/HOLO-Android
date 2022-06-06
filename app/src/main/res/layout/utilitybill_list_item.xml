@@ -21,6 +21,7 @@
             android:layout_weight="1"
             android:fontFamily="@font/bold"
             android:hint="내역"
+            android:maxLength="10"
             android:maxLines="1"
             android:textColor="@color/light_gray"
             android:textSize="20dp" />

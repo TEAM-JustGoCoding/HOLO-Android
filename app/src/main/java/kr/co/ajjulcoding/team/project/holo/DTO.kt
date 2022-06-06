@@ -47,11 +47,11 @@ data class ChatBubble(val nickname:String? = null, val content:String = "", val 
 
 
 data class ChatNotificationBody(val to: String, val data: ChatNotificationData){
-    data class ChatNotificationData(val msg: String, val content: String, val randomNum: Double)
+    data class ChatNotificationData(val msg: String, val content: String, val chatData: SimpleChatRoom)
 }
 
 data class CmtNotificationBody(val to: String, val data: CmtNotificationData){  // 댓글/답글 공용
-    data class CmtNotificationData(val msg: String, val content: String)
+    data class CmtNotificationData(val msg: String, val content: String, val url: String)
 }
 
 interface FcmInterface{ // 푸시 메시지를 서버로 보냄
