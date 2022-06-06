@@ -89,6 +89,15 @@ class MainActivity : AppCompatActivity() {
             AppTag.SCORE_TAG to scoreFragment, AppTag.ACCOUNT_TAG to accountFragment,
             AppTag.CHATLIST_TAG to chatListFragment, AppTag.NOTIFICATION_TAG to notificationFragment)
 
+        intent.getParcelableExtra<SimpleChatRoom>(SendMessageService.CHAT_TYPE)?.let {
+            val chatIntent: Intent = Intent(this, ChatRoomActivity::class.java)
+            SettingInApp.uniqueActivity(chatIntent)
+            chatIntent.putExtra(AppTag.USER_INFO, mUserInfo)
+            chatIntent.putExtra(AppTag.CHATROOM_TAG, it)
+            startActivity(chatIntent)
+            changeFragment(AppTag.CHATLIST_TAG)
+        }
+
         if (intent.getBooleanExtra(AppTag.LOGIN_TAG, false)) {
             CoroutineScope(Dispatchers.Main).launch {
                 setProfileImg("profile_" + mUserInfo.uid!!.replace(".", "") + ".jpg")

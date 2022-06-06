@@ -151,7 +151,7 @@ class WebViewFragment(private val userInfo: HoloUser, private val webUrl: String
                 val hostNicknameAndToken = webVieModel.getUserNicknameAndToken(hostEmail)
                 val hostNickname = hostNicknameAndToken.await().first
                 val hostToken = hostNicknameAndToken.await().second
-                val data = CmtNotificationBody.CmtNotificationData("채팅방이 생성됐습니다!", "거래에 대한 이야기를 나눠보세요!")
+                val data = CmtNotificationBody.CmtNotificationData("채팅방이 생성됐습니다!", "거래에 대한 이야기를 나눠보세요!",SendMessageService.CHAT_LIST_TYPE)
 
                 for (k in emailKeys){
                     Log.d("참가자 이메일:",k)
@@ -171,33 +171,10 @@ class WebViewFragment(private val userInfo: HoloUser, private val webUrl: String
 //                    else
 //                        mActivity.showAlertDialog("채팅방이 개설되었습니다!", *arrayOf("확인"))
 
-                    // TODO: 알림 생성
+                    // 알림 생성
                     val body = CmtNotificationBody(receiverToken, data)
                     webViewModel.sendCmtPushAlarm(body)
                 }
-//                for (i in 0 until emailJsonArr.length()){
-//                    val jsonObject = emailJsonArr.getJSONObject(i)
-//                    val receiverEmail = jsonObject.getString("email")
-//                    Log.d("채팅 json 배열 변환: ", receiverEmail)
-//
-//                    val rNicknameAndToken: Deferred<Pair<String,String>> = webVieModel.getUserNicknameAndToken(receiverEmail)
-//                    val receiverNickname = rNicknameAndToken.await().first
-//                    val receiverToken = rNicknameAndToken.await().second
-//                    val chatRoomData = ChatRoom("힐스테이트 커피시켜 먹으실 분", arrayListOf(hostEmail, receiverEmail)
-//                        , hostEmail, hostNickname ,hostToken, receiverEmail, receiverNickname, receiverToken
-//                        , Timestamp.now())
-//                    val valid: Deferred<Boolean> = webVieModel.createChatRoom(chatRoomData, mActivity)
-//
-//                    if (!(valid.await())){
-//                        mActivity.showAlertDialog("네트워크 연결을 확인할 수 없습니다!", *arrayOf("확인"))
-//                        return@launch
-//                    }else
-//                        mActivity.showAlertDialog("채팅방이 개설되었습니다!", *arrayOf("확인"))
-//
-//                    // TODO: 알림 생성
-//                    val body = CmtNotificationBody(receiverToken, data)
-//                    webViewModel.sendCmtPushAlarm(body)
-//                }
                 val body = CmtNotificationBody(hostToken, data)
                 webViewModel.sendCmtPushAlarm(body)
             }
@@ -220,7 +197,7 @@ class WebViewFragment(private val userInfo: HoloUser, private val webUrl: String
                 }else {
                     shortContent = content
                 }
-                val data = CmtNotificationBody.CmtNotificationData(msg, shortContent)
+                val data = CmtNotificationBody.CmtNotificationData(msg, shortContent, url)
                 val body = CmtNotificationBody(defResult.second, data)
                 Log.d("댓글 이벤트2", data.toString())
                 Log.d("댓글 이벤트1", body.toString())

@@ -16,44 +16,76 @@ import androidx.core.app.Person
 import androidx.core.graphics.drawable.IconCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import org.json.JSONObject
 
 class SendMessageService: FirebaseMessagingService() {
+    companion object{
+        const val CHAT_TYPE = "chatting"
+        const val CHAT_LIST_TYPE = "chatList"
+        const val CMT_TYPE = "comment"
+    }
+    private var type: String = CMT_TYPE
+    private var remoteMSG: RemoteMessage? = null
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {  // 알림 데이터 수신
         super.onMessageReceived(remoteMessage)
 
-        Log.d("푸시 알림 받음", remoteMessage.toString())
         val sharedPref: SharedPreferences = this.getSharedPreferences(AppTag.USER_INFO, 0)
         val msgVaild: Boolean = sharedPref.getBoolean("msgValid", true)     // 알람 송수신 캐시 체크
         Log.d("서비스단 푸시 알림 수신", msgVaild.toString())
         if (msgVaild == false)
             return
-        val randomNum:Double? = remoteMessage.data["randomNum"]?.toDouble() // TODO: 댓글/답글 데이터 들어오면 어떻게 되는지 찍어보기 -> null 반환?
-        randomNum?.let {
-            val currentNum: Double? = ChatRoomActivity.randomNum    // 현재 접속한 채팅방과 알림 온 방이 동일
-            when (currentNum){
-                remoteMessage.data["randomNum"]?.toDouble() -> return
-                else -> {}
-            }
-        }
 
         val title = "Holo"
         val msg = remoteMessage.data["msg"]!! // ex. 댓글이 달렸습니다.
         val content = remoteMessage.data["content"]!! // ex. 8000원 정도 주문할 예정입니다.
+        remoteMSG = remoteMessage
+
+        (remoteMessage.data["chatData"])?.let { it ->
+            val jsonData = JSONObject(it)
+
+            val currentNum: Double? = ChatRoomActivity.randomNum
+            type = CHAT_TYPE
+            when (currentNum) {  // 현재 접속한 채팅방과 알림 온 방이 동일 체크
+                jsonData.getDouble("randomDouble") -> return
+                else -> { }
+            }
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
-            sendNotificationInP(title, msg, content)
+            sendNotificationInP(type, title, msg, content)
         else
             sendNotfication(title, remoteMessage.notification?.body!!)
     }
 
     @RequiresApi(Build.VERSION_CODES.P)
-    private fun sendNotificationInP(title: String, msg: String, content: String){
+    private fun sendNotificationInP(type: String, title: String, msg: String, content: String){
+        var pendingIntent:PendingIntent? = null
         val intentMove = Intent(this, HoloSplashActivity::class.java)
-        // TODO: 채팅, 댓글/답글 경우에 따라서 나누기
-        SettingInApp.uniqueActivity(intentMove)
-        val pendingIntent:PendingIntent = PendingIntent.getActivity(this, 0, intentMove,
-        PendingIntent.FLAG_IMMUTABLE)
+
+        if (type == CMT_TYPE){  // 댓글/답글 => 해당 웹페이지 & 채팅방 생성 => 채팅 리스트
+            intentMove.putExtra(CMT_TYPE, remoteMSG!!.data["url"])   // url: String
+            SettingInApp.uniqueActivity(intentMove)
+            pendingIntent = PendingIntent.getActivity(this, 0, intentMove,
+                PendingIntent.FLAG_IMMUTABLE)
+        }
+        else{   // 채팅 => 채팅방
+            var chatData: SimpleChatRoom? = null
+            remoteMSG!!.data["chatData"]?.let {
+                val jsonData = JSONObject(it)
+                chatData = SimpleChatRoom(
+                    jsonData.getString("title"), ArrayList()
+                    , jsonData.getDouble("randomDouble"), jsonData.getString("semail")
+                    , jsonData.getString("snickName"), jsonData.getString("stoken")
+                    , jsonData.getString("remail"), jsonData.getString("rnickName")
+                    , jsonData.getString("rtoken")
+                )
+            }
+            intentMove.putExtra(CHAT_TYPE, chatData) // random: String(Double로 변환 필요)
+            SettingInApp.uniqueActivity(intentMove)
+            pendingIntent = PendingIntent.getActivity(this, 0, intentMove,
+                PendingIntent.FLAG_IMMUTABLE)
+        }
 
         val main: Person = Person.Builder()
             .setName(msg)
