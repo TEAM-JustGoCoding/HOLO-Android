@@ -60,6 +60,7 @@ class HoloSplashActivity : AppCompatActivity() {
                     intentMain.putExtra(SendMessageService.CHAT_TYPE, it)
                 }
                 intent.getStringExtra(SendMessageService.CMT_TYPE)?.let {
+                    Log.d("알림 주소1", it.toString())
                     intentMain.putExtra(SendMessageService.CMT_TYPE, it)
                 }
                 startActivity(intentMain)

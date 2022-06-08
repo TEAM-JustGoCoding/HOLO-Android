@@ -98,6 +98,7 @@ class MainActivity : AppCompatActivity() {
             changeFragment(AppTag.CHATLIST_TAG)
         }
         intent.getStringExtra(SendMessageService.CMT_TYPE)?.let {
+            Log.d("알림 주소2", it.toString())
             if (it == SendMessageService.CHAT_LIST_TYPE)
                 changeFragment(AppTag.CHATLIST_TAG)
             else
