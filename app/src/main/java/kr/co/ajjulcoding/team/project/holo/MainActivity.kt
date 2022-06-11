@@ -141,9 +141,11 @@ class MainActivity : AppCompatActivity() {
         val config: Configuration? = newBase?.resources?.configuration
         config?.setLocale(locale)
         config?.setLayoutDirection(locale)
-        config?.let {
-            super.attachBaseContext(newBase?.createConfigurationContext(it))
-        }
+        Log.d("언어 확인",config.toString()+"/"+newBase.toString())
+        if (config != null)
+            super.attachBaseContext(newBase.createConfigurationContext(config))
+        else
+            super.attachBaseContext(newBase)
     }
 
     override fun onBackPressed() {
