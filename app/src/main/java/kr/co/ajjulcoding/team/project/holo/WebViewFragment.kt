@@ -19,6 +19,7 @@ import androidx.core.view.OnApplyWindowInsetsListener
 import androidx.core.view.ViewCompat
 import androidx.core.view.isInvisible
 import androidx.lifecycle.ViewModelProvider
+import com.google.gson.JsonObject
 import kotlinx.coroutines.*
 import kr.co.ajjulcoding.team.project.holo.databinding.FragmentWebViewBinding
 import org.json.JSONArray
@@ -168,7 +169,6 @@ class WebViewFragment(private val userInfo: HoloUser, private val webUrl: String
                 val data = CmtNotificationBody.CmtNotificationData("채팅방이 생성됐습니다!", "거래에 대한 이야기를 나눠보세요!",SendMessageService.CHAT_LIST_TYPE)
 
                 for (k in emailKeys){
-                    Log.d("참가자 이메일:",k)
                     val receiverEmail:String = emailJson.getString(k)
                     val rNicknameAndToken: Deferred<Pair<String,String>> = webVieModel.getUserNicknameAndToken(receiverEmail)
                     val receiverNickname = rNicknameAndToken.await().first
@@ -198,8 +198,6 @@ class WebViewFragment(private val userInfo: HoloUser, private val webUrl: String
         fun sendCmtAlarm(type: String, toEmail: String, content: String, url: String){  // TODO: 예은 님이 댓글/답글을 남겼습니다., (내용)
             // TODO: 이메일로 상대방 토큰 받아오기
             CoroutineScope(Dispatchers.IO).launch {
-                val deferred: Deferred<Pair<String, String>> = webViewModel.getUserNicknameAndToken(toEmail)
-                val defResult: Pair<String, String> = deferred.await()
                 var msg: String = userInfo.nickName
                 if (type == COMMENT_TAG)
                     msg = "$msg 님이 댓글을 남겼습니다"
@@ -211,12 +209,24 @@ class WebViewFragment(private val userInfo: HoloUser, private val webUrl: String
                 }else {
                     shortContent = content
                 }
-                val data = CmtNotificationBody.CmtNotificationData(msg, shortContent, url)
-                val body = CmtNotificationBody(defResult.second, data)
-                Log.d("댓글 이벤트2", data.toString())
-                Log.d("댓글 이벤트1", body.toString())
-                Log.d("댓글 이벤트0", url)
-                webViewModel.sendCmtPushAlarm(body)
+                Log.d("이메일 확인 toEmail", toEmail)
+                val emailJson = JSONObject(toEmail)
+                val emailKeys = emailJson.keys()
+                for (k in emailKeys){
+                    Log.d("참가자 이메일:",k)
+                    val receiverEmail:String = emailJson.getString(k)
+                    if (receiverEmail == userInfo.uid)  // TODO: 테스트할 땐 주석 처리하기, 본인 게시글에 댓글 쓰면 뜨는 알림 방지
+                        continue
+                    val rNicknameAndToken: Deferred<Pair<String,String>> = webViewModel.getUserNicknameAndToken(receiverEmail)
+                    val receiverNickname: String = rNicknameAndToken.await().first
+                    val receiverToken: String = rNicknameAndToken.await().second
+                    val data = CmtNotificationBody.CmtNotificationData(msg, shortContent, url)
+                    val body = CmtNotificationBody(receiverToken, data)
+                    Log.d("댓글 이벤트2", data.toString())
+                    Log.d("댓글 이벤트1", body.toString())
+                    Log.d("댓글 이벤트0", url)
+                    webViewModel.sendCmtPushAlarm(body)
+                }
             }
         }
     }
