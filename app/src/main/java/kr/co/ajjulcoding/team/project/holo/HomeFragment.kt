@@ -2,6 +2,7 @@ package kr.co.ajjulcoding.team.project.holo
 
 import android.app.AlertDialog
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
@@ -39,6 +40,8 @@ class HomeFragment(val currentUser:HoloUser) : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) // android 30 부터
+//            mActivity.window.setDecorFitsSystemWindows(false)
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         setProfile()
         return binding.root

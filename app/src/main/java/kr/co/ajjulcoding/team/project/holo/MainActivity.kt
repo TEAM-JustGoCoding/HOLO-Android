@@ -136,7 +136,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun attachBaseContext(newBase: Context?) {
-        val locale = Locale("ko_KR")
+        val locale = Locale.KOREAN  // ko_KR은 웹뷰에서까지 적용 안됨
         Locale.setDefault(locale)
         val config: Configuration? = newBase?.resources?.configuration
         config?.setLocale(locale)

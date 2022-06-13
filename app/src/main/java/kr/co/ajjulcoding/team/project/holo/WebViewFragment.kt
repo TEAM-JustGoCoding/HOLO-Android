@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.webkit.*
+import android.widget.FrameLayout
 import androidx.fragment.app.viewModels
 import com.google.firebase.Timestamp
 import kotlinx.coroutines.CoroutineScope
@@ -15,9 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.core.view.OnApplyWindowInsetsListener
-import androidx.core.view.ViewCompat
-import androidx.core.view.isInvisible
+import androidx.core.view.*
 import androidx.lifecycle.ViewModelProvider
 import com.google.gson.JsonObject
 import kotlinx.coroutines.*
@@ -51,18 +50,25 @@ class WebViewFragment(private val userInfo: HoloUser, private val webUrl: String
         _binding = FragmentWebViewBinding.inflate(inflater, container, false)
         webViewModel = ViewModelProvider(this).get(WebViewModel::class.java)
         // TODO: 아래것들 테스트하고 세팅 함수로 묶어버리기
-        binding.root.setOnApplyWindowInsetsListener { _, windowInsets ->
+
+          // TODO: 키보드 올라올 때만 없애기 => 웹으로 통신 보내는 거 확인
+        //mActivity.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+//            mActivity.window.setDecorFitsSystemWindows(false)
+//        } else
+//            mActivity.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R)
+            mActivity.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+
+        binding.webView.setOnApplyWindowInsetsListener { _, windowInsets ->
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){ // android 30 부터
                 val imeHeight = windowInsets.getInsets(WindowInsets.Type.ime()).bottom
-                binding.root.setPadding(0,0,0, imeHeight)
+                binding.webView.setPadding(0,0,0, imeHeight)
+                val insets = windowInsets.getInsets(WindowInsets.Type.ime() or WindowInsets.Type.systemGestures())
+                insets
             }
             windowInsets
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) // android 30 부터
-            mActivity.window.setDecorFitsSystemWindows(true)
-        else
-            mActivity.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
-        mActivity.binding.navigationBar.visibility = View.GONE  // TODO: 키보드 올라올 때만 없애기 => 웹으로 통신 보내는 거 확인
 
         CoroutineScope(Dispatchers.Main).launch {
             val resultDef:Deferred<Int?> = webViewModel.getId(userInfo.uid)
@@ -91,16 +97,15 @@ class WebViewFragment(private val userInfo: HoloUser, private val webUrl: String
 
             var postData: String = "uid=" + URLEncoder.encode(userInfo.uid, "UTF-8")
             if (webUrl == (WebUrl.URL_LAN+WebUrl.URL_DEAL)){
+                mActivity.binding.navigationBar.visibility = View.GONE
                 postData += "&town=" + URLEncoder.encode(userInfo.location, "UTF-8")
                 Log.d("배달 공구", webUrl.toString())
-                webView.loadUrl(webUrl)
-                //webView.postUrl(webUrl, postData.encodeToByteArray())
-            }else {
-                Log.d("그 외", webUrl.toString())
-                webView.loadUrl(webUrl)//("https://github.com/YeeunLee8245/MyWriting-AndroidApp")
-                //webView.loadUrl("javascript:mobileToReact(${userInfo.uid})")
-                //webView.postUrl(webUrl, postData.encodeToByteArray())
-            }
+            }else if (webUrl == (WebUrl.URL_LAN+WebUrl.URL_LIKE)){
+                mActivity.binding.navigationBar.visibility = View.VISIBLE
+            }else
+                mActivity.binding.navigationBar.visibility = View.GONE
+            
+            webView.loadUrl(webUrl)
 
         }
         return binding.root
@@ -123,8 +128,11 @@ class WebViewFragment(private val userInfo: HoloUser, private val webUrl: String
     }
 
     override fun onDestroy() {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) // android 30 부터
+//            mActivity.window.setDecorFitsSystemWindows(true)
+
         mActivity.binding.navigationBar.visibility = View.VISIBLE
-        mActivity.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
+        mActivity.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED)
         super.onDestroy()
     }
 
