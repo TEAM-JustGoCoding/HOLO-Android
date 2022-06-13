@@ -80,12 +80,13 @@ class PhpUrl {
         const val URL_GET_TOKEN:String = "getNicknameAndToken.php"
         const val URL_DELETE_USER:String = "withdrawal.php"
         const val URL_UPDATE_SCORE:String = "userScore.php"
+        const val URL_UPDATE_COUNT:String = "userCount.php"
     }
 }
 
 class WebUrl {
     companion object{
-        const val URL_LAN: String = "http://192.168.43.29:3000"
+        const val URL_LAN: String = "http://192.168.43.215:3000"
         const val URL_DEAL: String = "/dealboard?select=delivery"
         const val URL_OTT: String = "/dealboard?select=ott"
         const val URL_POLICY:String = "/infoboard?select=policy"

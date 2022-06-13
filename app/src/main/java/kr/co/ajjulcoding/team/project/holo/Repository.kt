@@ -435,4 +435,27 @@ class Repository {
 
         return result
     }
+
+    suspend fun updateUserCount(uid: String): Int{
+        var result:Int = 0
+
+        val client = OkHttpClient()
+        val mySearchUrl = (PhpUrl.DOTHOME+PhpUrl.URL_UPDATE_COUNT).toHttpUrlOrNull()!!.newBuilder()
+        mySearchUrl.addQueryParameter("uid",uid)
+        val request = Request.Builder().url(mySearchUrl.build().toString()).build()
+
+        CoroutineScope(Dispatchers.IO).async {
+            try {
+                val response = client.newCall(request).execute()   // 동기로 실행
+                val str_response = response.body!!.string()   // string()은 딱 한 번만 호출 가능
+                Log.d("거래횟수 데이터 정보", "성공: ${str_response}")
+                val jsonobj = JSONObject(str_response)
+                result = jsonobj.getInt("deal_count")
+            }catch (e:IOException){
+                Log.d("거래횟수 데이터 정보", "통신 실패(인터넷 끊김 등): ${e}")
+            }
+        }.await()
+
+        return result
+    }
 }
