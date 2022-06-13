@@ -98,6 +98,7 @@ class MainActivity : AppCompatActivity() {
             changeFragment(AppTag.CHATLIST_TAG)
         }
         intent.getStringExtra(SendMessageService.CMT_TYPE)?.let {
+            Log.d("알림 주소2", it.toString())
             if (it == SendMessageService.CHAT_LIST_TYPE)
                 changeFragment(AppTag.CHATLIST_TAG)
             else
@@ -140,9 +141,11 @@ class MainActivity : AppCompatActivity() {
         val config: Configuration? = newBase?.resources?.configuration
         config?.setLocale(locale)
         config?.setLayoutDirection(locale)
-        config?.let {
-            super.attachBaseContext(newBase?.createConfigurationContext(it))
-        }
+        Log.d("언어 확인",config.toString()+"/"+newBase.toString())
+        if (config != null)
+            super.attachBaseContext(newBase.createConfigurationContext(config))
+        else
+            super.attachBaseContext(newBase)
     }
 
     override fun onBackPressed() {
