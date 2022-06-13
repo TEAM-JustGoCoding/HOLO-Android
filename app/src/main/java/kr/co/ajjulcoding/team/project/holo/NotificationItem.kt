@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-class NotificationItem(var name: String?, var message: String?) : Parcelable {
+class NotificationItem(var name: String?, var message: String?, var url: String?) : Parcelable {
 //    var name: String? = name
 //    var message: String? = message
 
@@ -16,6 +16,11 @@ class NotificationItem(var name: String?, var message: String?) : Parcelable {
     @JvmName("getName1")
     fun getName(): String? {
         return name
+    }
+
+    @JvmName("getURL1")
+    fun getURL(): String? {
+        return url
     }
 
     @JvmName("setMessage1")

@@ -30,8 +30,10 @@ class ScoreFragment(var currentUser:HoloUser) : DialogFragment() {
 
         CoroutineScope(Dispatchers.Main).launch {
             val repository = Repository()
-            val result = repository.updateUserScore(currentUser.uid!!)
-            binding.scoreText.setText(result)
+            val score = repository.updateUserScore(currentUser.uid!!)
+            val count = repository.updateUserCount(currentUser.uid!!).toString()
+            binding.countText.setText(count)
+            binding.scoreText.setText(score)
         }
 
         val view = binding.root

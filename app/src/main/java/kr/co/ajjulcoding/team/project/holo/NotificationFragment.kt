@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kr.co.ajjulcoding.team.project.holo.databinding.FragmentNotificationBinding
 
-class NotificationFragment(var currentUser:HoloUser) : Fragment() {
+class NotificationFragment(var currentUser:HoloUser) : Fragment(), OnItemClick {
     private lateinit var _binding: FragmentNotificationBinding
     private val binding get() = _binding
     private lateinit var _activity:MainActivity
@@ -38,6 +38,8 @@ class NotificationFragment(var currentUser:HoloUser) : Fragment() {
         mNotificationItems = currentUser.notificationlist
         Log.d("알림 initList", mNotificationItems.toString())
 
+        mRecyclerAdapter = NotificationAdapter(_activity, this)
+
         if (mNotificationItems == null){
             mNotificationItems=ArrayList()
         }
@@ -53,7 +55,7 @@ class NotificationFragment(var currentUser:HoloUser) : Fragment() {
         mRecyclerView = requireView().findViewById(R.id.recyclerView) as RecyclerView?
 
         /* initiate adapter */
-        mRecyclerAdapter = NotificationAdapter()
+//        mRecyclerAdapter = NotificationAdapter(this)
 
         /* initiate recyclerview */
         mRecyclerView!!.adapter = mRecyclerAdapter
@@ -80,6 +82,11 @@ class NotificationFragment(var currentUser:HoloUser) : Fragment() {
         binding.btnBack.setOnClickListener {
             mActivity.changeFragment(AppTag.HOME_TAG)
         }
+    }
+
+    override fun onClikDelete(position: Int?) {
+        mNotificationItems!!.removeAt(position!!)
+        mRecyclerAdapter!!.setNotificationList(mNotificationItems)
     }
 
 }
