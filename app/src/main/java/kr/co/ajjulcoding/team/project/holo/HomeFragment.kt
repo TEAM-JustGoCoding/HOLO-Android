@@ -2,6 +2,7 @@ package kr.co.ajjulcoding.team.project.holo
 
 import android.app.AlertDialog
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
@@ -39,6 +40,8 @@ class HomeFragment(val currentUser:HoloUser) : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) // android 30 부터
+//            mActivity.window.setDecorFitsSystemWindows(false)
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         setProfile()
         return binding.root
@@ -104,20 +107,23 @@ class HomeFragment(val currentUser:HoloUser) : Fragment() {
 
         // TODO: 알림 테스트(자기 자신에게 알림 옴)
         binding.textLocation.setOnClickListener {
-            val repository = Repository()
-            var msg = "규리 님이 댓글을 남겼습니다"
-            var content = "이 집 많이 매워요??"
-            val data = CmtNotificationBody.CmtNotificationData(msg, content,"테스트 url")
-            val body = CmtNotificationBody(currentUser.token!!, data)
             CoroutineScope(Dispatchers.Main).launch {
+                val repository = Repository()
+                val rNicknameAndToken: Deferred<Pair<String,String>> = homeViewModel.getUserNicknameAndToken(currentUser.uid)
+                val receiverNickname = rNicknameAndToken.await().first
+                val receiverToken = rNicknameAndToken.await().second
+                var content = "이 집 많이 매워요??"
+                var msg = receiverNickname+" 님이 댓글을 남겼습니다"
+                val data = CmtNotificationBody.CmtNotificationData(receiverNickname+" 님이 댓글을 남겼습니다", content,"테스트 url")
+                val body = CmtNotificationBody(receiverToken, data)
                 repository.sendCmtPushAlarm(body)
+                //알림 구현 틀
+                mNotificationItems = currentUser.notificationlist
+                if (mNotificationItems==null)
+                    mNotificationItems=ArrayList()
+                mNotificationItems!!.add(NotificationItem(msg, content))
+                mActivity.storeNotificationCache(mNotificationItems!!)
             }
-            //알림 구현 틀
-            mNotificationItems = currentUser.notificationlist
-            if (mNotificationItems==null)
-                mNotificationItems=ArrayList()
-            mNotificationItems!!.add(NotificationItem(msg, content))
-            mActivity.storeNotificationCache(mNotificationItems!!)
         }
     }
 

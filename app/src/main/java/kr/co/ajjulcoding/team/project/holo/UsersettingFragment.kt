@@ -42,7 +42,7 @@ class UsersettingFragment(val currentUser:HoloUser) : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         // TODO: 창설에서는 있어야 됨
-        binding.textAccount.visibility = View.GONE
+        //binding.textAccount.visibility = View.GONE
         usersettingViewModel.userLocation.observe(viewLifecycleOwner){
             binding.textLocation.setText(it)
         }
