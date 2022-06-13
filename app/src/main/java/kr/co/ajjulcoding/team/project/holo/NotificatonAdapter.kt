@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 
-class NotificationAdapter : RecyclerView.Adapter<NotificationAdapter.ViewHolder>() {
+class NotificationAdapter(val mActivity: MainActivity, onItemClick: OnItemClick) : RecyclerView.Adapter<NotificationAdapter.ViewHolder>() {
     private var mNotificationList: ArrayList<NotificationItem>? = null
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view: View =
@@ -35,6 +35,9 @@ class NotificationAdapter : RecyclerView.Adapter<NotificationAdapter.ViewHolder>
         fun onBind(item: NotificationItem) {
             name.setText(item.getName())
             message.setText(item.getMessage())
+            itemView.setOnClickListener(){
+                mActivity.changeFragment(item.getURL().toString())
+            }
         }
 
         init {

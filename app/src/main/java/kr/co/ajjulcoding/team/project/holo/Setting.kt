@@ -80,6 +80,7 @@ class PhpUrl {
         const val URL_GET_TOKEN:String = "getNicknameAndToken.php"
         const val URL_DELETE_USER:String = "withdrawal.php"
         const val URL_UPDATE_SCORE:String = "userScore.php"
+        const val URL_UPDATE_COUNT:String = "userCount.php"
     }
 }
 

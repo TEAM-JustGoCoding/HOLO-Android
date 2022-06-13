@@ -114,14 +114,15 @@ class HomeFragment(val currentUser:HoloUser) : Fragment() {
                 val receiverToken = rNicknameAndToken.await().second
                 var content = "이 집 많이 매워요??"
                 var msg = receiverNickname+" 님이 댓글을 남겼습니다"
-                val data = CmtNotificationBody.CmtNotificationData(receiverNickname+" 님이 댓글을 남겼습니다", content,"테스트 url")
+                var url = WebUrl.URL_LAN+WebUrl.URL_POLICY
+                val data = CmtNotificationBody.CmtNotificationData(msg, content, url)
                 val body = CmtNotificationBody(receiverToken, data)
                 repository.sendCmtPushAlarm(body)
                 //알림 구현 틀
                 mNotificationItems = currentUser.notificationlist
                 if (mNotificationItems==null)
                     mNotificationItems=ArrayList()
-                mNotificationItems!!.add(NotificationItem(msg, content))
+                mNotificationItems!!.add(NotificationItem(msg, content, url))
                 mActivity.storeNotificationCache(mNotificationItems!!)
             }
         }

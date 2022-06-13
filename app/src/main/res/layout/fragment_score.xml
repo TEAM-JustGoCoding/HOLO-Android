@@ -14,6 +14,52 @@
         android:layout_marginBottom="20dp">
 
         <TextView
+            android:id="@+id/startCountText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_margin="30dp"
+            android:text="현재까지의 거래 참여 횟수는"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="20dp"
+            android:fontFamily="@font/bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/linearFirst"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/startCountText">
+
+            <TextView
+                android:id="@+id/countText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="0"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textSize="20dp"
+                android:fontFamily="@font/bold"/>
+
+            <TextView
+                android:id="@+id/endCountText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="회 입니다"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textSize="20dp"
+                android:fontFamily="@font/bold"/>
+
+        </LinearLayout>
+
+        <TextView
             android:id="@+id/startText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -26,7 +72,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/linearFirst" />
 
         <LinearLayout
             android:id="@+id/linear"
@@ -41,7 +87,7 @@
                 android:id="@+id/scoreText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="10dp"
                 android:text="0"
                 android:textColor="?android:attr/textColorPrimary"
                 android:textSize="20dp"
@@ -51,7 +97,7 @@
                 android:id="@+id/endText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="10dp"
                 android:text="/5점 입니다"
                 android:textColor="?android:attr/textColorPrimary"
                 android:textSize="20dp"
