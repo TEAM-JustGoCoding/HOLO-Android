@@ -95,6 +95,7 @@ class MainActivity : AppCompatActivity() {
             chatIntent.putExtra(AppTag.USER_INFO, mUserInfo)
             chatIntent.putExtra(AppTag.CHATROOM_TAG, it)
             startActivity(chatIntent)
+            binding.navigationBar.selectedItemId = R.id.menu_chatting
             changeFragment(AppTag.CHATLIST_TAG)
         }
         intent.getStringExtra(SendMessageService.CMT_TYPE)?.let {
@@ -322,16 +323,13 @@ class MainActivity : AppCompatActivity() {
         val userInfo = intent.getParcelableExtra<HoloUser>(AppTag.USER_INFO) as HoloUser
         sharedPref = this.getSharedPreferences(AppTag.USER_INFO,0)
         editor = sharedPref.edit()
+        editor.putInt("id", userInfo.id ?: -1).apply()
         editor.putString("uid", userInfo.uid).apply()
         editor.putString("realName",userInfo.realName).apply()
         editor.putString("nickName",userInfo.nickName).apply()
         editor.putString("score", userInfo.score).apply()
         editor.putString("token", userInfo.token).apply()
         editor.putBoolean("msgValid", userInfo.msgVaild).apply()
-//        CoroutineScope(Dispatchers.Main).launch {
-//            val repository = Repository()
-//            val userId:Int? = repository.getId(userInfo.uid)
-//        }
     }
 
     private fun showHomeFragment(userInfo:HoloUser){
