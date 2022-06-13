@@ -59,7 +59,7 @@ class WebViewFragment(private val userInfo: HoloUser, private val webUrl: String
             windowInsets
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) // android 30 부터
-            mActivity.window.setDecorFitsSystemWindows(true)
+            mActivity.window.setDecorFitsSystemWindows(false)
         else
             mActivity.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
         mActivity.binding.navigationBar.visibility = View.GONE  // TODO: 키보드 올라올 때만 없애기 => 웹으로 통신 보내는 거 확인
