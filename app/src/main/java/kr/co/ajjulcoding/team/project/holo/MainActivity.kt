@@ -102,6 +102,8 @@ class MainActivity : AppCompatActivity() {
             Log.d("알림 주소2", it.toString())
             if (it == SendMessageService.CHAT_LIST_TYPE)
                 changeFragment(AppTag.CHATLIST_TAG)
+            else if (it == SendMessageService.HOME_TYPE)
+                return@let
             else
                 changeFragment(WebUrl.URL_LAN+it)
         }
