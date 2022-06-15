@@ -20,6 +20,7 @@ import org.json.JSONObject
 
 class SendMessageService: FirebaseMessagingService() {
     companion object{
+        const val HOME_TYPE = "home"
         const val CHAT_TYPE = "chatting"
         const val CHAT_LIST_TYPE = "chatList"
         const val CMT_TYPE = "comment"
