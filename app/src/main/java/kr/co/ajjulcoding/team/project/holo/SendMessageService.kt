@@ -16,7 +16,10 @@ import androidx.core.app.Person
 import androidx.core.graphics.drawable.IconCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import org.json.JSONObject
+import java.lang.reflect.Type
 
 class SendMessageService: FirebaseMessagingService() {
     companion object{
@@ -69,6 +72,23 @@ class SendMessageService: FirebaseMessagingService() {
             SettingInApp.uniqueActivity(intentMove)
             pendingIntent = PendingIntent.getActivity(this, 0, intentMove,
                 PendingIntent.FLAG_IMMUTABLE)
+
+            //알림 구현 틀
+            val sharedPref: SharedPreferences = this.getSharedPreferences(AppTag.USER_INFO, 0)
+            Log.d("string 확인", sharedPref.getString(AppTag.NOTIFICATIONCACHE_TAG, null).toString())
+
+            val type: Type = object : TypeToken<ArrayList<NotificationItem?>?>() {}.getType()
+            val gson = Gson()
+            val json = sharedPref.getString(AppTag.NOTIFICATIONCACHE_TAG, "")
+            var mNotificationItems = gson.fromJson(json, type) as ArrayList<NotificationItem?>?
+
+//            var mNotificationItems = Gson().fromJson(sharedPref.getString(AppTag.NOTIFICATIONCACHE_TAG, null), object : TypeToken<ArrayList<NotificationItem?>?>() {}.getType())
+//            var mNotificationItems = sharedPref.getString(AppTag.NOTIFICATIONCACHE_TAG, null)
+//            var mNotificationItems = ArrayList<NotificationItem>()
+            if (mNotificationItems==null)
+                mNotificationItems= ArrayList()
+            mNotificationItems!!.add(NotificationItem(msg, content, remoteMSG!!.data["url"]))
+            storeNotificationCache(mNotificationItems)
         }
         else{   // 채팅 => 채팅방
             var chatData: SimpleChatRoom? = null
@@ -140,5 +160,17 @@ class SendMessageService: FirebaseMessagingService() {
         }
         notificationManager.notify(0, notificationBuilder.build())
 
+    }
+
+    private fun storeNotificationCache(mNotificationItems: ArrayList<NotificationItem?>?) {
+        val notificationlist=mNotificationItems
+        Log.d("SendMessageService 알림 list count", notificationlist!!.size.toString())
+        val sharedPref: SharedPreferences = this.getSharedPreferences(AppTag.USER_INFO, 0)
+        val editor: SharedPreferences.Editor = sharedPref.edit()
+        val gson = Gson()
+        val json = gson.toJson(notificationlist)
+        editor.putString(AppTag.NOTIFICATIONCACHE_TAG, json)
+        Log.d("SendMessageService 알림 json", json)
+        editor.apply()
     }
 }
