@@ -105,27 +105,6 @@ class HomeFragment(val currentUser:HoloUser) : Fragment() {
             mActivity.changeFragment(AppTag.NOTIFICATION_TAG)
         }
 
-        // TODO: 알림 테스트(자기 자신에게 알림 옴)
-        binding.textLocation.setOnClickListener {
-            CoroutineScope(Dispatchers.Main).launch {
-                val repository = Repository()
-                val rNicknameAndToken: Deferred<Pair<String,String>> = homeViewModel.getUserNicknameAndToken(currentUser.uid)
-                val receiverNickname = rNicknameAndToken.await().first
-                val receiverToken = rNicknameAndToken.await().second
-                var content = "이 집 많이 매워요??"
-                var msg = receiverNickname+" 님이 댓글을 남겼습니다"
-                var url = WebUrl.URL_LAN+WebUrl.URL_POLICY
-                val data = CmtNotificationBody.CmtNotificationData(msg, content, url)
-                val body = CmtNotificationBody(receiverToken, data)
-                repository.sendCmtPushAlarm(body)
-                //알림 구현 틀
-                mNotificationItems = currentUser.notificationlist
-                if (mNotificationItems==null)
-                    mNotificationItems=ArrayList()
-                mNotificationItems!!.add(NotificationItem(msg, content, url))
-                mActivity.storeNotificationCache(mNotificationItems!!)
-            }
-        }
     }
 
     private fun setProfile(){

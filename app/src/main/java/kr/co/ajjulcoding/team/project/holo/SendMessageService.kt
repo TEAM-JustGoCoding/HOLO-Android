@@ -82,9 +82,6 @@ class SendMessageService: FirebaseMessagingService() {
             val json = sharedPref.getString(AppTag.NOTIFICATIONCACHE_TAG, "")
             var mNotificationItems = gson.fromJson(json, type) as ArrayList<NotificationItem?>?
 
-//            var mNotificationItems = Gson().fromJson(sharedPref.getString(AppTag.NOTIFICATIONCACHE_TAG, null), object : TypeToken<ArrayList<NotificationItem?>?>() {}.getType())
-//            var mNotificationItems = sharedPref.getString(AppTag.NOTIFICATIONCACHE_TAG, null)
-//            var mNotificationItems = ArrayList<NotificationItem>()
             if (mNotificationItems==null)
                 mNotificationItems= ArrayList()
             mNotificationItems!!.add(0, NotificationItem(msg, content, WebUrl.URL_LAN + remoteMSG!!.data["url"]))
