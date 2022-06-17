@@ -10,7 +10,7 @@
         android:id="@+id/circleImageView"
         android:layout_width="@dimen/imgProfile"
         android:layout_height="@dimen/imgProfile"
-        android:src="@color/sky_dirty"
+        android:src="@drawable/background_profile"
         app:civ_border_color="@color/sky_dark"
         app:civ_border_width="@dimen/civBorderWidth"
         app:layout_constraintBottom_toBottomOf="parent"

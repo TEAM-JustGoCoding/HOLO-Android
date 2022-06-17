@@ -1,12 +1,16 @@
 package kr.co.ajjulcoding.team.project.holo
 
+import android.content.ContentResolver
 import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.widget.Toast
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.UploadTask
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -28,6 +32,25 @@ class FinishSplashActivity : AppCompatActivity() {
             }
             userInfo.id = resultId
             val token:String? = repository.setToken(userInfo.uid!!)
+
+            val fileName:String = userInfo.uid.replace(".","")+".jpg"
+            val FBstorage = FirebaseStorage.getInstance()
+            val FBstorageRef = FBstorage.reference
+            val postRef = FBstorageRef.child("profile_img/"+fileName)
+            val drawableImg = R.drawable.background_profile
+            val imgUri:Uri = Uri.Builder()
+                .scheme(ContentResolver.SCHEME_ANDROID_RESOURCE)
+                .authority(resources.getResourcePackageName(drawableImg))
+                .appendPath(resources.getResourceTypeName(drawableImg))
+                .appendPath(resources.getResourceEntryName(drawableImg))
+                .build()
+            Log.d("uri 변환 확인", imgUri.toString())
+            val uploadTask: UploadTask = postRef.putFile(imgUri)
+            uploadTask.addOnSuccessListener {
+                Log.d("최초 프로필 이미지 변경 완료", it.toString())
+            }.addOnFailureListener{
+                Log.d("최초 프로필 이미지 변경 오류", it.toString())
+            }
             Handler(Looper.myLooper()!!).postDelayed({
                 token?.let { userInfo.token = it }
                 val intentMain = Intent(this@FinishSplashActivity, MainActivity::class.java)

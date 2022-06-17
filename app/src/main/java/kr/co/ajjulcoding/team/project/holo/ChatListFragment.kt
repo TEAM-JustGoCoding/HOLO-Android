@@ -118,7 +118,7 @@ class ChatListFragment(val userInfo:HoloUser) : Fragment() {
                     }
                     Glide.with(this@ChatListFragment).load(mountainRef)
                         .apply {
-                            placeholder(R.color.sky_dirty)
+                            placeholder(R.drawable.background_profile)
                             thumbnail(0.1f)
                             apply(requestOptions)
                             into(imgProfile)
