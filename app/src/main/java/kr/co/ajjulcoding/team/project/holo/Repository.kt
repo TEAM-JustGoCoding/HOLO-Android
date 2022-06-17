@@ -82,14 +82,13 @@ class Repository {
         val FBstorageRef = FBstorage.reference
 
         CoroutineScope(Dispatchers.IO).async {
-            val deleteRef = SettingInApp.mAuth.currentUser!!.delete()
-        }.await()
-        CoroutineScope(Dispatchers.IO).async {
+            SettingInApp.mAuth.currentUser!!.delete().await()
             Log.d("삭제할 프로필 파일", "profile_img/profile_${email.replace(".","")}.jpg")
             FBstorageRef.child("profile_img/profile_${email.replace(".","")}.jpg")
-                .delete()
+                .delete().await()
         }.await()
-        CoroutineScope(Dispatchers.IO).async {  // 메인스레드에서 네트워크 접근 금지 되어있어서 코루틴 사용
+
+        CoroutineScope(Dispatchers.IO).async {  // TODO: 문제 확인
             try {
                 val response = client.newCall(request).execute()   // 동기로 실행
                 val str_response = response.body!!.string()   // string()은 딱 한 번만 호출 가능

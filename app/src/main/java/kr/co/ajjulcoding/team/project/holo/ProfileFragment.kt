@@ -65,7 +65,7 @@ class ProfileFragment(var currentUser:HoloUser) : Fragment() {
         }
         binding.btnFinish.setOnClickListener {
             selectedUri?.let {
-                val fileName = "profile_" + currentUser.uid!!.replace(".", "") + ".jpg"
+                val fileName = "profile_" + currentUser.uid.replace(".", "") + ".jpg"
                 createProfile(fileName) // 기존에 같은 이름이 존재하면 덮어쓰는듯
             }
 

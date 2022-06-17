@@ -211,7 +211,7 @@ class MainActivity : AppCompatActivity() {
             Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or
                     Intent.FLAG_ACTIVITY_CLEAR_TOP //액티비티 스택제거
         CoroutineScope(Dispatchers.Main).launch {
-            val result = repository.deleteUserInfo(AppTag.currentUserEmail()!!)
+            val result = repository.deleteUserInfo(mUserInfo.uid)
 
             Log.d("탈퇴 데이터 확인", result.toString())
             if (result != false) {
@@ -254,7 +254,7 @@ class MainActivity : AppCompatActivity() {
             .addOnSuccessListener { imgUri ->
                 Log.d("저장한 프로필 url", imgUri.toString())
                 if(currentTag == AppTag.HOME_TAG) {
-                    Glide.with(this).load(imgUri).apply { // TODO: 보일러 코드 고치기
+                    Glide.with(this).load(imgUri).apply { // TODO: 보일러 코드 고치기: 함수 만들어야될 듯
                         RequestOptions()
                             .skipMemoryCache(true)
                             .diskCacheStrategy(DiskCacheStrategy.NONE)
