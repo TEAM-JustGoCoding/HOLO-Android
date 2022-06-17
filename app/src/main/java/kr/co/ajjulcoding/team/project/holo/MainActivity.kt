@@ -90,6 +90,7 @@ class MainActivity : AppCompatActivity() {
             AppTag.CHATLIST_TAG to chatListFragment, AppTag.NOTIFICATION_TAG to notificationFragment)
 
         intent.getParcelableExtra<SimpleChatRoom>(SendMessageService.CHAT_TYPE)?.let {
+            Log.d("알림 주소3", it.toString())
             val chatIntent: Intent = Intent(this, ChatRoomActivity::class.java)
             SettingInApp.uniqueActivity(chatIntent)
             chatIntent.putExtra(AppTag.USER_INFO, mUserInfo)

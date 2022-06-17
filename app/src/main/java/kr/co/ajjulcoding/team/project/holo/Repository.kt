@@ -147,6 +147,23 @@ class Repository {
         return result
     }
 
+//    suspend fun dupliPhoneNum(number:String):Boolean{
+//        var result:Boolean = false
+//
+//        coroutineScope {
+//            SettingInApp.db.collection("phoneNumber").document("${chatRoomData.title} ${chatRoomData.randomDouble}")
+//                .set(chatRoomData).addOnSuccessListener {
+//                    _chatRoom.value = chatRoomData
+//
+//                    result = true
+//                }
+//                .addOnFailureListener {
+//                    result = false
+//                    Log.d("오류 발생","createChatRoom: $it")
+//                }
+//        }.await()
+//    }
+
     suspend fun setToken(userEmail:String): String?{
         var token:String? = null
         // onSuccess 리스너 사용해서 await 주니까 항상 성공한다는 보장이 없어서인지 await 안 걸림 따라서 비동기 컨트롤이

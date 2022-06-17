@@ -116,6 +116,7 @@ class WebViewFragment(private val userInfo: HoloUser, private val webUrl: String
         val webView:WebView = binding.webView
         webView.setOnKeyListener { view, i, keyEvent ->
             if (keyEvent.keyCode == KeyEvent.KEYCODE_BACK && keyEvent.action == KeyEvent.ACTION_UP) {
+                Log.d("뒤로가기 확인", webView.canGoBack().toString())
                 if (webView.canGoBack()){
                     webView.goBack()
                 }else {
@@ -239,18 +240,23 @@ class WebViewFragment(private val userInfo: HoloUser, private val webUrl: String
         }
 
         @JavascriptInterface
-        fun sendRefuseDeal(toEmail: String, title: String){
+        fun sendRefuseDeal(toEmail: String, Title: String){
             CoroutineScope(Dispatchers.IO).launch {
                 val nicknameAndToken: Deferred<Pair<String,String>> = webViewModel.getUserNicknameAndToken(toEmail)
                 val receiverToken: String = nicknameAndToken.await().second
                 val msg: String = "작성자에 의해 거래가 거절됐습니다."
-                var shortTitle: String = title
+                var shortTitle: String = Title
+                Log.d("거절 알림0", toEmail.toString())
+                Log.d("거절 알림1", Title.toString())
                 shortTitle.let {
                     if (it.length > 20){
                         shortTitle = shortTitle.substring(0 until 20)
                     }
                     val data = CmtNotificationBody.CmtNotificationData(msg, shortTitle, SendMessageService.HOME_TYPE)
                     val body = CmtNotificationBody(receiverToken, data)
+                    webViewModel.sendCmtPushAlarm(body)
+                    Log.d("거절 알림0", data.toString())
+                    Log.d("거절 알림1", body.toString())
                 }
             }
         }

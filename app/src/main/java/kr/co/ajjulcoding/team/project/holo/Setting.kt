@@ -86,14 +86,14 @@ class PhpUrl {
 
 class WebUrl {
     companion object{
-        const val URL_LAN: String = "http://192.168.225.0:3000"
-        const val URL_DEAL: String = "/dealboard?select=delivery"
-        const val URL_OTT: String = "/dealboard?select=ott"
-        const val URL_POLICY:String = "/infoboard?select=policy"
-        const val URL_DCM: String = "/infoboard?select=document"
-        const val URL_FAQ: String = "/faqboard"
-        const val URL_LIKE: String = "/likeboard"
-        const val URL_SEARCH: String = ""
+        const val URL_LAN: String = "http://holo2.dothome.co.kr/"
+        const val URL_DEAL: String = "?path=deliveryboard"
+        const val URL_OTT: String = "?path=ottboard"
+        const val URL_POLICY:String = "?path=policyboard"
+        const val URL_DCM: String = "?path=documentboard"
+        const val URL_FAQ: String = "?path=faqboard"
+        const val URL_LIKE: String = "?path=likeboard"
+        const val URL_SEARCH: String = "?path=allsearch&word="
     }
 }
 
