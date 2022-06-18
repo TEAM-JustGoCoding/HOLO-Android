@@ -36,7 +36,7 @@ class FinishSplashActivity : AppCompatActivity() {
             val fileName:String = userInfo.uid.replace(".","")+".jpg"
             val FBstorage = FirebaseStorage.getInstance()
             val FBstorageRef = FBstorage.reference
-            val postRef = FBstorageRef.child("profile_img/"+fileName)
+            val postRef = FBstorageRef.child("profile_img/profile_"+fileName)
             val drawableImg = R.drawable.background_profile
             val imgUri:Uri = Uri.Builder()
                 .scheme(ContentResolver.SCHEME_ANDROID_RESOURCE)
