@@ -37,7 +37,7 @@ class SendMessageService: FirebaseMessagingService() {
         val sharedPref: SharedPreferences = this.getSharedPreferences(AppTag.USER_INFO, 0)
         val msgVaild: Boolean = sharedPref.getBoolean("msgValid", true)     // 알람 송수신 캐시 체크
         Log.d("서비스단 푸시 알림 수신", msgVaild.toString())
-        if (msgVaild == false)
+        if ((SettingInApp.mAuth.currentUser == null) || (msgVaild == false))
             return
 
         val title = "Holo"
