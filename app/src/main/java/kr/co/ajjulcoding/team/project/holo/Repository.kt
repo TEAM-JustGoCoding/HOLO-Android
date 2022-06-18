@@ -98,20 +98,7 @@ class Repository {
             }catch (e:IOException){
                 Log.d("탈퇴 통신 정보", "통신 실패(인터넷 끊김 등): ${e}")
             }
-            FBstorageRef.child("profile_img/profile_${email.replace(".","")}.jpg")
-                .delete().await()
         }.await()
-
-//        CoroutineScope(Dispatchers.IO).async {  // TODO: 문제 확인
-//            try {
-//                val response = client.newCall(request).execute()   // 동기로 실행
-//                val str_response = response.body!!.string()   // string()은 딱 한 번만 호출 가능
-//                Log.d("탈퇴 데이터 정보", "성공: ${str_response}")
-//                result = str_response.toBoolean()
-//            }catch (e:IOException){
-//                Log.d("탈퇴 통신 정보", "통신 실패(인터넷 끊김 등): ${e}")
-//            }
-//        }.await()
 
         return result
     }
