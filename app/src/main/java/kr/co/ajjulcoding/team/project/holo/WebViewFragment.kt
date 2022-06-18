@@ -95,15 +95,11 @@ class WebViewFragment(private val userInfo: HoloUser, private val webUrl: String
                 setAcceptThirdPartyCookies(webView,true)
             }
 
-            var postData: String = "uid=" + URLEncoder.encode(userInfo.uid, "UTF-8")
             if (webUrl == (WebUrl.URL_LAN+WebUrl.URL_DEAL)){
-                mActivity.binding.navigationBar.visibility = View.GONE
+                var postData: String = "uid=" + URLEncoder.encode(userInfo.uid, "UTF-8")
                 postData += "&town=" + URLEncoder.encode(userInfo.location, "UTF-8")
                 Log.d("배달 공구", webUrl.toString())
-            }else if (webUrl == (WebUrl.URL_LAN+WebUrl.URL_LIKE)){
-                mActivity.binding.navigationBar.visibility = View.VISIBLE
-            }else
-                mActivity.binding.navigationBar.visibility = View.GONE
+            }
             
             webView.loadUrl(webUrl)
 
@@ -131,8 +127,6 @@ class WebViewFragment(private val userInfo: HoloUser, private val webUrl: String
     override fun onDestroy() {
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) // android 30 부터
 //            mActivity.window.setDecorFitsSystemWindows(true)
-
-        mActivity.binding.navigationBar.visibility = View.VISIBLE
         mActivity.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED)
         super.onDestroy()
     }

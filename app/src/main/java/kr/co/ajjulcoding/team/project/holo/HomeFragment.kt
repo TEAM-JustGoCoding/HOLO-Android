@@ -6,12 +6,9 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.view.KeyEvent
+import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import com.bumptech.glide.Glide
@@ -23,6 +20,7 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kr.co.ajjulcoding.team.project.holo.databinding.FragmentHomeBinding
+import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent
 
 
 class HomeFragment(val currentUser:HoloUser) : Fragment() {
