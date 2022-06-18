@@ -76,7 +76,6 @@ class SendMessageService: FirebaseMessagingService() {
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE)
 
             //알림 구현 틀
-
             val sharedPref: SharedPreferences = this.getSharedPreferences(AppTag.USER_INFO, 0)
             Log.d("string 확인", sharedPref.getString(AppTag.NOTIFICATIONCACHE_TAG, null).toString())
 
@@ -85,12 +84,9 @@ class SendMessageService: FirebaseMessagingService() {
             val json = sharedPref.getString(AppTag.NOTIFICATIONCACHE_TAG, "")
             var mNotificationItems = gson.fromJson(json, type) as ArrayList<NotificationItem?>?
 
-//            var mNotificationItems = Gson().fromJson(sharedPref.getString(AppTag.NOTIFICATIONCACHE_TAG, null), object : TypeToken<ArrayList<NotificationItem?>?>() {}.getType())
-//            var mNotificationItems = sharedPref.getString(AppTag.NOTIFICATIONCACHE_TAG, null)
-//            var mNotificationItems = ArrayList<NotificationItem>()
             if (mNotificationItems==null)
                 mNotificationItems= ArrayList()
-            mNotificationItems!!.add(NotificationItem(msg, content, WebUrl.URL_LAN + remoteMSG!!.data["url"]))
+            mNotificationItems!!.add(0, NotificationItem(msg, content, WebUrl.URL_LAN + remoteMSG!!.data["url"]))
             storeNotificationCache(mNotificationItems)
         }
         else{   // 채팅 => 채팅방
