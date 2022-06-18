@@ -37,13 +37,14 @@ class SendMessageService: FirebaseMessagingService() {
         val sharedPref: SharedPreferences = this.getSharedPreferences(AppTag.USER_INFO, 0)
         val msgVaild: Boolean = sharedPref.getBoolean("msgValid", true)     // 알람 송수신 캐시 체크
         Log.d("서비스단 푸시 알림 수신", msgVaild.toString())
-        if (msgVaild == false)
+        if ((SettingInApp.mAuth.currentUser == null) || (msgVaild == false))
             return
 
         val title = "Holo"
         val msg = remoteMessage.data["msg"]!! // ex. 댓글이 달렸습니다.
         val content = remoteMessage.data["content"]!! // ex. 8000원 정도 주문할 예정입니다.
         remoteMSG = remoteMessage
+        Log.d("데이터 확인", msg.toString())
 
         (remoteMessage.data["chatData"])?.let { it ->
             val jsonData = JSONObject(it)
@@ -68,10 +69,11 @@ class SendMessageService: FirebaseMessagingService() {
         val intentMove = Intent(this, HoloSplashActivity::class.java)
 
         if (type == CMT_TYPE){  // 댓글/답글 => 해당 웹페이지 & 채팅방 생성 => 채팅 리스트
+            Log.d("url 확인해보자", remoteMSG!!.data["url"].toString())
             intentMove.putExtra(CMT_TYPE, remoteMSG!!.data["url"])   // url: String(url, CHAT_LIST_TYPE)
             SettingInApp.uniqueActivity(intentMove)
             pendingIntent = PendingIntent.getActivity(this, 0, intentMove,
-                PendingIntent.FLAG_IMMUTABLE)
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE)
 
             //알림 구현 틀
             val sharedPref: SharedPreferences = this.getSharedPreferences(AppTag.USER_INFO, 0)
@@ -102,7 +104,7 @@ class SendMessageService: FirebaseMessagingService() {
             intentMove.putExtra(CHAT_TYPE, chatData) // random: String(Double로 변환 필요)
             SettingInApp.uniqueActivity(intentMove)
             pendingIntent = PendingIntent.getActivity(this, 0, intentMove,
-                PendingIntent.FLAG_IMMUTABLE)
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE)
         }
 
         val main: Person = Person.Builder()
@@ -139,7 +141,7 @@ class SendMessageService: FirebaseMessagingService() {
         // TODO: 채팅, 댓글/답글 경우에 따라서 나누기
         SettingInApp.uniqueActivity(intentMove)
         val pendingIntent:PendingIntent = PendingIntent.getActivity(this, 0, intentMove,
-            PendingIntent.FLAG_IMMUTABLE)
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE)
 
         val notificationBuilder = NotificationCompat.Builder(this,"service")
             .setContentTitle(title)

@@ -1,16 +1,15 @@
 package kr.co.ajjulcoding.team.project.holo
 
 import android.app.AlertDialog
+import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.view.KeyEvent
+import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -21,6 +20,7 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kr.co.ajjulcoding.team.project.holo.databinding.FragmentHomeBinding
+import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent
 
 
 class HomeFragment(val currentUser:HoloUser) : Fragment() {
@@ -74,9 +74,12 @@ class HomeFragment(val currentUser:HoloUser) : Fragment() {
                 val text: String = binding.editSearch.text.toString()
                 if (text == "")
                     Toast.makeText(mActivity,"검색어를 입력해주세요!", Toast.LENGTH_SHORT).show()
-                else
-                    mActivity.changeFragment(WebUrl.URL_LAN+WebUrl.URL_SEARCH+" "+text)  // TODO: 아직 url 설정 안 한 상태, webview에서 검색어 분리 필요
+                else {
+                    val imm = mActivity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager // 키보드 내리기
+                    imm.hideSoftInputFromWindow(binding.editSearch.windowToken,0)
+                    mActivity.changeFragment(WebUrl.URL_LAN + WebUrl.URL_SEARCH + text)  // TODO: 아직 url 설정 안 한 상태, webview에서 검색어 분리 필요
                 }
+            }
 
             true
         }

@@ -73,6 +73,7 @@ dependencies {
     implementation "androidx.room:room-runtime:2.2.5"
     annotationProcessor "androidx.room:room-compiler:2.2.5"
     androidTestImplementation "androidx.room:room-testing:2.2.5"
+    implementation 'com.google.code.gson:gson:2.8.5'
 
 //    PHP 통신/알림 전송 관련
     implementation 'com.android.volley:volley:1.2.1'
@@ -109,5 +110,7 @@ dependencies {
     implementation "androidx.recyclerview:recyclerview:1.1.0"
 
 //    UtilityBill Cache 관련
-    implementation 'com.google.code.gson:gson:2.8.5'
+
+// 키보드 관련
+    implementation "net.yslibrary.keyboardvisibilityevent:keyboardvisibilityevent:3.0.0-RC3"
 }

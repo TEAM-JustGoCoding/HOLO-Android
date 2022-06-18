@@ -15,6 +15,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
@@ -30,6 +31,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.*
 import kr.co.ajjulcoding.team.project.holo.databinding.ActivityMainBinding
+import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent
 import java.io.File
 import java.lang.reflect.Type
 import java.util.*
@@ -90,6 +92,7 @@ class MainActivity : AppCompatActivity() {
             AppTag.CHATLIST_TAG to chatListFragment, AppTag.NOTIFICATION_TAG to notificationFragment)
 
         intent.getParcelableExtra<SimpleChatRoom>(SendMessageService.CHAT_TYPE)?.let {
+            Log.d("알림 주소3", it.toString())
             val chatIntent: Intent = Intent(this, ChatRoomActivity::class.java)
             SettingInApp.uniqueActivity(chatIntent)
             chatIntent.putExtra(AppTag.USER_INFO, mUserInfo)
@@ -135,6 +138,13 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             true
+        }
+
+        KeyboardVisibilityEvent.setEventListener(this){ valid ->
+            if (valid == true){
+                binding.navigationBar.visibility = View.GONE
+            }else
+                binding.navigationBar.visibility = View.VISIBLE
         }
     }
 

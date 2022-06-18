@@ -82,9 +82,15 @@ class Repository {
         val FBstorageRef = FBstorage.reference
 
         CoroutineScope(Dispatchers.IO).async {
-            SettingInApp.mAuth.currentUser!!.delete().await()
             Log.d("삭제할 프로필 파일", "profile_img/profile_${email.replace(".","")}.jpg")
+            FBstorageRef.child("profile_img/profile_${email.replace(".","")}.jpg")
+                .delete().await()
+            SettingInApp.mAuth.currentUser!!.delete().await()
+        }.await()
+
+        CoroutineScope(Dispatchers.IO).async {  // TODO: 문제 확인
             try {
+                Log.d("탈퇴 이메일 확인", email.toString())
                 val response = client.newCall(request).execute()   // 동기로 실행
                 val str_response = response.body!!.string()   // string()은 딱 한 번만 호출 가능
                 Log.d("탈퇴 데이터 정보", "성공: ${str_response}")
@@ -154,6 +160,23 @@ class Repository {
 
         return result
     }
+
+//    suspend fun dupliPhoneNum(number:String):Boolean{
+//        var result:Boolean = false
+//
+//        coroutineScope {
+//            SettingInApp.db.collection("phoneNumber").document("${chatRoomData.title} ${chatRoomData.randomDouble}")
+//                .set(chatRoomData).addOnSuccessListener {
+//                    _chatRoom.value = chatRoomData
+//
+//                    result = true
+//                }
+//                .addOnFailureListener {
+//                    result = false
+//                    Log.d("오류 발생","createChatRoom: $it")
+//                }
+//        }.await()
+//    }
 
     suspend fun setToken(userEmail:String): String?{
         var token:String? = null

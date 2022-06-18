@@ -93,7 +93,7 @@ class WebUrl {
         const val URL_DCM: String = "?path=documentboard"
         const val URL_FAQ: String = "?path=faqboard"
         const val URL_LIKE: String = "?path=likeboard"
-        const val URL_SEARCH: String = ""
+        const val URL_SEARCH: String = "?path=allsearch&word="
     }
 }
 
