@@ -77,12 +77,15 @@ class HomeFragment(val currentUser:HoloUser) : Fragment() {
                 else {
                     val imm = mActivity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager // 키보드 내리기
                     imm.hideSoftInputFromWindow(binding.editSearch.windowToken,0)
-                    mActivity.changeFragment(WebUrl.URL_LAN + WebUrl.URL_SEARCH + text)  // TODO: 아직 url 설정 안 한 상태, webview에서 검색어 분리 필요
+                    mActivity.changeFragment(WebUrl.URL_LAN + WebUrl.URL_SEARCH + text)
+                    binding.editSearch.setText("")
                 }
+                return@setOnKeyListener true
             }
 
-            true
+            false
         }
+        //binding.editSearch.setkey
         binding.btnSell.setOnClickListener {
             if (currentUser.location == null) {
                 mActivity.showAlertDialog("프로필 > 내 동네 설정을 통해 나의 위치를 설정해주세요!", *arrayOf("확인"))
