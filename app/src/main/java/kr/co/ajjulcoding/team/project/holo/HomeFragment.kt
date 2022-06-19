@@ -74,7 +74,9 @@ class HomeFragment(val currentUser:HoloUser) : Fragment() {
                 val text: String = binding.editSearch.text.toString()
                 if (text == "")
                     Toast.makeText(mActivity,"검색어를 입력해주세요!", Toast.LENGTH_SHORT).show()
-                else {
+                else if (text == "거의동" || text == "옥계동"){   // TODO: 위치정보 테스트용
+                    currentUser.location = text
+                } else {
                     val imm = mActivity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager // 키보드 내리기
                     imm.hideSoftInputFromWindow(binding.editSearch.windowToken,0)
                     mActivity.changeFragment(WebUrl.URL_LAN + WebUrl.URL_SEARCH + text)
