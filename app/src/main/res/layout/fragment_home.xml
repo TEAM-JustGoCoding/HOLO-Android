@@ -70,8 +70,8 @@
                             android:layout_marginLeft="@dimen/marginSmallView"
                             android:textColor="@color/black"
                             android:textSize="@dimen/txtProfileName"
+                            android:fontFamily="@font/light"
                             android:gravity="center"
-                            android:text="어쩔코딩님"
                             app:layout_constraintTop_toTopOf="@+id/contraintProfile"
                             app:layout_constraintLeft_toRightOf="@+id/circleImageView"
                             app:layout_constraintBottom_toBottomOf="@+id/contraintProfile"/>
@@ -246,7 +246,7 @@
                                     android:textSize="@dimen/txtProfileName_small"
                                     android:textColor="@color/black"
                                     android:fontFamily="@font/light"
-                                    android:text="문의하기/FAQ"
+                                    android:text="FAQ"
                                     app:layout_constraintTop_toBottomOf="@id/textCuriosityTitle"
                                     app:layout_constraintLeft_toLeftOf="@+id/btnCuriosity"/>
                                 <ImageView
