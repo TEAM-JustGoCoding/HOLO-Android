@@ -83,8 +83,8 @@ class Repository {
 
         CoroutineScope(Dispatchers.IO).async {
             Log.d("삭제할 프로필 파일", "profile_img/profile_${email.replace(".","")}.jpg")
-            FBstorageRef.child("profile_img/profile_${email.replace(".","")}.jpg")
-                .delete().await()
+//            FBstorageRef.child("profile_img/profile_${email.replace(".","")}.jpg")
+//                .delete().await()
             SettingInApp.mAuth.currentUser!!.delete().await()
         }.await()
 

@@ -29,7 +29,7 @@ class CertificationActivity : AppCompatActivity() {
             // 번호인증 혹은 기타 다른 인증(구글로그인, 이메일로그인 등) 끝난 상태
             override fun onVerificationCompleted(credential: PhoneAuthCredential) {
                 Log.d("이미 다른/과거에 인증 완료", "onVerificationCompleted:$credential")
-                makeToast("이미 등록된 핸드폰 번호입니다.")
+//                makeToast("이미 등록된 핸드폰 번호입니다.")
                 return
             }
 
