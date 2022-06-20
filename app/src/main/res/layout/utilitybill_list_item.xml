@@ -4,10 +4,10 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/Linear"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginTop="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -16,35 +16,59 @@
 
         <EditText
             android:id="@+id/content"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:fontFamily="@font/bold"
             android:hint="내역"
             android:maxLength="10"
             android:maxLines="1"
             android:textColor="@color/light_gray"
-            android:textSize="20dp" />
+            android:textSize="20dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/editGL"
+            app:layout_constraintTop_toTopOf="@id/TermSpinner"
+            app:layout_constraintBottom_toBottomOf="@id/TermSpinner"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/editGL"
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.25"/>
 
         <Spinner
             android:id="@+id/TermSpinner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:spinnerMode="dropdown"/>
+            android:spinnerMode="dropdown"
+            app:layout_constraintRight_toLeftOf="@+id/DateSpinner"
+            app:layout_constraintLeft_toRightOf="@+id/editGL"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <Spinner
             android:id="@+id/DateSpinner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:spinnerMode="dropdown"/>
+            android:layout_weight="1"
+            android:spinnerMode="dropdown"
+            app:layout_constraintRight_toLeftOf="@+id/textDate"
+            app:layout_constraintLeft_toRightOf="@+id/TermSpinner"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <TextView
+            android:id="@+id/textDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/light"
             android:text="일"
             android:textColor="@color/sky_dark"
-            android:textSize="16dp"/>
+            android:textSize="16dp"
+            app:layout_constraintRight_toLeftOf="@+id/BtnDelete"
+            app:layout_constraintLeft_toRightOf="@+id/DateSpinner"
+            app:layout_constraintBottom_toBottomOf="@+id/DateSpinner"
+            app:layout_constraintTop_toTopOf="@+id/DateSpinner"/>
 
         <Button
             android:id="@+id/BtnDelete"
@@ -55,7 +79,11 @@
             android:text="삭제"
             android:textSize="12dp"
             android:textColor="@color/white"
-            android:fontFamily="@font/light"/>
-    </LinearLayout>
+            android:fontFamily="@font/light"
+            app:layout_constraintLeft_toRightOf="@+id/textDate"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>
