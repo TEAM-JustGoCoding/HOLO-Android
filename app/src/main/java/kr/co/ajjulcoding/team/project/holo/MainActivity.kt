@@ -65,7 +65,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         mUserInfo = intent.getParcelableExtra<HoloUser>(AppTag.USER_INFO)!!
         Log.d("유저 데이터 정보", mUserInfo.toString())
-        supportFragmentManager.fragmentFactory = ChatListFragmentFactory(mUserInfo)
         super.onCreate(savedInstanceState)
         profileFragment = ProfileFragment(mUserInfo)
         userSettingFragment = UsersettingFragment((mUserInfo))
@@ -73,8 +72,10 @@ class MainActivity : AppCompatActivity() {
         accountFragment = AccountFragment(mUserInfo)
         utilityBillFragment = UtilityBillFragment(mUserInfo)
         notificationFragment = NotificationFragment(mUserInfo)
-        chatListFragment = supportFragmentManager.fragmentFactory.instantiate(
-            classLoader,ChatListFragment::class.java.name)
+        var chatLiBundle = Bundle()
+        chatLiBundle.putParcelable(AppTag.USER_INFO, mUserInfo)
+        chatListFragment = ChatListFragment()
+        chatListFragment.arguments = chatLiBundle
         imgLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
             val uri: Uri? = result.data?.data
             Log.d("사진 가져오기0", "${uri}")

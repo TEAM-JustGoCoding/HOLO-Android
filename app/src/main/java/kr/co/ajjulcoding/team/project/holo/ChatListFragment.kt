@@ -25,9 +25,11 @@ import com.google.firebase.storage.FirebaseStorage
 import kr.co.ajjulcoding.team.project.holo.databinding.FragmentChatListBinding
 import kr.co.ajjulcoding.team.project.holo.databinding.ItemChatListRecyclerBinding
 
-class ChatListFragment(val userInfo:HoloUser) : Fragment() {
+class ChatListFragment() : Fragment() {
     private lateinit var _activity:MainActivity
     private val mActivity get() = _activity
+    private lateinit var _userInfo:HoloUser
+    private val userInfo get() = _userInfo
     private lateinit var _binding: FragmentChatListBinding
     private val binding get() = _binding
     private val chatListViewModel: ChatListViewModel by viewModels<ChatListViewModel>()
@@ -36,6 +38,8 @@ class ChatListFragment(val userInfo:HoloUser) : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _activity = requireActivity() as MainActivity
+        _userInfo = arguments?.getParcelable<HoloUser>(AppTag.USER_INFO) as HoloUser
+        Log.d("채팅리스트 유저 정보 확인:", userInfo.toString())
         chatListViewModel.getUserChatRoomLi(userInfo.uid)
         val sharedPref = mActivity.getSharedPreferences(AppTag.USER_INFO,0)
         signatureKey = sharedPref.getString("signature",System.currentTimeMillis().toString())!!
@@ -61,12 +65,10 @@ class ChatListFragment(val userInfo:HoloUser) : Fragment() {
     companion object{
         val chatRoomDiffUtil = object : DiffUtil.ItemCallback<ChatRoom>() {
             override fun areItemsTheSame(oldItem: ChatRoom, newItem: ChatRoom): Boolean {
-                Log.d("옵저버 데이터 확인2", oldItem.latestTime.toString()+" "+newItem.latestTime.toString())
                 return oldItem.latestTime == newItem.latestTime
             }
 
             override fun areContentsTheSame(oldItem: ChatRoom, newItem: ChatRoom): Boolean {
-                Log.d("옵저버 데이터 확인3", oldItem.toString()+"다름 "+newItem.toString())
                 return oldItem == newItem && oldItem.latestTime == newItem.latestTime
             }
 
@@ -96,7 +98,6 @@ class ChatListFragment(val userInfo:HoloUser) : Fragment() {
                 with(holder){
                     var fileName = "profile_"
                     var nickName:String
-                    Log.d("아이디 이메일 확인", item.remail+"  "+userInfo.uid)
                     if (item.remail == userInfo.uid){
                         fileName += item.semail.replace(".", "") + ".jpg"
                         nickName = item.snickName
@@ -130,7 +131,6 @@ class ChatListFragment(val userInfo:HoloUser) : Fragment() {
                         SettingInApp.uniqueActivity(intentChatRoom)
                         val scrData = SimpleChatRoom(item.title,item.participant, item.randomDouble,item.semail,
                         item.snickName,item.stoken,item.remail,item.rnickName,item.rtoken)
-                        Log.d("채팅방 입장 데이터", scrData.toString())
                         intentChatRoom.putExtra(AppTag.USER_INFO, userInfo)
                         intentChatRoom.putExtra(AppTag.CHATROOM_TAG, scrData)
                         startActivity(intentChatRoom)

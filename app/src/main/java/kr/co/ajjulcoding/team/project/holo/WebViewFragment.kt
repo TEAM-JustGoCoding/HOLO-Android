@@ -150,13 +150,8 @@ class WebViewFragment(private val userInfo: HoloUser, private val webUrl: String
 
         inner class WebAppInterface(private val mContext: Context, private val webView:WebView){
         @JavascriptInterface
-        fun showToast(msg:String){
-            Toast.makeText(mActivity, msg, Toast.LENGTH_SHORT).show()
-            //webView.loadUrl("javascript:DocumentPost.mobileToReact(${userInfo.uid})")
-            webView.evaluateJavascript("mobileToReact(${userInfo.uid})"){ v ->
-                Log.d("웹에서 받았음",v.toString())
-                Toast.makeText(mActivity, "웹2", Toast.LENGTH_SHORT).show()
-            }
+        fun exitWebview(){
+            mActivity.changeFragment(AppTag.HOME_TAG)
         }
 
         @JavascriptInterface
