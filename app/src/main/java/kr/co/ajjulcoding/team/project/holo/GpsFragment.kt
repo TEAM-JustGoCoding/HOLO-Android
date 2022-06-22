@@ -163,14 +163,21 @@ class GpsFragment : Fragment(), OnMapReadyCallback {
 
     private fun convertAddress(){
         try {
-            val g:Geocoder= Geocoder(context)
-            val address = g.getFromLocation(latitude, longitude, 10)
+            val g:Geocoder = Geocoder(context,Locale.KOREA)
+            val address = g.getFromLocation(latitude, longitude, 5)
             if (address.size == 0){
                 Toast.makeText(requireActivity(), "해당되는 주소정보가 없습니다.",Toast.LENGTH_SHORT).show()
             }
             else{
                 validCpl = true
-                town = address.get(0).thoroughfare
+                town = "수신 실패"
+                for (ad in address){
+                    Log.d("주소 정보", address.toString())
+                    if (ad.thoroughfare != null && ad.thoroughfare.length > 0){
+                        town = address.get(0).thoroughfare
+                        break
+                    }
+                }
                 val showTextAll: String = "\"현재 위치는 "+ town +" 입니다.\""
                 val startTown = showTextAll.indexOf(town)
                 val endTown = startTown+town.length
@@ -187,7 +194,6 @@ class GpsFragment : Fragment(), OnMapReadyCallback {
                 lastestLocation = spannableString
                 binding.textLocation.setText(spannableString)
             }
-            Log.d("주소 변환",address.get(0).thoroughfare)
         }catch (e: IOException){
             Log.d("위치 주소 변환", "오류")
         }
