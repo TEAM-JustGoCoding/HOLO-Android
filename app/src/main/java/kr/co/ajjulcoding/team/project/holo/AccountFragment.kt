@@ -12,15 +12,18 @@ import androidx.fragment.app.Fragment
 import kr.co.ajjulcoding.team.project.holo.databinding.FragmentAccountBinding
 
 
-class AccountFragment(var currentUser:HoloUser) : Fragment() {
+class AccountFragment() : Fragment() {
     private lateinit var _binding: FragmentAccountBinding
     private val binding get() = _binding
     private lateinit var _activity:MainActivity
     private val mActivity get() = _activity
+    private lateinit var _userInfo:HoloUser
+    private val userInfo get() = _userInfo
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _activity = requireActivity() as MainActivity
+        _userInfo = arguments?.getParcelable<HoloUser>(AppTag.USER_INFO) as HoloUser
     }
 
     override fun onCreateView(
@@ -33,7 +36,7 @@ class AccountFragment(var currentUser:HoloUser) : Fragment() {
     }
 
     private fun initView(){
-        binding.editAccount.setText(currentUser.account)
+        binding.editAccount.setText(userInfo.account)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

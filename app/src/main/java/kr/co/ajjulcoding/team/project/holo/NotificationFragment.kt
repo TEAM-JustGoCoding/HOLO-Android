@@ -6,15 +6,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kr.co.ajjulcoding.team.project.holo.databinding.FragmentNotificationBinding
 
-class NotificationFragment(var currentUser:HoloUser) : Fragment(), OnItemClick {
+class NotificationFragment() : Fragment(), OnItemClick {
     private lateinit var _binding: FragmentNotificationBinding
     private val binding get() = _binding
     private lateinit var _activity:MainActivity
     private val mActivity get() = _activity
+    private lateinit var _userInfo:HoloUser
+    private val userInfo get() = _userInfo
     private var mRecyclerView: RecyclerView? = null
     private var mRecyclerAdapter: NotificationAdapter? = null
     private var mNotificationItems: ArrayList<NotificationItem>? = null
@@ -22,6 +23,7 @@ class NotificationFragment(var currentUser:HoloUser) : Fragment(), OnItemClick {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _activity = requireActivity() as MainActivity
+        _userInfo = arguments?.getParcelable<HoloUser>(AppTag.USER_INFO) as HoloUser
     }
 
     override fun onCreateView(
@@ -35,7 +37,7 @@ class NotificationFragment(var currentUser:HoloUser) : Fragment(), OnItemClick {
     }
 
     private fun initList(){
-        mNotificationItems = currentUser.notificationlist
+        mNotificationItems = userInfo.notificationlist
         Log.d("알림 initList", mNotificationItems.toString())
 
         mRecyclerAdapter = NotificationAdapter(_activity, this)

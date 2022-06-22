@@ -20,16 +20,19 @@ import kotlinx.coroutines.launch
 import kr.co.ajjulcoding.team.project.holo.databinding.FragmentProfileBinding
 
 
-class ProfileFragment(var currentUser:HoloUser) : Fragment() {
+class ProfileFragment() : Fragment() {
     private lateinit var _binding:FragmentProfileBinding
     private val binding get() = _binding
     private lateinit var _activity:MainActivity
     private val mActivity get() = _activity
+    private lateinit var _userInfo:HoloUser
+    private val userInfo get() = _userInfo
     private var selectedUri:Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _activity = requireActivity() as MainActivity
+        _userInfo = arguments?.getParcelable<HoloUser>(AppTag.USER_INFO) as HoloUser
     }
 
     override fun onCreateView(
@@ -42,9 +45,9 @@ class ProfileFragment(var currentUser:HoloUser) : Fragment() {
     }
 
     private fun initView(){
-        binding.textEmail.setText(currentUser.uid)
-        binding.textNickname.setText(currentUser.nickName)
-        currentUser.profileImg?.let {
+        binding.textEmail.setText(userInfo.uid)
+        binding.textNickname.setText(userInfo.nickName)
+        userInfo.profileImg?.let {
             Glide.with(_activity).load(Uri.parse(it)).apply {
                 RequestOptions()
                     .skipMemoryCache(true)
@@ -65,7 +68,7 @@ class ProfileFragment(var currentUser:HoloUser) : Fragment() {
         }
         binding.btnFinish.setOnClickListener {
             selectedUri?.let {
-                val fileName = "profile_" + currentUser.uid.replace(".", "") + ".jpg"
+                val fileName = "profile_" + userInfo.uid.replace(".", "") + ".jpg"
                 createProfile(fileName) // 기존에 같은 이름이 존재하면 덮어쓰는듯
             }
 

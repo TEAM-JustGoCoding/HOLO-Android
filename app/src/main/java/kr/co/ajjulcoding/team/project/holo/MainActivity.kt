@@ -66,16 +66,24 @@ class MainActivity : AppCompatActivity() {
         mUserInfo = intent.getParcelableExtra<HoloUser>(AppTag.USER_INFO)!!
         Log.d("유저 데이터 정보", mUserInfo.toString())
         super.onCreate(savedInstanceState)
-        profileFragment = ProfileFragment(mUserInfo)
-        userSettingFragment = UsersettingFragment((mUserInfo))
-        scoreFragment = ScoreFragment(mUserInfo)
-        accountFragment = AccountFragment(mUserInfo)
-        utilityBillFragment = UtilityBillFragment(mUserInfo)
-        notificationFragment = NotificationFragment(mUserInfo)
-        var chatLiBundle = Bundle()
-        chatLiBundle.putParcelable(AppTag.USER_INFO, mUserInfo)
+        var userInfoBundle = Bundle()
+        userInfoBundle.putParcelable(AppTag.USER_INFO, mUserInfo)
+        profileFragment = ProfileFragment()
+        userSettingFragment = UsersettingFragment()
+        scoreFragment = ScoreFragment()
+        accountFragment = AccountFragment()
+        utilityBillFragment = UtilityBillFragment()
+        notificationFragment = NotificationFragment()
         chatListFragment = ChatListFragment()
-        chatListFragment.arguments = chatLiBundle
+
+        profileFragment.arguments = userInfoBundle
+        userSettingFragment.arguments = userInfoBundle
+        scoreFragment.arguments = userInfoBundle
+        accountFragment.arguments = userInfoBundle
+        utilityBillFragment.arguments = userInfoBundle
+        notificationFragment.arguments = userInfoBundle
+        chatListFragment.arguments = userInfoBundle
+
         imgLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
             val uri: Uri? = result.data?.data
             Log.d("사진 가져오기0", "${uri}")
@@ -119,7 +127,8 @@ class MainActivity : AppCompatActivity() {
             saveCache()
         }else if (intent.getBooleanExtra(AppTag.REGISTER_TAG, false)){
             saveCache()
-            dialog = UtilityBillFragment(mUserInfo)
+            dialog = UtilityBillFragment()
+            dialog.arguments = userInfoBundle
             dialog.show(supportFragmentManager, "CustomDialog")
         }
 
@@ -237,6 +246,9 @@ class MainActivity : AppCompatActivity() {
     fun setLocationToHome(location:String){
         sharedPref = this.getSharedPreferences(AppTag.USER_INFO,0)
         editor = sharedPref.edit()
+        var userInfoBundle = Bundle()
+        userInfoBundle.putParcelable(AppTag.USER_INFO, mUserInfo)
+        userSettingFragment.arguments = userInfoBundle
         userSettingFragment.setUserLocation(location)
         editor.putString("location",location).apply()   // save location
     }
@@ -278,6 +290,9 @@ class MainActivity : AppCompatActivity() {
                     }.into(findViewById(R.id.profilePhoto))
                 }
                 //Toast.makeText(this, "프로필 이미지 변경 완료!",Toast.LENGTH_SHORT).show()
+                var userInfoBundle = Bundle()
+                userInfoBundle.putParcelable(AppTag.USER_INFO, mUserInfo)
+                userSettingFragment.arguments = userInfoBundle
                 userSettingFragment.setUserProfile(imgUri.toString())
                 sharedPref = this.getSharedPreferences(AppTag.USER_INFO,0)  // 캐시 저장
                 editor = sharedPref.edit()

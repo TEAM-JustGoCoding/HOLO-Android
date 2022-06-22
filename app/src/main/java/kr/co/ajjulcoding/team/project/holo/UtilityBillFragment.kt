@@ -4,25 +4,21 @@ package kr.co.ajjulcoding.team.project.holo
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.icu.util.GregorianCalendar
-import android.net.Uri
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.RequestOptions
-import com.google.gson.Gson
 import kr.co.ajjulcoding.team.project.holo.databinding.FragmentUtilityBillBinding
 
 
-class UtilityBillFragment(var currentUser:HoloUser) : DialogFragment(), OnItemClick {
+class UtilityBillFragment() : DialogFragment(), OnItemClick {
     private lateinit var _activity:MainActivity
     private val mActivity get() = _activity
+    private lateinit var _userInfo:HoloUser
+    private val userInfo get() = _userInfo
     private var _binding: FragmentUtilityBillBinding? = null
     private val binding get() = _binding!!
     private var mlistView: RecyclerView? = null
@@ -36,6 +32,7 @@ class UtilityBillFragment(var currentUser:HoloUser) : DialogFragment(), OnItemCl
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _activity = requireActivity() as MainActivity
+        _userInfo = arguments?.getParcelable<HoloUser>(AppTag.USER_INFO) as HoloUser
         mCalender = GregorianCalendar()
     }
 
@@ -49,7 +46,7 @@ class UtilityBillFragment(var currentUser:HoloUser) : DialogFragment(), OnItemCl
     }
 
     private fun initList(){
-        mUtilityBillItems = currentUser.utilitylist
+        mUtilityBillItems = userInfo.utilitylist
         Log.d("공과금 initList", mUtilityBillItems.toString())
 
         mUtilityBillAdapter = UtilityBillAdapter(this)
