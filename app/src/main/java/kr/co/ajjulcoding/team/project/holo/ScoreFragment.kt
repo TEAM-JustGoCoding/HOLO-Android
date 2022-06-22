@@ -3,26 +3,27 @@ package kr.co.ajjulcoding.team.project.holo
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kr.co.ajjulcoding.team.project.holo.databinding.FragmentScoreBinding
 
-class ScoreFragment(var currentUser:HoloUser) : DialogFragment() {
+class ScoreFragment() : DialogFragment() {
     private lateinit var _activity:MainActivity
     private val mActivity get() = _activity
+    private lateinit var _userInfo:HoloUser
+    private val userInfo get() = _userInfo
     private var _binding: FragmentScoreBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _activity = requireActivity() as MainActivity
+        _userInfo = arguments?.getParcelable<HoloUser>(AppTag.USER_INFO) as HoloUser
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -30,8 +31,8 @@ class ScoreFragment(var currentUser:HoloUser) : DialogFragment() {
 
         CoroutineScope(Dispatchers.Main).launch {
             val repository = Repository()
-            val score = repository.updateUserScore(currentUser.uid!!)
-            val count = repository.updateUserCount(currentUser.uid!!).toString()
+            val score = repository.updateUserScore(userInfo.uid!!)
+            val count = repository.updateUserCount(userInfo.uid!!).toString()
             binding.countText.setText(count)
             binding.scoreText.setText(score)
         }
