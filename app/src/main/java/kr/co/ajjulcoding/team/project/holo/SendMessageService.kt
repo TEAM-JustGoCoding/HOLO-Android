@@ -6,7 +6,6 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.media.Ringtone
 import android.media.RingtoneManager
 import android.os.Build
 import android.util.Log
@@ -18,6 +17,10 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import kr.co.ajjulcoding.team.project.holo.data.NotificationItem
+import kr.co.ajjulcoding.team.project.holo.data.SimpleChatRoom
+import kr.co.ajjulcoding.team.project.holo.view.activity.ChatRoomActivity
+import kr.co.ajjulcoding.team.project.holo.view.activity.HoloSplashActivity
 import org.json.JSONObject
 import java.lang.reflect.Type
 

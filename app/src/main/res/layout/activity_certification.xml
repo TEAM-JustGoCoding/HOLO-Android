@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/sky_dirty"
-    tools:context=".InformAgreeActivity">
+    tools:context=".view.activity.InformAgreeActivity">
 
     <ImageView
         android:id="@+id/logo_holo"
