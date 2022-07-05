@@ -21,7 +21,7 @@
         android:hardwareAccelerated="true"
         >
         <activity
-            android:name=".ChatRoomActivity"
+            android:name=".view.activity.ChatRoomActivity"
             android:screenOrientation="portrait"
             android:exported="true" >
         </activity>
@@ -29,21 +29,21 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDAb8jyUK1UG7YN1b2ephGn8Gl7SBCLLmU" />
 
-        <activity android:name=".FinishSplashActivity"
+        <activity android:name=".view.activity.FinishSplashActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".CertificationActivity"
+        <activity android:name=".view.activity.CertificationActivity"
             android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait" />
-        <activity android:name=".InformAgreeActivity"
+        <activity android:name=".view.activity.InformAgreeActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".RegisterActivity"
+        <activity android:name=".view.activity.RegisterActivity"
             android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait" />
-        <activity android:name=".LoginActivity"
+        <activity android:name=".view.activity.LoginActivity"
             android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".HoloSplashActivity"
+            android:name=".view.activity.HoloSplashActivity"
             android:screenOrientation="portrait"
             android:exported="true">
             <intent-filter>
@@ -52,9 +52,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity"
+        <activity android:name=".view.activity.MainActivity"
             android:screenOrientation="portrait"/>
-        <receiver android:name=".Alarm"
+        <receiver android:name=".AlarmBroadcastReceiver"
             android:enabled="true"
             android:exported="false">
             <intent-filter>

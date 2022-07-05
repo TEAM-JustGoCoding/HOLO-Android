@@ -8,7 +8,7 @@
     android:orientation="vertical"
     android:gravity="center"
     android:background="@color/sky_dirty"
-    tools:context=".LoginActivity">
+    tools:context=".view.activity.LoginActivity">
 
     <ImageView
         android:id="@+id/logo_holo"
