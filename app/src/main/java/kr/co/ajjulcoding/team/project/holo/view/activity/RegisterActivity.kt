@@ -16,6 +16,7 @@ import kr.co.ajjulcoding.team.project.holo.data.HoloUser
 import kr.co.ajjulcoding.team.project.holo.repository.Repository
 import kr.co.ajjulcoding.team.project.holo.SettingInApp
 import kr.co.ajjulcoding.team.project.holo.databinding.ActivityRegisterBinding
+import kr.co.ajjulcoding.team.project.holo.util.ToastUtil
 
 class RegisterActivity : AppCompatActivity() {
     private lateinit var jobEmail:Job
@@ -183,7 +184,7 @@ class RegisterActivity : AppCompatActivity() {
 
                 if (result != false) {   // 사용 가능
                     editNickname.error = null
-                    Toast.makeText(this@RegisterActivity,"사용 가능한 닉네임입니다!", Toast.LENGTH_SHORT).show()
+                    ToastUtil.showToast(this@RegisterActivity,"사용 가능한 닉네임입니다!")
                     checkMap["nickName"] = true
                 } else {
                     editNickname.error = "중복된 닉네임입니다."

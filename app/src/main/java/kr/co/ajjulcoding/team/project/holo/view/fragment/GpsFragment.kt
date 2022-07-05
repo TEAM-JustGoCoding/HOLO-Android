@@ -28,6 +28,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 import kr.co.ajjulcoding.team.project.holo.AppTag
 import kr.co.ajjulcoding.team.project.holo.view.activity.MainActivity
 import kr.co.ajjulcoding.team.project.holo.databinding.FragmentGpsBinding
+import kr.co.ajjulcoding.team.project.holo.util.ToastUtil
 import java.io.IOException
 import java.util.*
 
@@ -95,7 +96,7 @@ class GpsFragment : Fragment(), OnMapReadyCallback {
         }
         binding.btnCpl.setOnClickListener {
             if (validCpl != true) {
-                Toast.makeText(requireContext(), "현재위치가 업데이트되지 않았습니다.", Toast.LENGTH_SHORT).show()
+                ToastUtil.showToast(requireContext(), "현재위치가 업데이트되지 않았습니다.")
             }else{
                 Log.d("동네 이름", "$town")
                 (requireActivity() as MainActivity).setLocationToHome(town)
@@ -163,7 +164,7 @@ class GpsFragment : Fragment(), OnMapReadyCallback {
             val g:Geocoder = Geocoder(context,Locale.KOREA)
             val address = g.getFromLocation(latitude, longitude, 5)
             if (address.size == 0){
-                Toast.makeText(requireActivity(), "해당되는 주소정보가 없습니다.",Toast.LENGTH_SHORT).show()
+                ToastUtil.showToast(requireActivity(), "해당되는 주소정보가 없습니다.")
             }
             else{
                 validCpl = true

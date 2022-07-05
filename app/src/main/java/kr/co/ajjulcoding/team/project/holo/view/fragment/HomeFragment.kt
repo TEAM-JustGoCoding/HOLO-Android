@@ -16,6 +16,7 @@ import kr.co.ajjulcoding.team.project.holo.*
 import kr.co.ajjulcoding.team.project.holo.data.HoloUser
 import kr.co.ajjulcoding.team.project.holo.data.NotificationItem
 import kr.co.ajjulcoding.team.project.holo.databinding.FragmentHomeBinding
+import kr.co.ajjulcoding.team.project.holo.util.ToastUtil
 import kr.co.ajjulcoding.team.project.holo.view.activity.MainActivity
 import kr.co.ajjulcoding.team.project.holo.view.viewmodel.HomeViewModel
 
@@ -70,7 +71,7 @@ class HomeFragment(val currentUser: HoloUser) : Fragment() {
             if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER){
                 val text: String = binding.editSearch.text.toString()
                 if (text == "")
-                    Toast.makeText(mActivity,"검색어를 입력해주세요!", Toast.LENGTH_SHORT).show()
+                    ToastUtil.showToast(mActivity,"검색어를 입력해주세요!")
                 else if (text == "거의동" || text == "옥계동"){   // TODO: 위치정보 테스트용
                     currentUser.location = text
                 } else {

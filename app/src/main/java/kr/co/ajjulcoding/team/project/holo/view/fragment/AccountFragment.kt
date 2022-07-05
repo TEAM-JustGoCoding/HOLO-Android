@@ -13,6 +13,7 @@ import kr.co.ajjulcoding.team.project.holo.AppTag
 import kr.co.ajjulcoding.team.project.holo.data.HoloUser
 import kr.co.ajjulcoding.team.project.holo.view.activity.MainActivity
 import kr.co.ajjulcoding.team.project.holo.databinding.FragmentAccountBinding
+import kr.co.ajjulcoding.team.project.holo.util.ToastUtil
 
 
 class AccountFragment() : Fragment() {
@@ -56,18 +57,18 @@ class AccountFragment() : Fragment() {
             clipboard.setPrimaryClip(clip)
 
             if(binding.editAccount.length()==0) {
-                Toast.makeText(mActivity, "계좌번호를 입력해주세요", Toast.LENGTH_SHORT).show()
+                ToastUtil.showToast(mActivity, "계좌번호를 입력해주세요")
             }
             else {
-                Toast.makeText(mActivity, "계좌번호가 복사되었습니다", Toast.LENGTH_SHORT).show()
+                ToastUtil.showToast(mActivity, "계좌번호가 복사되었습니다")
             }
         }
         binding.btnEnroll.setOnClickListener {
             if(binding.editAccount.length()==0) {
-                Toast.makeText(mActivity, "계좌번호를 입력해주세요", Toast.LENGTH_SHORT).show()
+                ToastUtil.showToast(mActivity, "계좌번호를 입력해주세요")
             }
             else {
-                Toast.makeText(mActivity, "계좌번호가 등록되었습니다", Toast.LENGTH_SHORT).show()
+                ToastUtil.showToast(mActivity, "계좌번호가 등록되었습니다")
                 (requireActivity() as MainActivity).setAccount(binding.editAccount.text.toString())
                 (requireActivity() as MainActivity).changeFragment(AppTag.SETTING_TAG)
             }

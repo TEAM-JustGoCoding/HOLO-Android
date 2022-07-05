@@ -21,6 +21,7 @@ import kr.co.ajjulcoding.team.project.holo.AppTag
 import kr.co.ajjulcoding.team.project.holo.data.HoloUser
 import kr.co.ajjulcoding.team.project.holo.view.activity.MainActivity
 import kr.co.ajjulcoding.team.project.holo.databinding.FragmentProfileBinding
+import kr.co.ajjulcoding.team.project.holo.util.ToastUtil
 
 
 class ProfileFragment() : Fragment() {
@@ -79,7 +80,7 @@ class ProfileFragment() : Fragment() {
     }
 
     private fun createProfile(fileName:String){
-        Toast.makeText(mActivity, "프로필 이미지 번경 중..", Toast.LENGTH_SHORT).show()
+        ToastUtil.showToast(mActivity, "프로필 이미지 번경 중..")
         val FBstorage = FirebaseStorage.getInstance()
         val FBstorageRef = FBstorage.reference
         val postRef = FBstorageRef.child("profile_img/"+fileName)

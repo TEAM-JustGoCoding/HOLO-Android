@@ -14,6 +14,7 @@ import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
 import kr.co.ajjulcoding.team.project.holo.SettingInApp
 import kr.co.ajjulcoding.team.project.holo.databinding.ActivityCertificationBinding
+import kr.co.ajjulcoding.team.project.holo.util.ToastUtil
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -29,8 +30,7 @@ class CertificationActivity : AppCompatActivity() {
 
             // 번호인증 혹은 기타 다른 인증(구글로그인, 이메일로그인 등) 끝난 상태
             override fun onVerificationCompleted(credential: PhoneAuthCredential) {
-                Log.d("이미 다른/과거에 인증 완료", "onVerificationCompleted:$credential")
-//                makeToast("이미 등록된 핸드폰 번호입니다.")
+                Log.d("이미 다른/과거에 인증 완료, 그래도 이후 인증 정상 실행됨", "onVerificationCompleted:$credential")
                 return
             }
 
@@ -40,7 +40,7 @@ class CertificationActivity : AppCompatActivity() {
                 // for instance if the the phone number format is not valid.
                 Log.w("인증 실패", "onVerificationFailed", e)
                 if (e is FirebaseAuthInvalidCredentialsException) {
-                    makeToast("인증에 실패했습니다.\n다시 요청해주세요.")// Invalid request
+                    ToastUtil.showToast(this@CertificationActivity, "인증에 실패했습니다.\n다시 요청해주세요.")// Invalid request
                 } else if (e is FirebaseTooManyRequestsException) {
                     // The SMS quota for the project has been exceeded
                 }
@@ -55,7 +55,7 @@ class CertificationActivity : AppCompatActivity() {
                 // now need to ask the user to enter the code and then construct a credential
                 // by combining the code with a verification ID.
                 Log.d("인증 번호 입력 필요", "onCodeSent:$verificationId")
-                makeToast("인증 메시지 전송 완료!\n")
+                ToastUtil.showToast(this@CertificationActivity,"인증 메시지 전송 완료!")
                 countTime()
                 // Save verification ID and resending token so we can use them later
                 storedVerificationId = verificationId // verificationId 와 전화번호인증코드 매칭해서 인증하는데 사용예정
@@ -71,12 +71,12 @@ class CertificationActivity : AppCompatActivity() {
 
         binding.btnSendSMS.setOnClickListener {
             if (binding.editPhoneNum.text.toString() == "")
-                makeToast("핸드폰 번호를 입력해주세요.")
+                ToastUtil.showToast(this, "핸드폰 번호를 입력해주세요.")
             else {
                 val editPhoneNum = binding.editPhoneNum
                 val inputPhoneNum:String = "+82"+editPhoneNum.text.toString().substring(1)
                 Log.d("인증 폰번호 확인", inputPhoneNum)
-                makeToast("인증 메시지 전송 중..\n")
+                ToastUtil.showToast(this, "인증 메시지 전송 중..")
                 sendSMS(inputPhoneNum)
             }
         }
@@ -88,7 +88,7 @@ class CertificationActivity : AppCompatActivity() {
                 signInWithPhoneAuthCredential(phoneCredential)
             } catch (e: Exception) {
                 Log.d("인증 코드 불일치", e.toString())
-                makeToast("인증 코드 불일치")
+                ToastUtil.showToast(this,"인증 코드 불일치")
             }
         }
     }
@@ -137,12 +137,8 @@ class CertificationActivity : AppCompatActivity() {
                     startActivity(intentRegist) // TODO("RegisterActivity내부에서 뒤로가기시 전번 정보 삭제 구현")
                 } else {
                     Log.d("인증 실패", "${task.exception}")
-                    makeToast("인증 번호 불일치")
+                    ToastUtil.showToast(this,"인증 번호 불일치")
                 }
             }
-    }
-
-    private fun makeToast(msg: String){
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
     }
 }

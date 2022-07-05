@@ -20,6 +20,7 @@ import kr.co.ajjulcoding.team.project.holo.data.ChatRoom
 import kr.co.ajjulcoding.team.project.holo.data.CmtNotificationBody
 import kr.co.ajjulcoding.team.project.holo.data.HoloUser
 import kr.co.ajjulcoding.team.project.holo.databinding.FragmentWebViewBinding
+import kr.co.ajjulcoding.team.project.holo.util.ToastUtil
 import kr.co.ajjulcoding.team.project.holo.view.activity.MainActivity
 import kr.co.ajjulcoding.team.project.holo.view.viewmodel.WebViewModel
 import org.json.JSONObject
@@ -75,7 +76,7 @@ class WebViewFragment(private val userInfo: HoloUser, private val webUrl: String
             val userId:Int? = resultDef.await()
             Log.d("아이디 받은 거",userId.toString())
             if (userId == null) {
-                Toast.makeText(mActivity, "네트워크 통신 오류입니다.", Toast.LENGTH_SHORT).show()
+                ToastUtil.showToast(mActivity, "네트워크 통신 오류입니다.")
                 mActivity.changeFragment(AppTag.HOME_TAG)
             }
             val webView:WebView = binding.webView

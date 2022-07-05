@@ -37,6 +37,7 @@ import kr.co.ajjulcoding.team.project.holo.data.SimpleChatRoom
 import kr.co.ajjulcoding.team.project.holo.data.UtilityBillItem
 import kr.co.ajjulcoding.team.project.holo.databinding.ActivityMainBinding
 import kr.co.ajjulcoding.team.project.holo.repository.Repository
+import kr.co.ajjulcoding.team.project.holo.util.ToastUtil
 import kr.co.ajjulcoding.team.project.holo.view.fragment.*
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent
 import java.io.File
@@ -188,7 +189,7 @@ class MainActivity : AppCompatActivity() {
             changeFragment(AppTag.HOME_TAG)
         else if (System.currentTimeMillis() - waitTime >= 1500){    // 1.5초
             waitTime = System.currentTimeMillis()
-            Toast.makeText(this,"뒤로가기 버튼을 한번 더 누르면 종료됩니다.",Toast.LENGTH_SHORT).show()
+            ToastUtil.showToast(this,"뒤로가기 버튼을 한번 더 누르면 종료됩니다.")
         }else
             super.onBackPressed()
 
@@ -247,7 +248,7 @@ class MainActivity : AppCompatActivity() {
                 intentLogin.putExtra(AppTag.currentUserEmail(), false)
                 intentLogin.putExtra(AppTag.LOGIN_TAG, false)
                 startActivity(intentLogin)
-            }else Toast.makeText(this@MainActivity,"서버 통신 오류",Toast.LENGTH_SHORT).show()
+            }else ToastUtil.showToast(this@MainActivity,"서버 통신 오류")
         }
 
     }
@@ -298,7 +299,6 @@ class MainActivity : AppCompatActivity() {
                             .diskCacheStrategy(DiskCacheStrategy.NONE)
                     }.into(findViewById(R.id.profilePhoto))
                 }
-                //Toast.makeText(this, "프로필 이미지 변경 완료!",Toast.LENGTH_SHORT).show()
                 var userInfoBundle = Bundle()
                 userInfoBundle.putParcelable(AppTag.USER_INFO, mUserInfo)
                 userSettingFragment.arguments = userInfoBundle
@@ -456,7 +456,7 @@ class MainActivity : AppCompatActivity() {
             "알림이 설정되지 않았습니다."
         }
         Log.d(AlarmBroadcastReceiver.TAG, toastMessage)
-        Toast.makeText(this, toastMessage, Toast.LENGTH_SHORT).show()
+        ToastUtil.showToast(this, toastMessage)
 
     }
 
@@ -515,13 +515,13 @@ class MainActivity : AppCompatActivity() {
                     // 뒤로 가기로 거부했을 때
                     // request denied , request again
                     Log.d("저장소 권한", "onRequestPermissionsResult() _ 권한 허용 거부")
-                    Toast.makeText(this, "저장소 접근 권한이 없어 해당 기능을 수행할 수 없습니다!", Toast.LENGTH_SHORT).show()
+                    ToastUtil.showToast(this, "저장소 접근 권한이 없어 해당 기능을 수행할 수 없습니다!")
                 }
                 map["EXPLAINED"]?.let {
                     // 거부 버튼 눌렀을 때
                     // request denied ,send to settings
                     Log.d("저장소 권한", "한() _ 권한 허용 거부")
-                    Toast.makeText(this, "저장소 접근 권한이 없어 해당 기능을 수행할 수 없습니다!", Toast.LENGTH_SHORT).show()
+                    ToastUtil.showToast(this, "저장소 접근 권한이 없어 해당 기능을 수행할 수 없습니다!")
                 }
             }
             else -> { // All request are permitted
@@ -569,13 +569,13 @@ class MainActivity : AppCompatActivity() {
                     // 뒤로 가기로 거부했을 때
                     // request denied , request again
                     Log.d("위치 권한", "onRequestPermissionsResult() _ 권한 허용 거부")
-                    Toast.makeText(this, "위치 권한이 없어 해당 기능을 수행할 수 없습니다!", Toast.LENGTH_SHORT).show()
+                    ToastUtil.showToast(this, "위치 권한이 없어 해당 기능을 수행할 수 없습니다!")
                 }
                 map["EXPLAINED"]?.let {
                     // 거부 버튼 눌렀을 때
                     // request denied ,send to settings
                     Log.d("위치 권한", "한() _ 권한 허용 거부")
-                    Toast.makeText(this, "위치 권한이 없어 해당 기능을 수행할 수 없습니다!", Toast.LENGTH_SHORT).show()
+                    ToastUtil.showToast(this, "위치 권한이 없어 해당 기능을 수행할 수 없습니다!")
                 }
             }
             else -> { // All request are permitted

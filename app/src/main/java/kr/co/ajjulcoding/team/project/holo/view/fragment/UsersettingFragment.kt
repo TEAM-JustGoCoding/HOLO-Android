@@ -18,6 +18,7 @@ import com.bumptech.glide.request.RequestOptions
 import kr.co.ajjulcoding.team.project.holo.*
 import kr.co.ajjulcoding.team.project.holo.data.HoloUser
 import kr.co.ajjulcoding.team.project.holo.databinding.FragmentUsersettingBinding
+import kr.co.ajjulcoding.team.project.holo.util.ToastUtil
 import kr.co.ajjulcoding.team.project.holo.view.activity.MainActivity
 import kr.co.ajjulcoding.team.project.holo.view.viewmodel.UsersettingViewModel
 
@@ -96,7 +97,7 @@ class UsersettingFragment() : Fragment() {
                         dialog!!.dismiss()
                         if (idx == 0){
                             SettingInApp.mAuth.signOut()
-                            Toast.makeText(requireActivity(), "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show()
+                            ToastUtil.showToast(requireActivity(), "로그아웃 되었습니다.")
                             mActivity.changetoLoginActivity()
                         }
                     }

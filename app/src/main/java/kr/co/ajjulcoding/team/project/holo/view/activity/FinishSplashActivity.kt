@@ -17,6 +17,7 @@ import kotlinx.coroutines.launch
 import kr.co.ajjulcoding.team.project.holo.*
 import kr.co.ajjulcoding.team.project.holo.data.HoloUser
 import kr.co.ajjulcoding.team.project.holo.repository.Repository
+import kr.co.ajjulcoding.team.project.holo.util.ToastUtil
 
 class FinishSplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,7 +31,7 @@ class FinishSplashActivity : AppCompatActivity() {
             val result = repository.insertRegister(userInfo)
             val resultId:Int? = repository.getId(userInfo.uid)
             if (result != true && resultId == null){
-                Toast.makeText(this@FinishSplashActivity, "서버와 통신에 실패했습니다!", Toast.LENGTH_SHORT).show()
+                ToastUtil.showToast(this@FinishSplashActivity, "서버와 통신에 실패했습니다!")
                 return@launch
             }
             userInfo.id = resultId

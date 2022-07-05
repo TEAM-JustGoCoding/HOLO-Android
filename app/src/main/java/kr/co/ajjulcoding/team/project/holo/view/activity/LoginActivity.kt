@@ -16,6 +16,7 @@ import kr.co.ajjulcoding.team.project.holo.AppTag
 import kr.co.ajjulcoding.team.project.holo.repository.Repository
 import kr.co.ajjulcoding.team.project.holo.SettingInApp
 import kr.co.ajjulcoding.team.project.holo.databinding.ActivityLoginBinding
+import kr.co.ajjulcoding.team.project.holo.util.ToastUtil
 
 
 class LoginActivity : AppCompatActivity() {
@@ -51,11 +52,11 @@ class LoginActivity : AppCompatActivity() {
         val inputPassword:String = editPassword.text.toString() ?: ""
 
         if (inputId == ""){
-            Toast.makeText(this, "이메일을 입력해주세요.", Toast.LENGTH_SHORT).show()
+            ToastUtil.showToast(this, "이메일을 입력해주세요.")
             return
         }
         else if (inputPassword == ""){
-            Toast.makeText(this, "비밀번호를 입력해주세요.", Toast.LENGTH_SHORT).show()
+            ToastUtil.showToast(this, "비밀번호를 입력해주세요.")
             return
         }
         SettingInApp.mAuth.signInWithEmailAndPassword(inputId,inputPassword)
@@ -80,12 +81,12 @@ class LoginActivity : AppCompatActivity() {
                             intentMain.putExtra(AppTag.USER_INFO, result)
                             intentMain.putExtra(AppTag.LOGIN_TAG, true) // 캐시 저장 지시
                             startActivity(intentMain)
-                        }else Toast.makeText(this@LoginActivity,"서버 통신 오류",Toast.LENGTH_SHORT).show()
+                        }else ToastUtil.showToast(this@LoginActivity,"서버 통신 오류")
                     }
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w("로그인", "createUserWithEmail:failure", task.getException())
-                    Toast.makeText(this, "잘못된 이메일 또는 비밀번호입니다.", Toast.LENGTH_SHORT).show()
+                    ToastUtil.showToast(this, "잘못된 이메일 또는 비밀번호입니다.")
                 }
                 Log.d("로그인","성공:${task.exception}")
             }

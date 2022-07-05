@@ -8,6 +8,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import kr.co.ajjulcoding.team.project.holo.SettingInApp
 import kr.co.ajjulcoding.team.project.holo.databinding.ActivityInformagreeBinding
+import kr.co.ajjulcoding.team.project.holo.util.ToastUtil
 
 
 class InformAgreeActivity : AppCompatActivity() {
@@ -45,7 +46,7 @@ class InformAgreeActivity : AppCompatActivity() {
     private fun checkCbox(){
         for (i in 0 until arrCbox.size){
             if (arrCbox[i].isChecked == false) {
-                Toast.makeText(this, "모든 체크박스를 선택해주세요.", Toast.LENGTH_SHORT).show()
+                ToastUtil.showToast(this, "모든 체크박스를 선택해주세요.")
                 break
             }
             else if (i == arrCbox.size-1){
