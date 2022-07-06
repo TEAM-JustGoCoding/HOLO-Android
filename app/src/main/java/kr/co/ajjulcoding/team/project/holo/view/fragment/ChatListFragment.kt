@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -79,16 +80,15 @@ class ChatListFragment() : Fragment() {
            ListAdapter<ChatRoom, ChatListAdapter.ViewHolder>(chatRoomDiffUtil){
         val FBstorage = FirebaseStorage.getInstance()
         val FBstorageRef = FBstorage.reference
+        lateinit var view:ItemChatListRecyclerBinding
 
         inner class ViewHolder(view: ItemChatListRecyclerBinding):RecyclerView.ViewHolder(view.root){
             val imgProfile = view.circleImageView
-            val textNickName = view.textNickName
-            val textTitle = view.textTitle
             val textMSG = view.textPreMSG
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            val view = ItemChatListRecyclerBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            view = DataBindingUtil.inflate<ItemChatListRecyclerBinding>(layoutInflater, R.layout.item_chat_list_recycler,parent,false)
             return ViewHolder(view)
         }
 
@@ -97,17 +97,19 @@ class ChatListFragment() : Fragment() {
             //Log.d("옵저버 데이터 확인1", asyncDiffer.currentList[position].toString())
             currentList!!.get(position).let { item ->
                 with(holder){
+                    view.chat = item
+                    view.user = userInfo
+                    Log.d("채팅 데이터 출력", item.snickName.toString()+" "+item.rnickName)
+                    Log.d("채채팅 데이터 출력", userInfo.nickName.toString())
                     var fileName = "profile_"
-                    var nickName:String
+                    //var nickName:String
                     if (item.remail == userInfo.uid){
                         fileName += item.semail.replace(".", "") + ".jpg"
-                        nickName = item.snickName
+                        view.nickName = item.snickName
                     }else{
                         fileName += item.remail.replace(".", "") + ".jpg"
-                        nickName = item.rnickName
+                        view.nickName = item.rnickName
                     }
-                    textNickName.setText(nickName)
-                    textTitle.setText(item.title)
                     item.talkContent.let {
                         if (it.size >0){
                             textMSG.setText(it[it.size-1].content)
