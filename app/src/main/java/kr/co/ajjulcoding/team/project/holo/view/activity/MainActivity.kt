@@ -16,11 +16,9 @@ import android.os.Bundle
 import android.os.Environment
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
@@ -31,6 +29,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.*
 import kr.co.ajjulcoding.team.project.holo.*
+import kr.co.ajjulcoding.team.project.holo.base.BaseActivity
 import kr.co.ajjulcoding.team.project.holo.data.HoloUser
 import kr.co.ajjulcoding.team.project.holo.data.NotificationItem
 import kr.co.ajjulcoding.team.project.holo.data.SimpleChatRoom
@@ -46,11 +45,11 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity<ActivityMainBinding>({
+    ActivityMainBinding.inflate(it)
+}) {
     private lateinit var sharedPref: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
-    private lateinit var _binding:ActivityMainBinding
-    val binding get() = _binding
     private lateinit var homeFragment: HomeFragment
     private lateinit var profileFragment: ProfileFragment
     private lateinit var accountFragment: AccountFragment
@@ -374,8 +373,6 @@ class MainActivity : AppCompatActivity() {
         homeFragment = HomeFragment(userInfo)
         tran.replace(R.id.fragmentView, homeFragment)
         tran.commit()
-        _binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
     }
 
     fun showAlertDialog(msg:String, vararg option:String){

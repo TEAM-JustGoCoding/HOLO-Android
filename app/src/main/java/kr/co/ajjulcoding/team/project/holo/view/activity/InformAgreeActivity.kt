@@ -7,22 +7,21 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import kr.co.ajjulcoding.team.project.holo.SettingInApp
+import kr.co.ajjulcoding.team.project.holo.base.BaseActivity
 import kr.co.ajjulcoding.team.project.holo.databinding.ActivityInformagreeBinding
 import kr.co.ajjulcoding.team.project.holo.util.ToastUtil
 
 
-class InformAgreeActivity : AppCompatActivity() {
-    private lateinit var _binding: ActivityInformagreeBinding
-    private val binding get() = _binding
+class InformAgreeActivity : BaseActivity<ActivityInformagreeBinding>({
+    ActivityInformagreeBinding.inflate(it)
+}) {
     private val arrCbox = arrayListOf<CheckBox>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        _binding = ActivityInformagreeBinding.inflate(layoutInflater)
         arrCbox.add(binding.cboxAgreeSmall1)
         arrCbox.add(binding.cboxAgreeSmall2)
         arrCbox.add(binding.cboxAgreeSmall3)
-        setContentView(binding.root)
 
         arrCbox.forEach { checkBox ->
             checkBox.setOnClickListener {

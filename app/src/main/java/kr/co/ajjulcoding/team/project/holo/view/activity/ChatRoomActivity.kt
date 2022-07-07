@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.Timestamp
 import kotlinx.coroutines.*
 import kr.co.ajjulcoding.team.project.holo.*
+import kr.co.ajjulcoding.team.project.holo.base.BaseActivity
 import kr.co.ajjulcoding.team.project.holo.data.ChatBubble
 import kr.co.ajjulcoding.team.project.holo.data.ChatNotificationBody
 import kr.co.ajjulcoding.team.project.holo.data.HoloUser
@@ -30,13 +31,13 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-class ChatRoomActivity() : AppCompatActivity() {
+class ChatRoomActivity() : BaseActivity<ActivityChatRoomBinding>({
+    ActivityChatRoomBinding.inflate(it)
+}) {
     private lateinit var userEmail:String
     private lateinit var userInfo: HoloUser
     private lateinit var chatRoomData: SimpleChatRoom
-    private lateinit var _binding:ActivityChatRoomBinding
     private lateinit var chatRoomViewModel: ChatRoomViewModel
-    private val binding get() = _binding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,8 +46,6 @@ class ChatRoomActivity() : AppCompatActivity() {
         userEmail = userInfo.uid
         chatRoomData = intent.getParcelableExtra<SimpleChatRoom>(AppTag.CHATROOM_TAG)!!
         randomNum = chatRoomData.randomDouble
-        _binding = ActivityChatRoomBinding.inflate(layoutInflater)
-        setContentView(binding.root)
         setViewData()
         chatRoomViewModel.getChatBubbleLi(chatRoomData.title, chatRoomData.randomDouble!!)
         binding.recyclerBubble.adapter = ChatRoomAdapter()

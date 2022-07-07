@@ -13,18 +13,19 @@ import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
 import kr.co.ajjulcoding.team.project.holo.SettingInApp
+import kr.co.ajjulcoding.team.project.holo.base.BaseActivity
 import kr.co.ajjulcoding.team.project.holo.databinding.ActivityCertificationBinding
 import kr.co.ajjulcoding.team.project.holo.util.ToastUtil
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class CertificationActivity : AppCompatActivity() {
+class CertificationActivity : BaseActivity<ActivityCertificationBinding>({
+    ActivityCertificationBinding.inflate(it)
+}) {
     private var validTimeOut = MutableLiveData<Boolean>()   // 연속으로 인증번호 전송 X
     private var timeTask:Timer? = null
     private var storedVerificationId = ""
     private var resendToken: PhoneAuthProvider.ForceResendingToken? = null
-    private lateinit var _binding: ActivityCertificationBinding
-    private val binding get() = _binding
     private val callbacks by lazy {
         object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
 
@@ -66,8 +67,6 @@ class CertificationActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        _binding = ActivityCertificationBinding.inflate(layoutInflater)
-        setContentView(_binding.root)
 
         binding.btnSendSMS.setOnClickListener {
             if (binding.editPhoneNum.text.toString() == "")
