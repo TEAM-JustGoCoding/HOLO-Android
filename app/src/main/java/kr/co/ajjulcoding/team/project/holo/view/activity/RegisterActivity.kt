@@ -15,23 +15,21 @@ import kotlinx.coroutines.tasks.await
 import kr.co.ajjulcoding.team.project.holo.data.HoloUser
 import kr.co.ajjulcoding.team.project.holo.repository.Repository
 import kr.co.ajjulcoding.team.project.holo.SettingInApp
+import kr.co.ajjulcoding.team.project.holo.base.BaseActivity
 import kr.co.ajjulcoding.team.project.holo.databinding.ActivityRegisterBinding
 import kr.co.ajjulcoding.team.project.holo.util.ToastUtil
 
-class RegisterActivity : AppCompatActivity() {
-    private lateinit var jobEmail:Job
-    private lateinit var _binding:ActivityRegisterBinding
-    private val binding get() = _binding
+class RegisterActivity : BaseActivity<ActivityRegisterBinding>({
+    ActivityRegisterBinding.inflate(it)
+}) {
     private val checkMap = hashMapOf<String, Boolean>("realName" to false, "email" to false,
         "password" to false, "nickName" to false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        _binding = ActivityRegisterBinding.inflate(layoutInflater)
-        setContentView(binding.root)
 
-        // TODO("나중에 삭제")
-//        binding.editName.setText("이예은3")
+        // TODO("회원가입 미리 정보 넣어놓는 용으로 사용")
+//        binding.editName.setText("이예은")
 //        binding.editEmail.setText("lyy1234@gmail.com")
 //        binding.editNickname.setText("옌3")
 //        binding.editPassword.setText("lyy828282")

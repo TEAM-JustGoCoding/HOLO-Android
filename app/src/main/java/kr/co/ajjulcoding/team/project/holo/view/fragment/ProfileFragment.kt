@@ -18,50 +18,34 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kr.co.ajjulcoding.team.project.holo.AppTag
+import kr.co.ajjulcoding.team.project.holo.base.BaseFragment
 import kr.co.ajjulcoding.team.project.holo.data.HoloUser
 import kr.co.ajjulcoding.team.project.holo.view.activity.MainActivity
 import kr.co.ajjulcoding.team.project.holo.databinding.FragmentProfileBinding
 import kr.co.ajjulcoding.team.project.holo.util.ToastUtil
 
 
-class ProfileFragment() : Fragment() {
-    private lateinit var _binding:FragmentProfileBinding
-    private val binding get() = _binding
-    private lateinit var _activity: MainActivity
-    private val mActivity get() = _activity
+class ProfileFragment() : BaseFragment<FragmentProfileBinding>() {
     private lateinit var _userInfo: HoloUser
     private val userInfo get() = _userInfo
     private var selectedUri:Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        _activity = requireActivity() as MainActivity
         _userInfo = arguments?.getParcelable<HoloUser>(AppTag.USER_INFO) as HoloUser
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        _binding = FragmentProfileBinding.inflate(inflater, container, false)
-        initView()
-        return binding.root
-    }
-
-    private fun initView(){
-        binding.textEmail.setText(userInfo.uid)
-        binding.textNickname.setText(userInfo.nickName)
-        userInfo.profileImg?.let {
-            Glide.with(_activity).load(Uri.parse(it)).apply {
-                RequestOptions()
-                    .skipMemoryCache(true)
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-            }.into(binding.profilephoto)
-        }
+    override fun getFragmentBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): FragmentProfileBinding {
+        return FragmentProfileBinding.inflate(inflater, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initView()
+
         binding.btnBack.setOnClickListener {
             mActivity.changeFragment(AppTag.SETTING_TAG)
         }
@@ -76,6 +60,18 @@ class ProfileFragment() : Fragment() {
                 createProfile(fileName) // 기존에 같은 이름이 존재하면 덮어쓰는듯
             }
 
+        }
+    }
+
+    private fun initView(){
+        binding.textEmail.setText(userInfo.uid)
+        binding.textNickname.setText(userInfo.nickName)
+        userInfo.profileImg?.let {
+            Glide.with(mActivity).load(Uri.parse(it)).apply {
+                RequestOptions()
+                    .skipMemoryCache(true)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+            }.into(binding.profilephoto)
         }
     }
 
@@ -95,6 +91,7 @@ class ProfileFragment() : Fragment() {
         }
     }
 
+
     fun setProfileImg(uri: Uri){
         selectedUri = uri
         binding.profilephoto.setImageBitmap(null)   // glide로 설정한 이미지 제거
@@ -102,6 +99,4 @@ class ProfileFragment() : Fragment() {
         binding.profilephoto.setImageURI(selectedUri)
         Log.d("사진 가져오기", "$uri")
     }
-
-
 }

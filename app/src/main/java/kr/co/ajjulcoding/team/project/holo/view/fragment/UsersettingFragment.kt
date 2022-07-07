@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import kr.co.ajjulcoding.team.project.holo.*
+import kr.co.ajjulcoding.team.project.holo.base.BaseFragment
 import kr.co.ajjulcoding.team.project.holo.data.HoloUser
 import kr.co.ajjulcoding.team.project.holo.databinding.FragmentUsersettingBinding
 import kr.co.ajjulcoding.team.project.holo.util.ToastUtil
@@ -23,32 +24,27 @@ import kr.co.ajjulcoding.team.project.holo.view.activity.MainActivity
 import kr.co.ajjulcoding.team.project.holo.view.viewmodel.UsersettingViewModel
 
 
-class UsersettingFragment() : Fragment() {
-    private lateinit var _activity: MainActivity
-    private val mActivity get() = _activity
+class UsersettingFragment() : BaseFragment<FragmentUsersettingBinding>() {
     private lateinit var _userInfo: HoloUser
     private val userInfo get() = _userInfo
-    private lateinit var _binding: FragmentUsersettingBinding
-    private val binding get() = _binding
     private val usersettingViewModel: UsersettingViewModel by viewModels<UsersettingViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        _activity = requireActivity() as MainActivity
         _userInfo = arguments?.getParcelable<HoloUser>(AppTag.USER_INFO) as HoloUser
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        _binding = FragmentUsersettingBinding.inflate(inflater, container, false)
-        setView()
-        return binding.root
+
+    override fun getFragmentBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): FragmentUsersettingBinding {
+        return FragmentUsersettingBinding.inflate(layoutInflater,container,false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setView()
         // TODO: 창설에서는 있어야 됨
         //binding.textAccount.visibility = View.GONE
         usersettingViewModel.userLocation.observe(viewLifecycleOwner){
@@ -135,7 +131,7 @@ class UsersettingFragment() : Fragment() {
             binding.textLocation.setText(userInfo.location)
             binding.textEmail.setText(userInfo.uid)
         userInfo.profileImg?.let {
-            Glide.with(_activity).load(Uri.parse(it)).apply {
+            Glide.with(mActivity).load(Uri.parse(it)).apply {
                 RequestOptions()
                     .skipMemoryCache(true)
                     .diskCacheStrategy(DiskCacheStrategy.NONE)

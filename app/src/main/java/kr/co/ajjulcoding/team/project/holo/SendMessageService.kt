@@ -81,7 +81,7 @@ class SendMessageService: FirebaseMessagingService() {
 
             if (mNotificationItems==null)
                 mNotificationItems= ArrayList()
-            mNotificationItems!!.add(0, NotificationItem(msg, content, WebUrl.URL_LAN + remoteMSG!!.data["url"]))
+            mNotificationItems!!.add(0, NotificationItem(msg, content, WebUrl.URL_BASE + remoteMSG!!.data["url"]))
             storeNotificationCache(mNotificationItems)
         }
         else{   // 채팅 => 채팅방

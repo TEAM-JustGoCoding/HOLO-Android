@@ -15,21 +15,19 @@ import kotlinx.coroutines.launch
 import kr.co.ajjulcoding.team.project.holo.AppTag
 import kr.co.ajjulcoding.team.project.holo.repository.Repository
 import kr.co.ajjulcoding.team.project.holo.SettingInApp
+import kr.co.ajjulcoding.team.project.holo.base.BaseActivity
 import kr.co.ajjulcoding.team.project.holo.databinding.ActivityLoginBinding
 import kr.co.ajjulcoding.team.project.holo.util.ToastUtil
 
-
-class LoginActivity : AppCompatActivity() {
-    private lateinit var job:Job
-    private lateinit var _binding: ActivityLoginBinding
-    private val binding get() = _binding
+class LoginActivity : BaseActivity<ActivityLoginBinding>({
+    ActivityLoginBinding.inflate(it)    // layoutInflater 인자 하나밖에 없어서 it으로 대체, inflate 변환 '함수' 넘김
+}) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        _binding = ActivityLoginBinding.inflate(layoutInflater)
-        //TODO("아이디/비번 일일이 치기 싫어서 설정함, 나중에 삭제")
-//        binding.editEmail.setText("leeyeah8245@gmail.com")
-//        binding.editPassword.setText("lyy828282")
+        //TODO("아이디/비번 일일이 치기 싫어서 설정함, 자유롭게 주석처리")
+        binding.editEmail.setText("leeyeah8245@gmail.com")
+        binding.editPassword.setText("lyy828282")
         setContentView(binding.root)
 
         binding.btnLogin.setOnClickListener {

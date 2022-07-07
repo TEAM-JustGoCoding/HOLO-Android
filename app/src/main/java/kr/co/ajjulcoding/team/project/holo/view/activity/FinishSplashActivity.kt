@@ -15,14 +15,17 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kr.co.ajjulcoding.team.project.holo.*
+import kr.co.ajjulcoding.team.project.holo.base.BaseActivity
 import kr.co.ajjulcoding.team.project.holo.data.HoloUser
+import kr.co.ajjulcoding.team.project.holo.databinding.ActivityFinishsplashBinding
 import kr.co.ajjulcoding.team.project.holo.repository.Repository
 import kr.co.ajjulcoding.team.project.holo.util.ToastUtil
 
-class FinishSplashActivity : AppCompatActivity() {
+class FinishSplashActivity : BaseActivity<ActivityFinishsplashBinding>({
+    ActivityFinishsplashBinding.inflate(it)
+}) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_finishsplash)
 
         val repository = Repository()
         val userInfo: HoloUser = intent.getParcelableExtra<HoloUser>("userInfo") as HoloUser

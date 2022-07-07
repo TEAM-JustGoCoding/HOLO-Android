@@ -16,11 +16,9 @@ import android.os.Bundle
 import android.os.Environment
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
@@ -31,6 +29,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.*
 import kr.co.ajjulcoding.team.project.holo.*
+import kr.co.ajjulcoding.team.project.holo.base.BaseActivity
 import kr.co.ajjulcoding.team.project.holo.data.HoloUser
 import kr.co.ajjulcoding.team.project.holo.data.NotificationItem
 import kr.co.ajjulcoding.team.project.holo.data.SimpleChatRoom
@@ -46,11 +45,11 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity<ActivityMainBinding>({
+    ActivityMainBinding.inflate(it)
+}) {
     private lateinit var sharedPref: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
-    private lateinit var _binding:ActivityMainBinding
-    val binding get() = _binding
     private lateinit var homeFragment: HomeFragment
     private lateinit var profileFragment: ProfileFragment
     private lateinit var accountFragment: AccountFragment
@@ -59,9 +58,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var utilityBillDialogFragment: UtilityBillDialogFragment
     private lateinit var notificationFragment: NotificationFragment
     private lateinit var scoreDialogFragment: ScoreDialogFragment
-    private lateinit var chatListFragment:Fragment
-    private lateinit var mUserInfo: HoloUser
+    private lateinit var chatListFragment:ChatListFragment
     private val gpsFragment = GpsFragment()
+    private val userInfoBundle = Bundle()
+    private lateinit var mUserInfo: HoloUser
     private var currentTag:String = AppTag.HOME_TAG
     private lateinit var frgDic:HashMap<String, Fragment>
     private lateinit var dialog: DialogFragment
@@ -74,8 +74,9 @@ class MainActivity : AppCompatActivity() {
         mUserInfo = intent.getParcelableExtra<HoloUser>(AppTag.USER_INFO)!!
         Log.d("유저 데이터 정보", mUserInfo.toString())
         super.onCreate(savedInstanceState)
-        var userInfoBundle = Bundle()
+
         userInfoBundle.putParcelable(AppTag.USER_INFO, mUserInfo)
+        homeFragment = HomeFragment()
         profileFragment = ProfileFragment()
         userSettingFragment = UsersettingFragment()
         scoreDialogFragment = ScoreDialogFragment()
@@ -84,6 +85,7 @@ class MainActivity : AppCompatActivity() {
         notificationFragment = NotificationFragment()
         chatListFragment = ChatListFragment()
 
+        homeFragment.arguments = userInfoBundle
         profileFragment.arguments = userInfoBundle
         userSettingFragment.arguments = userInfoBundle
         scoreDialogFragment.arguments = userInfoBundle
@@ -100,7 +102,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        showHomeFragment(mUserInfo)
+        showHomeFragment()
         frgDic = hashMapOf<String, Fragment>(
             AppTag.PROFILE_TAG to profileFragment,
             AppTag.GPS_TAG to gpsFragment, AppTag.SETTING_TAG to userSettingFragment,
@@ -126,7 +128,7 @@ class MainActivity : AppCompatActivity() {
             else if (it == SendMessageService.HOME_TYPE)
                 return@let
             else
-                changeFragment(WebUrl.URL_LAN +it)
+                changeFragment(WebUrl.URL_BASE +it)
         }
 
         if (intent.getBooleanExtra(AppTag.LOGIN_TAG, false)) {
@@ -150,7 +152,7 @@ class MainActivity : AppCompatActivity() {
                     changeFragment(AppTag.CHATLIST_TAG)
                 }
                 R.id.menu_like -> {
-                    changeFragment(WebUrl.URL_LAN + WebUrl.URL_LIKE)
+                    changeFragment(WebUrl.URL_BASE + WebUrl.URL_LIKE)
                 }
                 R.id.menu_profile -> {
                     changeFragment(AppTag.SETTING_TAG)
@@ -185,12 +187,17 @@ class MainActivity : AppCompatActivity() {
             currentTag == AppTag.ACCOUNT_TAG
         ) {
             changeFragment(AppTag.SETTING_TAG)
-        }else if (currentTag == AppTag.NOTIFICATION_TAG || currentTag.contains(WebUrl.URL_LAN))
-            changeFragment(AppTag.HOME_TAG)
-        else if (System.currentTimeMillis() - waitTime >= 1500){    // 1.5초
+        }else if (currentTag == AppTag.HOME_TAG && (System.currentTimeMillis() - waitTime >= 1500)) { // 1.5초 기준
             waitTime = System.currentTimeMillis()
             ToastUtil.showToast(this,"뒤로가기 버튼을 한번 더 누르면 종료됩니다.")
-        }else
+        }
+        else if (
+            currentTag == AppTag.NOTIFICATION_TAG
+            || currentTag == AppTag.CHATLIST_TAG
+            || currentTag == AppTag.SETTING_TAG
+            || currentTag.contains(WebUrl.URL_BASE)){
+            changeFragment(AppTag.HOME_TAG)
+       }else
             super.onBackPressed()
 
     }
@@ -206,9 +213,12 @@ class MainActivity : AppCompatActivity() {
                 dialog = scoreDialogFragment
                 dialog.show(supportFragmentManager, "CustomDialog")
             }
-            else if (currentTag.contains(WebUrl.URL_LAN)) {
-                Log.d("웹뷰","들어옴")
-                tran.add(R.id.fragmentView, WebViewFragment(mUserInfo, frgTAG))    // TODO: replace로 고쳐서 테스트해보기
+            else if (currentTag.contains(WebUrl.URL_BASE)) {
+                Log.d("웹뷰","들어옴:${currentTag}")
+                val webviewFragment = WebViewFragment()     // 동일한 프래그먼트 객체를 연속으로 replace해선 실행되지 않는다.
+                userInfoBundle.putString(WebUrl.URL_BASE, currentTag)
+                webviewFragment.arguments = userInfoBundle
+                tran.replace(R.id.fragmentView, webviewFragment)    // TODO: replace로 고쳐서 테스트해보기
             }else {
                 frgDic[currentTag]!!.let { tran.replace(R.id.fragmentView, it) }    // add로 바꾸면 gps 적용시 강종
             }
@@ -333,19 +343,6 @@ class MainActivity : AppCompatActivity() {
         return utilitylist
     }
 
-    fun storeNotificationCache(mNotificationItems: ArrayList<NotificationItem>) {
-        mUserInfo.notificationlist = mNotificationItems
-        notificationlist=mNotificationItems
-        Log.d("메인액티비티 알림 list count", notificationlist.size.toString())
-        sharedPref = this.getSharedPreferences(AppTag.USER_INFO,0)
-        editor = sharedPref.edit()
-        val gson = Gson()
-        val json = gson.toJson(notificationlist)
-        editor.putString(AppTag.NOTIFICATIONCACHE_TAG, json)
-        Log.d("메인액티비티 알림 json", json)
-        editor.apply()
-    }
-
     fun getNotificationJSON(): ArrayList<NotificationItem> {
         val type: Type = object : TypeToken<ArrayList<NotificationItem?>?>() {}.getType()
         sharedPref = this.getSharedPreferences(AppTag.USER_INFO,0)
@@ -369,13 +366,10 @@ class MainActivity : AppCompatActivity() {
         editor.putBoolean("msgValid", userInfo.msgVaild).apply()
     }
 
-    private fun showHomeFragment(userInfo: HoloUser){
+    private fun showHomeFragment(){
         val tran = supportFragmentManager.beginTransaction()
-        homeFragment = HomeFragment(userInfo)
         tran.replace(R.id.fragmentView, homeFragment)
         tran.commit()
-        _binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
     }
 
     fun showAlertDialog(msg:String, vararg option:String){

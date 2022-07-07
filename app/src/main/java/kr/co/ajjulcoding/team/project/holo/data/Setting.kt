@@ -74,7 +74,7 @@ class PhpUrl {
 
 class WebUrl {
     companion object{
-        const val URL_LAN: String = "http://holo2.dothome.co.kr/"
+        const val URL_BASE: String = "http://holo2.dothome.co.kr/"
         const val URL_DEAL: String = "?path=deliveryboard"
         const val URL_OTT: String = "?path=ottboard"
         const val URL_POLICY:String = "?path=policyboard"

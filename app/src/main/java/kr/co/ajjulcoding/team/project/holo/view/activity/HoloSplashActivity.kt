@@ -16,13 +16,17 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kr.co.ajjulcoding.team.project.holo.*
+import kr.co.ajjulcoding.team.project.holo.base.BaseActivity
 import kr.co.ajjulcoding.team.project.holo.data.HoloUser
 import kr.co.ajjulcoding.team.project.holo.data.NotificationItem
 import kr.co.ajjulcoding.team.project.holo.data.SimpleChatRoom
 import kr.co.ajjulcoding.team.project.holo.data.UtilityBillItem
+import kr.co.ajjulcoding.team.project.holo.databinding.ActivityHolosplashBinding
 import kr.co.ajjulcoding.team.project.holo.repository.Repository
 
-class HoloSplashActivity : AppCompatActivity() {
+class HoloSplashActivity : BaseActivity<ActivityHolosplashBinding>({
+    ActivityHolosplashBinding.inflate(it)
+}) {
     private var userInfo: HoloUser? = null
     private var waitTime:Double = 1.5
     private lateinit var sharedPref:SharedPreferences
@@ -34,7 +38,6 @@ class HoloSplashActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_holosplash)
         sharedPref = this.getSharedPreferences(AppTag.USER_INFO,0)
         editor = sharedPref.edit()
         CoroutineScope(Dispatchers.Main).launch {

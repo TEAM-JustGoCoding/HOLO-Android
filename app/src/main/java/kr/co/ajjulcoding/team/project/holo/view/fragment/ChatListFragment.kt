@@ -18,6 +18,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.signature.ObjectKey
 import com.google.firebase.storage.FirebaseStorage
 import kr.co.ajjulcoding.team.project.holo.*
+import kr.co.ajjulcoding.team.project.holo.base.BaseFragment
 import kr.co.ajjulcoding.team.project.holo.data.ChatRoom
 import kr.co.ajjulcoding.team.project.holo.data.HoloUser
 import kr.co.ajjulcoding.team.project.holo.data.SimpleChatRoom
@@ -27,37 +28,31 @@ import kr.co.ajjulcoding.team.project.holo.view.activity.ChatRoomActivity
 import kr.co.ajjulcoding.team.project.holo.view.activity.MainActivity
 import kr.co.ajjulcoding.team.project.holo.view.viewmodel.ChatListViewModel
 
-class ChatListFragment() : Fragment() {
-    private lateinit var _activity: MainActivity
-    private val mActivity get() = _activity
+class ChatListFragment() : BaseFragment<FragmentChatListBinding>() {
     private lateinit var _userInfo: HoloUser
     private val userInfo get() = _userInfo
-    private lateinit var _binding: FragmentChatListBinding
-    private val binding get() = _binding
     private val chatListViewModel: ChatListViewModel by viewModels<ChatListViewModel>()
     private lateinit var signatureKey:String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        _activity = requireActivity() as MainActivity
         _userInfo = arguments?.getParcelable<HoloUser>(AppTag.USER_INFO) as HoloUser
-        Log.d("채팅리스트 유저 정보 확인:", userInfo.toString())
+        ChatRoomActivity.randomNum = null
         chatListViewModel.getUserChatRoomLi(userInfo.uid)
-        val sharedPref = mActivity.getSharedPreferences(AppTag.USER_INFO,0)
-        signatureKey = sharedPref.getString("signature",System.currentTimeMillis().toString())!!
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        _binding = FragmentChatListBinding.inflate(inflater, container, false)
-        ChatRoomActivity.randomNum = null
-        return binding.root
+    override fun getFragmentBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): FragmentChatListBinding {
+        return FragmentChatListBinding.inflate(inflater, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val sharedPref = mActivity.getSharedPreferences(AppTag.USER_INFO,0)
+        signatureKey = sharedPref.getString("signature",System.currentTimeMillis().toString())!!
+
         binding.recyclerChatList.adapter = ChatListAdapter()
         chatListViewModel.userChatRoomLi.observe(viewLifecycleOwner){
             (binding.recyclerChatList.adapter as ChatListAdapter).replaceItems(it)

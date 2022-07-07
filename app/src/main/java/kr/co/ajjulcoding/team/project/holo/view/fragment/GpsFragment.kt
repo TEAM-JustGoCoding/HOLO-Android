@@ -26,6 +26,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import kr.co.ajjulcoding.team.project.holo.AppTag
+import kr.co.ajjulcoding.team.project.holo.base.BaseFragment
 import kr.co.ajjulcoding.team.project.holo.view.activity.MainActivity
 import kr.co.ajjulcoding.team.project.holo.databinding.FragmentGpsBinding
 import kr.co.ajjulcoding.team.project.holo.util.ToastUtil
@@ -33,15 +34,12 @@ import java.io.IOException
 import java.util.*
 
 
-class GpsFragment : Fragment(), OnMapReadyCallback {
-
-    private lateinit var _binding: FragmentGpsBinding
+class GpsFragment : BaseFragment<FragmentGpsBinding>(), OnMapReadyCallback {
     private var gMap: GoogleMap? = null
     private var latitude:Double = 37.568291
     private var longitude:Double = 126.997780
     private var validCpl:Boolean = false
     private var lastestLocation:SpannableString? = null
-    private val binding get() = _binding
     private var mFusedLocationProviderClient: FusedLocationProviderClient? = null // 현재 위치를 가져오기 위한 변수
     private lateinit var town:String
     lateinit var mLastLocation: Location // 위치 값을 가지고 있는 객체
@@ -50,36 +48,23 @@ class GpsFragment : Fragment(), OnMapReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val mActivity: MainActivity = requireActivity() as MainActivity
-
-//        val locale = Locale("ko_KR")
-//        Locale.setDefault(locale)
-//        val config = Configuration()
-//        config.setLocale(locale)
-//        config.setLayoutDirection(locale)
-//        mActivity.createConfigurationContext(config)
-//        mActivity.resources.up
-//        mActivity.baseContext.resources.updateConfiguration(config,
-//        mActivity.baseContext.resources.displayMetrics)
-
         mLocationRequest =  LocationRequest.create().apply {
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        _binding = FragmentGpsBinding.inflate(inflater, container, false)
-        binding.mapView.onCreate(savedInstanceState)
-        binding.mapView.getMapAsync(this)
-        updateLocation()
-        return binding.root
+    override fun getFragmentBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): FragmentGpsBinding {
+        return FragmentGpsBinding.inflate(inflater, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.mapView.onCreate(savedInstanceState)
+        binding.mapView.getMapAsync(this)
+        updateLocation()
 
         binding.btnBack.setOnClickListener {
             (requireActivity() as MainActivity).changeFragment(AppTag.SETTING_TAG)
@@ -216,9 +201,5 @@ class GpsFragment : Fragment(), OnMapReadyCallback {
     override fun onLowMemory() {
         super.onLowMemory()
         binding.mapView.onLowMemory()
-    }
-    override fun onDestroy() {
-        binding.mapView.onDestroy()
-        super.onDestroy()
     }
 }
