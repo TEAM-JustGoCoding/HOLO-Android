@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import kr.co.ajjulcoding.team.project.holo.*
+import kr.co.ajjulcoding.team.project.holo.base.BaseFragment
 import kr.co.ajjulcoding.team.project.holo.data.HoloUser
 import kr.co.ajjulcoding.team.project.holo.data.NotificationItem
 import kr.co.ajjulcoding.team.project.holo.databinding.FragmentNotificationBinding
@@ -15,11 +16,7 @@ import kr.co.ajjulcoding.team.project.holo.util.OnItemClick
 import kr.co.ajjulcoding.team.project.holo.view.activity.MainActivity
 import kr.co.ajjulcoding.team.project.holo.view.adapter.NotificationAdapter
 
-class NotificationFragment() : Fragment(), OnItemClick {
-    private lateinit var _binding: FragmentNotificationBinding
-    private val binding get() = _binding
-    private lateinit var _activity: MainActivity
-    private val mActivity get() = _activity
+class NotificationFragment() : BaseFragment<FragmentNotificationBinding>(), OnItemClick {
     private lateinit var _userInfo: HoloUser
     private val userInfo get() = _userInfo
     private var mRecyclerView: RecyclerView? = null
@@ -28,25 +25,21 @@ class NotificationFragment() : Fragment(), OnItemClick {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        _activity = requireActivity() as MainActivity
         _userInfo = arguments?.getParcelable<HoloUser>(AppTag.USER_INFO) as HoloUser
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        _binding = FragmentNotificationBinding.inflate(inflater, container, false)
-        initList()
-        Log.d("알림 프래그먼트", "onCreateView")
-        return binding.root
+    override fun getFragmentBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): FragmentNotificationBinding {
+        return FragmentNotificationBinding.inflate(inflater, container, false)
     }
 
     private fun initList(){
         mNotificationItems = userInfo.notificationlist
         Log.d("알림 initList", mNotificationItems.toString())
 
-        mRecyclerAdapter = NotificationAdapter(_activity, this)
+        mRecyclerAdapter = NotificationAdapter(mActivity, this)
 
         if (mNotificationItems == null){
             mNotificationItems=ArrayList()
@@ -58,18 +51,10 @@ class NotificationFragment() : Fragment(), OnItemClick {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d("알림 프래그먼트", "onViewCreated")
+        initList()
 
         mRecyclerView = requireView().findViewById(R.id.recyclerView) as RecyclerView?
-
-        /* initiate adapter */
-//        mRecyclerAdapter = NotificationAdapter(this)
-
-        /* initiate recyclerview */
         mRecyclerView!!.adapter = mRecyclerAdapter
-//        mRecyclerView!!.layoutManager = LinearLayoutManager(requireContext())
-//        mRecyclerView!!.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-
 //        /* adapt data */
 //        mNotificationItems = ArrayList()
 //        for (i in 1..10) {
@@ -96,5 +81,4 @@ class NotificationFragment() : Fragment(), OnItemClick {
         mNotificationItems!!.removeAt(position!!)
         mRecyclerAdapter!!.setNotificationList(mNotificationItems)
     }
-
 }

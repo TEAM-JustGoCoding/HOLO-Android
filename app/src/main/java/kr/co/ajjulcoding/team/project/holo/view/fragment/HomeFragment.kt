@@ -5,48 +5,36 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import kr.co.ajjulcoding.team.project.holo.*
+import kr.co.ajjulcoding.team.project.holo.base.BaseFragment
 import kr.co.ajjulcoding.team.project.holo.data.HoloUser
-import kr.co.ajjulcoding.team.project.holo.data.NotificationItem
 import kr.co.ajjulcoding.team.project.holo.databinding.FragmentHomeBinding
 import kr.co.ajjulcoding.team.project.holo.util.ToastUtil
-import kr.co.ajjulcoding.team.project.holo.view.activity.MainActivity
-import kr.co.ajjulcoding.team.project.holo.view.viewmodel.HomeViewModel
 
 
-class HomeFragment(val currentUser: HoloUser) : Fragment() {
-    private lateinit var _activity: MainActivity
-    private val mActivity get() = _activity
-    private lateinit var _binding:FragmentHomeBinding
-    private val binding get() = _binding
-    private val homeViewModel: HomeViewModel by viewModels<HomeViewModel>()
-    private var mNotificationItems: ArrayList<NotificationItem>? = ArrayList()
+class HomeFragment() : BaseFragment<FragmentHomeBinding>() {
+    private lateinit var _currentUser: HoloUser
+    private val currentUser get() = _currentUser
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        _activity = requireActivity() as MainActivity
+        _currentUser = arguments?.getParcelable<HoloUser>(AppTag.USER_INFO) as HoloUser
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) // android 30 부터
-//            mActivity.window.setDecorFitsSystemWindows(false)
-        _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        setProfile()
-        return binding.root
+    override fun getFragmentBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): FragmentHomeBinding {
+        return FragmentHomeBinding.inflate(inflater, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setProfile()
         Log.d("데이터 확인", currentUser.toString())
 //        binding.btnSell.setOnClickListener {
 //            CoroutineScope(Dispatchers.Main).launch {
@@ -77,7 +65,7 @@ class HomeFragment(val currentUser: HoloUser) : Fragment() {
                 } else {
                     val imm = mActivity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager // 키보드 내리기
                     imm.hideSoftInputFromWindow(binding.editSearch.windowToken,0)
-                    mActivity.changeFragment(WebUrl.URL_LAN + WebUrl.URL_SEARCH + text)
+                    mActivity.changeFragment(WebUrl.URL_BASE + WebUrl.URL_SEARCH + text)
                     binding.editSearch.setText("")
                 }
                 return@setOnKeyListener true
@@ -92,20 +80,20 @@ class HomeFragment(val currentUser: HoloUser) : Fragment() {
                 return@setOnClickListener
             }
             currentUser.location?.let {
-                mActivity.changeFragment(WebUrl.URL_LAN + WebUrl.URL_DEAL)
+                mActivity.changeFragment(WebUrl.URL_BASE + WebUrl.URL_DEAL)
             }
         }
         binding.btnWatch.setOnClickListener {
-            mActivity.changeFragment(WebUrl.URL_LAN + WebUrl.URL_OTT)
+            mActivity.changeFragment(WebUrl.URL_BASE + WebUrl.URL_OTT)
         }
         binding.btnSight.setOnClickListener {
-            mActivity.changeFragment(WebUrl.URL_LAN + WebUrl.URL_DCM)
+            mActivity.changeFragment(WebUrl.URL_BASE + WebUrl.URL_DCM)
         }
         binding.btnPolicy.setOnClickListener {
-            mActivity.changeFragment(WebUrl.URL_LAN + WebUrl.URL_POLICY)
+            mActivity.changeFragment(WebUrl.URL_BASE + WebUrl.URL_POLICY)
         }
         binding.btnCuriosity.setOnClickListener {
-            mActivity.changeFragment(WebUrl.URL_LAN + WebUrl.URL_FAQ)
+            mActivity.changeFragment(WebUrl.URL_BASE + WebUrl.URL_FAQ)
         }
         binding.btnNotifi.setOnClickListener {
             mActivity.changeFragment(AppTag.NOTIFICATION_TAG)
@@ -120,7 +108,7 @@ class HomeFragment(val currentUser: HoloUser) : Fragment() {
         }else
             binding.textLocation.setText(currentUser.location)
         currentUser.profileImg?.let {
-            Glide.with(_activity).load(Uri.parse(it)).apply {
+            Glide.with(mActivity).load(Uri.parse(it)).apply {
                 RequestOptions()
                     .skipMemoryCache(true)
                     .diskCacheStrategy(DiskCacheStrategy.NONE)

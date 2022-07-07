@@ -5,7 +5,6 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import androidx.fragment.app.Fragment
 import android.webkit.*
 import androidx.fragment.app.viewModels
 import com.google.firebase.Timestamp
@@ -13,63 +12,48 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import kr.co.ajjulcoding.team.project.holo.*
+import kr.co.ajjulcoding.team.project.holo.base.BaseFragment
 import kr.co.ajjulcoding.team.project.holo.data.ChatRoom
 import kr.co.ajjulcoding.team.project.holo.data.CmtNotificationBody
 import kr.co.ajjulcoding.team.project.holo.data.HoloUser
 import kr.co.ajjulcoding.team.project.holo.databinding.FragmentWebViewBinding
 import kr.co.ajjulcoding.team.project.holo.util.ToastUtil
-import kr.co.ajjulcoding.team.project.holo.view.activity.MainActivity
 import kr.co.ajjulcoding.team.project.holo.view.viewmodel.WebViewModel
 import org.json.JSONObject
 import java.net.URLEncoder
 
-class WebViewFragment(private val userInfo: HoloUser, private val webUrl: String) : Fragment() {
+class WebViewFragment() : BaseFragment<FragmentWebViewBinding>() {
     companion object{
         const val COMMENT_TAG = "comment"
         const val SUBCOMMENT_TAG = "subComment"
     }
-    private lateinit var _binding: FragmentWebViewBinding
+    private lateinit var _userInfo: HoloUser
+    private val userInfo get() = _userInfo
+    private var _webUrl: String? = null
+    private val webUrl get() = _webUrl!!
     private lateinit var webViewModel: WebViewModel
-    private val binding get() = _binding
-    private lateinit var _activity: MainActivity
-    private val mActivity get() = _activity
     private val webVieModel: WebViewModel by viewModels<WebViewModel>()
-    private var scrollX:Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        _activity = requireActivity() as MainActivity
+        _userInfo = arguments?.getParcelable<HoloUser>(AppTag.USER_INFO) as HoloUser
+        _webUrl = arguments?.getString(WebUrl.URL_BASE)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        _binding = FragmentWebViewBinding.inflate(inflater, container, false)
+    override fun getFragmentBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): FragmentWebViewBinding {
+        return FragmentWebViewBinding.inflate(inflater, container,false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setWindow()
         webViewModel = ViewModelProvider(this).get(WebViewModel::class.java)
-        // TODO: 아래것들 테스트하고 세팅 함수로 묶어버리기
-
-          // TODO: 키보드 올라올 때만 없애기 => 웹으로 통신 보내는 거 확인
-        //mActivity.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-//            mActivity.window.setDecorFitsSystemWindows(false)
-//        } else
-//            mActivity.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R)
-            mActivity.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
-
-        binding.webView.setOnApplyWindowInsetsListener { _, windowInsets ->
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){ // android 30 부터
-                val imeHeight = windowInsets.getInsets(WindowInsets.Type.ime()).bottom
-                binding.webView.setPadding(0,0,0, imeHeight)
-                val insets = windowInsets.getInsets(WindowInsets.Type.ime() or WindowInsets.Type.systemGestures())
-                insets
-            }
-            windowInsets
-        }
+        val webView:WebView = binding.webView
 
         CoroutineScope(Dispatchers.Main).launch {
             val resultDef:Deferred<Int?> = webViewModel.getId(userInfo.uid)
@@ -91,26 +75,21 @@ class WebViewFragment(private val userInfo: HoloUser, private val webUrl: String
             }
             CookieManager.getInstance().apply {
                 removeAllCookies(null)
-                setCookie(WebUrl.URL_LAN,"uid = ${userId}")
-                setCookie(WebUrl.URL_LAN,"town = ${userInfo.location}")
+                setCookie(WebUrl.URL_BASE,"uid = ${userId}")
+                setCookie(WebUrl.URL_BASE,"town = ${userInfo.location}")
                 setAcceptThirdPartyCookies(webView,true)
             }
-
-            if (webUrl == (WebUrl.URL_LAN + WebUrl.URL_DEAL)){
+            Log.d("배달 공구", webUrl.toString())
+            if (webUrl == (WebUrl.URL_BASE + WebUrl.URL_DEAL)){
                 var postData: String = "uid=" + URLEncoder.encode(userInfo.uid, "UTF-8")
                 postData += "&town=" + URLEncoder.encode(userInfo.location, "UTF-8")
-                Log.d("배달 공구", webUrl.toString())
+
             }
-            
+
             webView.loadUrl(webUrl)
 
         }
-        return binding.root
-    }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        val webView:WebView = binding.webView
         webView.setOnKeyListener { view, i, keyEvent ->
             if (keyEvent.keyCode == KeyEvent.KEYCODE_BACK && keyEvent.action == KeyEvent.ACTION_UP) {
                 Log.d("뒤로가기 확인", webView.canGoBack().toString())
@@ -130,6 +109,21 @@ class WebViewFragment(private val userInfo: HoloUser, private val webUrl: String
 //            mActivity.window.setDecorFitsSystemWindows(true)
         mActivity.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED)
         super.onDestroy()
+    }
+
+    private fun setWindow(){
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R)
+            mActivity.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+
+        binding.webView.setOnApplyWindowInsetsListener { _, windowInsets ->
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){ // android 30 부터
+                val imeHeight = windowInsets.getInsets(WindowInsets.Type.ime()).bottom
+                binding.webView.setPadding(0,0,0, imeHeight)
+                val insets = windowInsets.getInsets(WindowInsets.Type.ime() or WindowInsets.Type.systemGestures())
+                insets
+            }
+            windowInsets
+        }
     }
 
     inner class WebViewClientClass(): WebViewClient() {
@@ -259,4 +253,5 @@ class WebViewFragment(private val userInfo: HoloUser, private val webUrl: String
             }
         }
     }
+
 }

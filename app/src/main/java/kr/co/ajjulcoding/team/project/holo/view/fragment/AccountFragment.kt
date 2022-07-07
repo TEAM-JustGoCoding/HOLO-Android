@@ -10,41 +10,33 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import kr.co.ajjulcoding.team.project.holo.AppTag
+import kr.co.ajjulcoding.team.project.holo.base.BaseFragment
 import kr.co.ajjulcoding.team.project.holo.data.HoloUser
 import kr.co.ajjulcoding.team.project.holo.view.activity.MainActivity
 import kr.co.ajjulcoding.team.project.holo.databinding.FragmentAccountBinding
 import kr.co.ajjulcoding.team.project.holo.util.ToastUtil
 
 
-class AccountFragment() : Fragment() {
-    private lateinit var _binding: FragmentAccountBinding
-    private val binding get() = _binding
-    private lateinit var _activity: MainActivity
-    private val mActivity get() = _activity
+class AccountFragment() : BaseFragment<FragmentAccountBinding>() {
     private lateinit var _userInfo: HoloUser
     private val userInfo get() = _userInfo
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        _activity = requireActivity() as MainActivity
         _userInfo = arguments?.getParcelable<HoloUser>(AppTag.USER_INFO) as HoloUser
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        _binding = FragmentAccountBinding.inflate(inflater, container, false)
-        initView()
-        return binding.root
-    }
-
-    private fun initView(){
-        binding.editAccount.setText(userInfo.account)
+    override fun getFragmentBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): FragmentAccountBinding {
+        return FragmentAccountBinding.inflate(inflater, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initView()
+
         binding.btnBack.setOnClickListener {
             mActivity.changeFragment(AppTag.SETTING_TAG)
         }
@@ -73,5 +65,9 @@ class AccountFragment() : Fragment() {
                 (requireActivity() as MainActivity).changeFragment(AppTag.SETTING_TAG)
             }
         }
+    }
+
+    private fun initView(){
+        binding.editAccount.setText(userInfo.account)
     }
 }
