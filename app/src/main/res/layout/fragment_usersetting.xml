@@ -119,6 +119,7 @@
                     android:id="@+id/textUtilityBill"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:visibility="gone"
                     android:background="@drawable/round_btn_home"
                     android:backgroundTint="@color/sky_dirty"
                     android:textAlignment="textStart"

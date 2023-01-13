@@ -25,6 +25,8 @@
                     android:id="@+id/contraintParent"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
                     android:minHeight="800dp"
                     android:background="@color/white"
                     android:padding="@dimen/marginSmallView">
